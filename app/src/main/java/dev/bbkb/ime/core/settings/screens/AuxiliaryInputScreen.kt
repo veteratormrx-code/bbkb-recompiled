@@ -25,10 +25,56 @@ import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
  */
 @Composable
 fun AuxiliaryInputScreen(
-    onNavigateToCustomizeMenu: () -> Unit,
+    onNavigateToToolbar: () -> Unit,
+    onNavigateToClipboard: () -> Unit,
+    onNavigateToGestures: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     SettingsScreenHost(R.string.settings_auxiliary_input_title, onNavigateBack, listOf(
+        Nav(
+            title = R.string.settings_root_tools_title,
+            summary = R.string.settings_root_tools_summary,
+            icon = drawableIcon(R.drawable.ic_settings_uim),
+            onClick = { onNavigateToToolbar() },
+        ),
+        Nav(
+            title = R.string.settings_uim_toggle_clipboard,
+            summary = R.string.settings_root_clipboard_summary,
+            icon = drawableIcon(R.drawable.ic_settings_clipboard_history),
+            onClick = { onNavigateToClipboard() },
+        ),
+        Nav(
+            title = R.string.settings_shake_title,
+            summary = R.string.settings_gestures_shake_summary,
+            icon = drawableIcon(R.drawable.ic_settings_shake_horizontal),
+            onClick = { onNavigateToGestures() },
+        ),
+    ))
+}
+
+@Composable
+fun ToolbarSettingsScreen(
+    onNavigateToCustomizeMenu: () -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    SettingsScreenHost(R.string.settings_root_tools_title, onNavigateBack, listOf(
+        Category(R.string.settings_toolbar_title),
+        Choice(
+            store = stringPref("pref_toolbar_mode", "collapsed"),
+            title = R.string.settings_toolbar_mode_title,
+            options = ::toolbarModes,
+            fallbackIndex = 0,
+            icon = drawableIcon(R.drawable.ic_settings_uim),
+            modifier = Modifier.settingsSearchAnchor("pref_toolbar_mode"),
+        ),
+        Choice(
+            store = stringPref("pref_suggestion_place", "classic"),
+            title = R.string.settings_suggestion_place_title,
+            options = ::suggestionPlaces,
+            fallbackIndex = 0,
+            icon = drawableIcon(R.drawable.ic_settings_prediction),
+            modifier = Modifier.settingsSearchAnchor("pref_suggestion_place"),
+        ),
         Category(R.string.settings_category_input_menu),
         Toggle(
             store = boolPref("pref_uim_enabled", true),
@@ -40,16 +86,18 @@ fun AuxiliaryInputScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_uim_enabled"),
         ),
-        // Enabled while the menu's switch is off: a key can still raise the menu then.
         Nav(
             title = R.string.settings_customize_menu_title,
             icon = drawableIcon(R.drawable.ic_settings_uim_customize),
             summary = R.string.settings_customize_menu_summary,
             onClick = { onNavigateToCustomizeMenu() },
         ),
+    ))
+}
 
-        Category(R.string.settings_uim_toggle_clipboard),
-        // Off also deletes kept clips, pinned ones included.
+@Composable
+fun ClipboardSettingsScreen(onNavigateBack: () -> Unit) {
+    SettingsScreenHost(R.string.settings_uim_toggle_clipboard, onNavigateBack, listOf(
         Toggle(
             store = boolPref("pref_clipboard_history_enabled", ClipboardPrefs.DEFAULT_HISTORY_ENABLED),
             title = R.string.clipboard_history_title,
@@ -65,7 +113,6 @@ fun AuxiliaryInputScreen(
             title = R.string.clipboard_retention_title,
             icon = drawableIcon(R.drawable.ic_settings_clip_retention),
             options = ::retentionOptions,
-            // An unknown stored value reads as the default, one hour, as ClipboardPrefs does.
             fallbackIndex = 0,
             enabled = { it.bool("pref_clipboard_history_enabled") },
             modifier = Modifier.settingsSearchAnchor("pref_clipboard_retention"),
@@ -78,22 +125,11 @@ fun AuxiliaryInputScreen(
             enabled = { it.bool("pref_clipboard_history_enabled") },
             modifier = Modifier.settingsSearchAnchor("pref_clipboard_link_previews"),
         ),
-
-        Category(R.string.settings_shake_title),
-        // Literal anchors: the search index test finds them by text.
-        shakeAction("shake_x_action", R.string.settings_shake_x_axis_title, R.drawable.ic_settings_shake_horizontal,
-            Modifier.settingsSearchAnchor("shake_x_action")),
-        shakeAction("shake_y_action", R.string.settings_shake_y_axis_title, R.drawable.ic_settings_shake_vertical,
-            Modifier.settingsSearchAnchor("shake_y_action")),
-        shakeAction("shake_z_action", R.string.settings_shake_z_axis_title, R.drawable.ic_settings_shake_diagonal,
-            Modifier.settingsSearchAnchor("shake_z_action")),
-        shakeAction("shake_fallback_action", R.string.settings_shake_fallback_title, R.drawable.ic_settings_shake_other,
-            Modifier.settingsSearchAnchor("shake_fallback_action")),
     ))
 }
 
 /** One shake's action. All four rows offer the same list and fall back to its first entry. */
-private fun shakeAction(key: String, titleRes: Int, @DrawableRes iconRes: Int, anchor: Modifier) = Choice(
+internal fun shakeAction(key: String, titleRes: Int, @DrawableRes iconRes: Int, anchor: Modifier) = Choice(
     store = stringPref(key, "0"),
     title = titleRes,
     icon = drawableIcon(iconRes),
@@ -109,6 +145,19 @@ private fun shakeActionOptions(context: Context): List<ChoiceOption> {
         ChoiceOption(value, labels.getOrElse(index) { value })
     }
 }
+
+private fun toolbarModes(context: Context): List<ChoiceOption> = listOf(
+    ChoiceOption("collapsed", context.getString(R.string.settings_toolbar_mode_collapsed)),
+    ChoiceOption("pinned", context.getString(R.string.settings_toolbar_mode_pinned)),
+    ChoiceOption("hidden", context.getString(R.string.settings_toolbar_mode_hidden)),
+)
+
+private fun suggestionPlaces(context: Context): List<ChoiceOption> = listOf(
+    ChoiceOption("classic", context.getString(R.string.settings_suggestion_place_classic)),
+    ChoiceOption("strip", context.getString(R.string.settings_suggestion_place_strip)),
+    ChoiceOption("both", context.getString(R.string.settings_suggestion_place_both)),
+    ChoiceOption("none", context.getString(R.string.settings_suggestion_place_none)),
+)
 
 private fun retentionOptions(context: Context): List<ChoiceOption> = listOf(
     ChoiceOption(ClipboardPrefs.RETENTION_1H, context.getString(R.string.clipboard_retention_1h)),

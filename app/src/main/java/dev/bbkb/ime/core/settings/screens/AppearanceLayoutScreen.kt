@@ -40,7 +40,6 @@ fun AppearanceLayoutScreen(
     remember { PrefsManager.migrateThemePrefs(PrefsManager.getPrefs(context)) }
 
     SettingsScreenHost(R.string.settings_appearance_layout_title, onNavigateBack, listOf(
-        Category(R.string.settings_category_appearance),
         // Classic and BB10 are fixed looks; Modern and Material expose the color controls below.
         Choice(
             store = stringPref(THEME_STYLE, "modern"),
@@ -68,21 +67,6 @@ fun AppearanceLayoutScreen(
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_use_system_colors"),
             enabled = { it.hasColorScheme() },
             visible = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
-        ),
-        Toggle(
-            store = boolPref(dev.bbkb.ime.keyboard.NumberRow.PREF, true),
-            title = R.string.settings_number_row_title,
-            summary = RowSummary.Res(R.string.settings_number_row_summary),
-            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
-            modifier = Modifier.settingsSearchAnchor("pref_number_row"),
-        ),
-        Choice(
-            store = stringPref("pref_keyboard_height_mode", "regular"),
-            title = R.string.settings_keyboard_height_title,
-            options = ::keyboardHeights,
-            fallbackIndex = 1,
-            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
-            modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
         ),
         Category(R.string.settings_category_symbols),
         // The one grid picker in settings, so a hand-written block.
@@ -149,6 +133,42 @@ private fun colorSchemes(context: Context) = listOf(
     ChoiceOption("light", context.getString(R.string.settings_appearance_light)),
     ChoiceOption("dark", context.getString(R.string.settings_appearance_dark)),
     ChoiceOption("auto", context.getString(R.string.settings_appearance_auto)),
+)
+
+@Composable
+fun SizeLayoutScreen(onNavigateBack: () -> Unit) {
+    SettingsScreenHost(R.string.settings_root_size_title, onNavigateBack, listOf(
+        Toggle(
+            store = boolPref(dev.bbkb.ime.keyboard.NumberRow.PREF, true),
+            title = R.string.settings_number_row_title,
+            summary = RowSummary.Res(R.string.settings_number_row_summary),
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
+            modifier = Modifier.settingsSearchAnchor("pref_number_row"),
+        ),
+        Choice(
+            store = stringPref(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_PREF, dev.bbkb.ime.keyboard.NumberRow.HEIGHT_REGULAR),
+            title = R.string.settings_number_row_height_title,
+            options = ::numberRowHeights,
+            fallbackIndex = 1,
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
+            modifier = Modifier.settingsSearchAnchor("pref_number_row_height"),
+            enabled = { it.bool(dev.bbkb.ime.keyboard.NumberRow.PREF) },
+        ),
+        Choice(
+            store = stringPref("pref_keyboard_height_mode", "regular"),
+            title = R.string.settings_keyboard_height_title,
+            options = ::keyboardHeights,
+            fallbackIndex = 1,
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
+            modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
+        ),
+    ))
+}
+
+private fun numberRowHeights(context: Context) = listOf(
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_COMPACT, context.getString(R.string.settings_number_row_height_compact)),
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_REGULAR, context.getString(R.string.settings_number_row_height_regular)),
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_TALL, context.getString(R.string.settings_number_row_height_tall)),
 )
 
 private fun keyboardHeights(context: Context) = listOf(

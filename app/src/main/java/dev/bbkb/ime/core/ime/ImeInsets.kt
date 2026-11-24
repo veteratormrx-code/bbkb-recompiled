@@ -62,6 +62,12 @@ class ImeInsets {
         root.getGlobalVisibleRect(tmpRootVisibleRect)
         var anyVisible = unionVisibleInRoot(region, keyboardFrameOf(root))
         anyVisible = unionVisibleInRoot(region, auxBarView) || anyVisible
+        // The painted strip under the keys belongs to the keyboard, including the nav inset.
+        // Leaving it out of the touch region lets taps fall through onto the app.
+        if (anyVisible && !region.isEmpty) {
+            region.getBounds(tmpRegionBounds)
+            region.union(Rect(tmpRegionBounds.left, tmpRegionBounds.top, root.width, root.height))
+        }
 
         if (!anyVisible) {
             if (BuildConfig.DEBUG) Log.w("BBKBdiag", "onComputeInsets: no visible IME content - pass-through")

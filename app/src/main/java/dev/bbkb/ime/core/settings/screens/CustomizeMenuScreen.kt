@@ -1,17 +1,21 @@
 package dev.bbkb.ime.core.settings.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -22,13 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -72,15 +80,15 @@ private fun toggleInfo(id: String): UimToggleInfo = when (id) {
     UimMenuOrder.EMOJI -> UimToggleInfo(R.string.settings_uim_toggle_emoji, R.drawable.ic_auxbar_emoji_enabled)
     UimMenuOrder.FCC -> UimToggleInfo(R.string.settings_uim_toggle_fcc, R.drawable.ic_auxbar_fcc_enabled)
     UimMenuOrder.CLIPBOARD -> UimToggleInfo(R.string.settings_uim_toggle_clipboard, R.drawable.ic_auxbar_clipboard_enabled)
-    UimMenuOrder.TEXT_EDIT -> UimToggleInfo(R.string.settings_uim_toggle_text_edit, R.drawable.ic_auxbar_clipboard_enabled)
-    UimMenuOrder.TRANSLATE -> UimToggleInfo(R.string.settings_uim_toggle_translate, R.drawable.ic_settings_m_palette)
-    UimMenuOrder.HANDWRITING -> UimToggleInfo(R.string.settings_uim_toggle_handwriting, R.drawable.ic_auxbar_voice_enabled)
+    UimMenuOrder.TEXT_EDIT -> UimToggleInfo(R.string.settings_uim_toggle_text_edit, R.drawable.ic_settings_m_edit)
+    UimMenuOrder.TRANSLATE -> UimToggleInfo(R.string.settings_uim_toggle_translate, R.drawable.ic_auxbar_translate)
+    UimMenuOrder.HANDWRITING -> UimToggleInfo(R.string.settings_uim_toggle_handwriting, R.drawable.ic_auxbar_handwriting)
     else -> UimToggleInfo(R.string.settings_uim_toggle_numpad, R.drawable.ic_auxbar_numpad)
 }
 
-/** Visual slot of a toggle at order index i: the "not shown" divider sits after 4. */
-private fun visualSlotOf(orderIndex: Int): Int =
-    if (orderIndex < UimMenuOrder.SHOWN_COUNT) orderIndex else orderIndex + 1
+/** Visual slot of a toggle at order index i: the "not shown" divider sits after the tools that fit. */
+private fun visualSlotOf(orderIndex: Int, shown: Int): Int =
+    if (orderIndex < shown) orderIndex else orderIndex + 1
 
 @Composable
 fun CustomizeMenuScreen(
@@ -90,6 +98,11 @@ fun CustomizeMenuScreen(
     val spacing = LocalSpacing.current
     val prefs = remember { PrefsManager.getPrefs(context) }
     val order = remember { mutableStateListOf<String>().apply { addAll(UimMenuOrder.getOrder(prefs)) } }
+    var shownOnKeyboard by remember { mutableIntStateOf(UimMenuOrder.chosenCount(prefs)) }
+    val maxShown = remember {
+        maxOf(UimMenuOrder.MIN_SHOWN, minOf(UimMenuOrder.MAX_SHOWN, UimMenuOrder.fitCount(context)))
+    }
+    var startedInShown by remember { mutableStateOf(true) }
     var draggingId by remember { mutableStateOf<String?>(null) }
     var dragOffset by remember { mutableFloatStateOf(0f) }
     // One slot is a cell plus the group gap below it.
@@ -99,12 +112,12 @@ fun CustomizeMenuScreen(
         val i = order.indexOf(id)
         if (i < 0) return
         dragOffset += dy
-        val fromSlot = visualSlotOf(i)
+        val fromSlot = visualSlotOf(i, shownOnKeyboard)
         val targetSlot = fromSlot + (dragOffset / rowHeightPx).roundToInt()
         var best = i
         var bestDist = Int.MAX_VALUE
         for (j in order.indices) {
-            val d = abs(visualSlotOf(j) - targetSlot)
+            val d = abs(visualSlotOf(j, shownOnKeyboard) - targetSlot)
             if (d < bestDist) {
                 bestDist = d
                 best = j
@@ -112,13 +125,29 @@ fun CustomizeMenuScreen(
         }
         if (best != i) {
             order.add(best, order.removeAt(i))
-            dragOffset -= (visualSlotOf(best) - fromSlot) * rowHeightPx
+            dragOffset -= (visualSlotOf(best, shownOnKeyboard) - fromSlot) * rowHeightPx
         }
     }
 
+    fun applyShown(next: Int) {
+        val clamped = next.coerceIn(UimMenuOrder.MIN_SHOWN, maxShown)
+        shownOnKeyboard = clamped
+        UimMenuOrder.saveChosenCount(prefs, clamped)
+    }
+
     fun onDragFinished() {
+        val id = draggingId
+        val index = if (id == null) -1 else order.indexOf(id)
         draggingId = null
         dragOffset = 0f
+        if (index >= 0) {
+            val next = when {
+                startedInShown && index >= shownOnKeyboard -> shownOnKeyboard - 1
+                !startedInShown && index < shownOnKeyboard -> shownOnKeyboard + 1
+                else -> shownOnKeyboard
+            }
+            applyShown(next)
+        }
         UimMenuOrder.saveOrder(prefs, order.toList())
     }
 
@@ -136,19 +165,24 @@ fun CustomizeMenuScreen(
                 text = context.getString(R.string.settings_customize_menu_instructions),
                 modifier = Modifier.settingsSearchAnchor("customize_menu"),
             )
+            ShownCountPicker(
+                value = shownOnKeyboard,
+                max = maxShown,
+                onChange = { applyShown(it) },
+            )
             // One column, not two PreferenceGroups: a dragged row must keep its composition (and
             // gesture) across the marker, and a group's clip would cut it off.
             Column(verticalArrangement = Arrangement.spacedBy(spacing.groupGap)) {
-                val shownCount = minOf(order.size, UimMenuOrder.SHOWN_COUNT)
+                val shownCount = minOf(order.size, shownOnKeyboard)
                 for (i in order.indices) {
-                    if (i == UimMenuOrder.SHOWN_COUNT) {
+                    if (i == shownOnKeyboard) {
                         HiddenSectionRow()
                     }
                     val id = order[i]
                     key(id) {
                         ToggleRow(
                             id = id,
-                            position = if (i < UimMenuOrder.SHOWN_COUNT) i + 1 else null,
+                            position = if (i < shownOnKeyboard) i + 1 else null,
                             // Each section's first and last cards carry the group's outer corners.
                             edge = if (i < shownCount) {
                                 groupEdge(i, shownCount)
@@ -160,6 +194,7 @@ fun CustomizeMenuScreen(
                             onDragStart = {
                                 draggingId = id
                                 dragOffset = 0f
+                                startedInShown = order.indexOf(id) < shownOnKeyboard
                             },
                             onDragBy = { dy -> onDragBy(id, dy) },
                             onDragEnd = { onDragFinished() }
@@ -168,6 +203,60 @@ fun CustomizeMenuScreen(
                 }
             }
             Spacer(modifier = Modifier.height(spacing.extraLarge))
+        }
+    }
+}
+
+@Composable
+private fun ShownCountPicker(value: Int, max: Int, onChange: (Int) -> Unit) {
+    val context = LocalContext.current
+    val spacing = LocalSpacing.current
+    Surface(
+        shape = LocalShapes.current.group,
+        color = LocalSettingsColors.current.card,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.groupInset, vertical = spacing.small),
+    ) {
+        Column(Modifier.padding(spacing.large)) {
+            Text(
+                text = context.getString(R.string.settings_uim_shown_count_title),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Spacer(Modifier.height(spacing.medium))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            ) {
+                for (count in UimMenuOrder.MIN_SHOWN..UimMenuOrder.MAX_SHOWN) {
+                    val selected = count == value
+                    val enabled = count <= max
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            )
+                            .clickable(enabled = enabled) { onChange(count) },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = count.toString(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = when {
+                                selected -> MaterialTheme.colorScheme.onPrimary
+                                enabled -> MaterialTheme.colorScheme.onSurface
+                                else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                            },
+                        )
+                    }
+                }
+            }
         }
     }
 }

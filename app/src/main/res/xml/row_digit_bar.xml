@@ -5,7 +5,7 @@
             latin:keyboardLayoutSetElement="alphabet|alphabetManualShifted|alphabetAutomaticShifted|alphabetShiftLocked|alphabetShiftLockShifted"
             latin:numberRow="true"
             latin:passwordInput="false">
-            <Row latin:keyWidth="10%p">
+            <Row latin:keyWidth="10%p" latin:digitRow="true">
                 <Key latin:keySpec="1" latin:moreKeys="!" />
                 <Key latin:keySpec="2" latin:moreKeys="\@" />
                 <Key latin:keySpec="3" latin:moreKeys="\#" />

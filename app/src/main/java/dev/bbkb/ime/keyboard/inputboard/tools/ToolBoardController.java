@@ -59,7 +59,8 @@ public final class ToolBoardController extends AbstractBoardController<Void> {
         if (view != null && view.getMode() == this.mode) {
             view.hideBoard();
             if (this.ime != null) {
-                this.ime.setFlickSuggestionsSuppressed(false);
+                this.ime.setFlickSuggestionsSuppressed(
+                        !dev.bbkb.ime.keyboard.auxbar.CompactToolbar.flickWords(this.ime));
             }
         }
     }

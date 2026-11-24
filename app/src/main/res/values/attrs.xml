@@ -302,6 +302,10 @@
     </attr>
     <attr name="iconVoiceActiveKey" format="reference">
     </attr>
+    <attr name="iconHandwritingKey" format="reference">
+    </attr>
+    <attr name="iconTranslateKey" format="reference">
+    </attr>
     <attr name="iconVoiceInputKey" format="reference">
     </attr>
     <attr name="iconVoiceInputKeyDisabled" format="reference">
@@ -600,6 +604,8 @@
     </attr>
     <attr name="numberRow" format="boolean">
     </attr>
+    <attr name="digitRow" format="boolean">
+    </attr>
     <attr name="physicalKeypadType" format="string">
     </attr>
     <attr name="physicalKeypadVariant" format="string">
@@ -752,6 +758,8 @@
         <attr name="iconSearchKey" />
         <attr name="iconSendKey" />
         <attr name="iconSettingsKey" />
+        <attr name="iconHandwritingKey" />
+        <attr name="iconTranslateKey" />
         <attr name="iconVoiceInputKey" />
         <attr name="iconVoiceActiveKey" />
         <attr name="iconVoiceInputKeyDisabled" />
@@ -790,6 +798,7 @@
         <attr name="iconShowKeyboardSettingsKey" />
         <attr name="iconVoiceInputSmallKey" />
         <attr name="rowHeight" />
+        <attr name="digitRow" />
         <attr name="touchPositionCorrectionData" />
         <attr name="verticalGap" />
     </declare-styleable>

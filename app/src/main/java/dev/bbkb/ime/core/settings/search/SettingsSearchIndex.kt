@@ -204,21 +204,24 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pred_block_offensive_title, "offensive profanity filter", SettingsRoute.VoiceInput.route, TYPING, "pref_key_block_potentially_offensive"),
 
         // Typing & input: Shake gestures
-        SearchableSetting(R.string.settings_shake_x_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_x_action"),
-        SearchableSetting(R.string.settings_shake_y_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_y_action"),
-        SearchableSetting(R.string.settings_shake_z_axis_title, "shake gesture motion", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_z_action"),
-        SearchableSetting(R.string.settings_shake_fallback_title, "shake fallback action", SettingsRoute.AuxiliaryInput.route, TYPING, "shake_fallback_action"),
+        SearchableSetting(R.string.settings_shake_x_axis_title, "shake gesture motion", SettingsRoute.Gestures.route, TYPING, "shake_x_action"),
+        SearchableSetting(R.string.settings_shake_y_axis_title, "shake gesture motion", SettingsRoute.Gestures.route, TYPING, "shake_y_action"),
+        SearchableSetting(R.string.settings_shake_z_axis_title, "shake gesture motion", SettingsRoute.Gestures.route, TYPING, "shake_z_action"),
+        SearchableSetting(R.string.settings_shake_fallback_title, "shake fallback action", SettingsRoute.Gestures.route, TYPING, "shake_fallback_action"),
 
         // Personalization: theme & height (on the hub)
         SearchableSetting(R.string.settings_keyboard_theme_title, "theme classic modern material bb10 blackberry style", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_style"),
         SearchableSetting(R.string.settings_color_scheme_title, "color scheme dark light auto night", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_mode"),
         SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors", DeviceRequirement.DYNAMIC_COLOR),
-        SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
-        SearchableSetting(R.string.settings_number_row_title, "number row digits 123 top", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_number_row"),
+        SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.SizeLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
+        SearchableSetting(R.string.settings_number_row_title, "number row digits 123 top", SettingsRoute.SizeLayout.route, APPEARANCE, "pref_number_row"),
+        SearchableSetting(R.string.settings_number_row_height_title, "number row height compact tall", SettingsRoute.SizeLayout.route, APPEARANCE, "pref_number_row_height"),
 
         SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar euro pound", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_currency_key"),
 
-        SearchableSetting(R.string.settings_uim_enable_title, "unified input menu hamburger", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_uim_enabled"),
+        SearchableSetting(R.string.settings_uim_enable_title, "unified input menu hamburger", SettingsRoute.Toolbar.route, TYPING, "pref_uim_enabled"),
+        SearchableSetting(R.string.settings_toolbar_mode_title, "toolbar collapsed pinned hidden", SettingsRoute.Toolbar.route, TYPING, "pref_toolbar_mode"),
+        SearchableSetting(R.string.settings_suggestion_place_title, "suggestions over keys top row", SettingsRoute.Toolbar.route, TYPING, "pref_suggestion_place"),
 
         // Emoji search: the on-screen pair, then the physical keyboard switch.
         SearchableSetting(R.string.pref_emoji_search_title, "emoji search dynamic filter composing underlined uncommitted word on-screen", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_emoji_dynamic_search"),
@@ -236,9 +239,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_customize_menu_title, "unified input menu order reorder shortcuts toggles voice emoji cursor clipboard number pad math", SettingsRoute.CustomizeMenu.route, TYPING, "customize_menu"),
 
         // Typing & input: Clipboard (rows live on Auxiliary input)
-        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_history_enabled"),
-        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_retention"),
-        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_clipboard_link_previews"),
+        SearchableSetting(R.string.clipboard_history_title, "clipboard history copy paste clips keep save remember", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_history_enabled"),
+        SearchableSetting(R.string.clipboard_retention_title, "clipboard retention expire delete keep clips hour day week time", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_retention"),
+        SearchableSetting(R.string.clipboard_link_previews_title, "clipboard link preview url web page thumbnail title network", SettingsRoute.Clipboard.route, TYPING, "pref_clipboard_link_previews"),
 
         // Suggestion & correction: Suggestions
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),
@@ -335,7 +338,8 @@ object SettingsSearchIndex {
         SearchableScreen(LANGUAGES, "languages keyboards add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, emptyList()),
         SearchableScreen(TYPING, "input typing keyboards voice", SettingsRoute.Preferences.route, emptyList()),
         SearchableScreen(SUGGESTION, "assistance intelligent input suggestions predictions corrections autocorrect spelling learning dictionary", SettingsRoute.SuggestionCorrection.route, emptyList()),
-        SearchableScreen(APPEARANCE, "personalization personalisation appearance look theme colour color height size and layout number row symbols", SettingsRoute.AppearanceLayout.route, emptyList()),
+        SearchableScreen(APPEARANCE, "personalization personalisation appearance look theme colour color symbols", SettingsRoute.AppearanceLayout.route, emptyList()),
+        SearchableScreen(R.string.settings_root_size_title, "size layout height number row digits", SettingsRoute.SizeLayout.route, listOf(APPEARANCE)),
         SearchableScreen(R.string.settings_category_gestures, "gestures swipe flick shake motion spacebar", SettingsRoute.Gestures.route, emptyList()),
         SearchableScreen(R.string.settings_privacy_title, "privacy incognito private personalized learning password clipboard recents", SettingsRoute.Privacy.route, emptyList()),
         SearchableScreen(R.string.settings_mlkit_title, "translate translation handwriting ink mlkit ml kit google", SettingsRoute.MlKitTools.route, emptyList()),
@@ -355,6 +359,8 @@ object SettingsSearchIndex {
         SearchableScreen(R.string.vkb_gestures_configure_title, "on-screen keyboard swipe gestures configure assign action", SettingsRoute.VkbGestures.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(R.string.ckb_gestures_configure_title, "ckb capacitive keypad gestures flick swipe configure", SettingsRoute.CkbGestures.route, listOf(TYPING, PHYSICAL), DeviceRequirement.TOUCH_KEYPAD),
         SearchableScreen(AUXILIARY, "auxiliary tools input menu clipboard shake gestures motion", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
+        SearchableScreen(R.string.settings_root_tools_title, "toolbar tools clipboard emoji translate voice order", SettingsRoute.Toolbar.route, listOf(TYPING)),
+        SearchableScreen(R.string.settings_uim_toggle_clipboard, "clipboard history clips", SettingsRoute.Clipboard.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_customize_menu_title, "unified input menu order reorder customize", SettingsRoute.CustomizeMenu.route, listOf(TYPING, AUXILIARY)),
         SearchableScreen(VOICE, "voice dictation speech mic microphone", SettingsRoute.VoiceInput.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_voice_input_lang_title, "voice dictation language", SettingsRoute.VoiceLanguageSelection.route, listOf(TYPING, VOICE)),

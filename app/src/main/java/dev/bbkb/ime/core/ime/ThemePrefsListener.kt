@@ -47,7 +47,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             }
         }
 
-        if (UimMenuOrder.PREF_KEY == key) {
+        if (UimMenuOrder.PREF_KEY == key || UimMenuOrder.PREF_SHOWN == key) {
             // AuxBarManager caches the UIM keyboard; clear it so show() re-fetches the new bar.
             ime.auxBarManager?.clearKeyboardCache()
             keyboardSwitcher.getUnifiedInputBoardManager()?.onMenuOrderChanged()
@@ -70,7 +70,9 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             KeyboardBuilder.clearKeyboardCache()
         }
 
-        if ("pref_keyboard_height_mode" == key || dev.bbkb.ime.keyboard.NumberRow.PREF == key) {
+        if ("pref_keyboard_height_mode" == key || dev.bbkb.ime.keyboard.NumberRow.PREF == key
+            || "pref_toolbar_mode" == key || "pref_suggestion_place" == key
+            || dev.bbkb.ime.keyboard.NumberRow.HEIGHT_PREF == key) {
             ime.numberPadController?.invalidateKeyboard()
             KeyboardBuilder.clearKeyboardCache()
             ResourceConfigManager.invalidateDimensionCache()

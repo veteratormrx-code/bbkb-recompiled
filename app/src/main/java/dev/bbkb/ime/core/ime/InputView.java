@@ -6,8 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
+
+import dev.bbkb.ime.R;
 
 import androidx.core.view.WindowCompat;
 
@@ -78,10 +81,18 @@ public final class InputView extends RelativeLayout {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        int strip = getPaddingBottom();
-        if (navBarFillShown && strip > 0) {
-            canvas.drawRect(0, getHeight() - strip, getWidth(), getHeight(), navBarFill);
-        }
         super.dispatchDraw(canvas);
+        // The gesture inset and any gap under the keys are not a toolbar. Paint them with the
+        // keyboard color so the app's field cannot show through, and do not put controls there.
+        if (!navBarFillShown) return;
+        int top = getHeight() - getPaddingBottom();
+        View keys = findViewById(R.id.keyboard_view);
+        View frame = findViewById(R.id.keyboard_frame);
+        if (keys != null && keys.isShown() && frame != null) {
+            top = Math.min(top, frame.getTop() + keys.getBottom());
+        }
+        if (top < getHeight()) {
+            canvas.drawRect(0, top, getWidth(), getHeight(), navBarFill);
+        }
     }
 }

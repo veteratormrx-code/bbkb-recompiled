@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="prefs_shake_action_options">
+        <item>Ничего не делать</item>
+        <item>Режим управления курсором</item>
+        <item>Сменить язык</item>
+        <item>Открыть настройки языка</item>
+    </string-array>
 </resources>

@@ -75,7 +75,7 @@
     <string name="settings_dict_add_reverted_words_title">Show add word button</string>
     <string name="settings_dict_add_reverted_words_summary">After backspace undoes a correction, show a button to add the word</string>
     <string name="settings_auxiliary_input_title">Auxiliary input</string>
-    <string name="settings_auxiliary_input_summary">Input menu, clipboard, and shake actions</string>
+    <string name="settings_auxiliary_input_summary">Toolbar, clipboard, and shake</string>
     <string name="settings_category_input_menu">Input menu</string>
     <string name="settings_category_emoji">Emoji</string>
     <string name="settings_autocorrect_enable_title">Enable auto-correction</string>
@@ -301,7 +301,18 @@
     <string name="settings_appearance_oled">OLED</string>
     <string name="settings_appearance_oled_seamless">OLED seamless</string>
     <string name="settings_mlkit_title">Translate and handwriting</string>
-    <string name="settings_mlkit_summary">Google ML Kit models. Typing stays offline.</string>
+    <string name="settings_mlkit_summary">Download translation and handwriting models. Typing stays on the device.</string>
+    <string name="mlkit_gms_ready">Models can be downloaded, then used without a network.</string>
+    <string name="mlkit_gms_missing">Google Play services are unavailable, so these models stay off. Typing is unchanged.</string>
+    <string name="mlkit_download_en_ru">Download English to Russian</string>
+    <string name="mlkit_download_ru_en">Download Russian to English</string>
+    <string name="mlkit_delete_ru_translate">Delete the Russian translation model</string>
+    <string name="mlkit_download_ink_ru">Download Russian handwriting</string>
+    <string name="mlkit_download_ink_en">Download English handwriting</string>
+    <string name="mlkit_delete_ink_ru">Delete Russian handwriting</string>
+    <string name="mlkit_model_ready">The model is ready</string>
+    <string name="mlkit_download_failed">The download did not finish</string>
+    <string name="settings_common_ok">OK</string>
     <string name="text_edit_select_all">All</string>
     <string name="text_edit_cut">Cut</string>
     <string name="text_edit_copy">Copy</string>
@@ -312,7 +323,23 @@
     <string name="settings_uim_toggle_text_edit">Text editing</string>
     <string name="settings_uim_toggle_translate">Translate</string>
     <string name="settings_uim_toggle_handwriting">Handwriting</string>
+    <string name="toolbar_toggle">Show or hide tools</string>
     <string name="settings_number_row_title">Number row</string>
+    <string name="settings_number_row_height_title">Number row height</string>
+    <string name="settings_number_row_height_compact">Compact</string>
+    <string name="settings_number_row_height_regular">Regular</string>
+    <string name="settings_number_row_height_tall">Tall</string>
+    <string name="toolbar_overflow_back">Back</string>
+    <string name="settings_toolbar_title">Toolbar</string>
+    <string name="settings_toolbar_mode_title">Toolbar mode</string>
+    <string name="settings_toolbar_mode_collapsed">Collapsed</string>
+    <string name="settings_toolbar_mode_pinned">Pinned</string>
+    <string name="settings_toolbar_mode_hidden">Hidden</string>
+    <string name="settings_suggestion_place_title">Where suggestions appear</string>
+    <string name="settings_suggestion_place_classic">Over the keys</string>
+    <string name="settings_suggestion_place_strip">Top row</string>
+    <string name="settings_suggestion_place_both">Keys and top row</string>
+    <string name="settings_suggestion_place_none">Hidden</string>
     <string name="settings_number_row_summary">Always show 1–0 above the letters. Long-press a digit for its symbol.</string>
     <string name="fcc_trackpad_hint">Drag to move the cursor</string>
     <string name="fcc_chip_select">Select</string>
@@ -351,15 +378,15 @@
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Dynamic color</string>
     <string name="settings_use_system_colors_summary">Tint the keyboard and settings with colors from your wallpaper</string>
-    <string name="settings_appearance_layout_summary">Theme, keyboard height, and symbols</string>
-    <string name="settings_appearance_layout_title">Personalization</string>
+    <string name="settings_appearance_layout_summary">Theme, colors, and symbols</string>
+    <string name="settings_appearance_layout_title">Appearance</string>
     <string name="settings_appearance_light">Light</string>
     <string name="settings_keyboard_height_compact">Compact</string>
     <string name="settings_keyboard_height_expanded">Expanded</string>
     <string name="settings_keyboard_height_extra_compact">Extra compact</string>
     <string name="settings_keyboard_height_regular">Regular</string>
     <string name="settings_keyboard_height_title">Keyboard height</string>
-    <string name="settings_keyboard_summary">Gestures, touch feedback, and slideboard</string>
+    <string name="settings_keyboard_summary">Gestures, touch feedback, and the side symbol panel</string>
     <string name="settings_keyboard_theme_title">Keyboard theme</string>
     <string name="settings_keyboard_title">On-screen keyboard</string>
     <string name="settings_touch_feedback_summary">Vibration, sound, and key pop-up</string>
@@ -378,7 +405,7 @@
     <string name="vkb_gestures_reserved_note">Swiping or flicking up is reserved for committing suggestions displayed on the keyboard</string>
     <string name="settings_vkb_type_by_swiping_summary">Slide across the keys to type a word</string>
     <string name="settings_vkb_type_by_swiping_title">Type by swiping</string>
-    <string name="vkb_control_key_summary">Press and hold ?123 to enable Ctrl mode</string>
+    <string name="vkb_control_key_summary">Hold the ?123 key to turn on Ctrl</string>
     <string name="vkb_control_key_title">Ctrl key</string>
 
     <string name="key_preview_popup_dismiss_default_delay">Default</string>
@@ -711,7 +738,8 @@
     <string name="settings_custom_macros_title">Custom macros</string>
     <string name="settings_custom_macros_intro" formatted="false">Define your own %x placeholders for use in text shortcuts</string>
     <string name="settings_customize_menu_hidden_header">Not shown on keyboard</string>
-    <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
+    <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. Four tools are on the keyboard until you choose more, up to seven. Drag a tool below the line to hide it. The layout key stays in the centre.</string>
+    <string name="settings_uim_shown_count_title">Tools on the keyboard</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
     <string name="settings_customize_menu_title">Customize input menu</string>
     <string name="settings_default_currency_summary">Select the currency to display on the keyboard</string>
@@ -1148,26 +1176,26 @@
 
     <!-- Root rows that open a screen which already holds the controls. -->
     <string name="settings_root_size_title">Size and layout</string>
-    <string name="settings_root_size_summary">Keyboard height and the number row are on Personalization</string>
+    <string name="settings_root_size_summary">Keyboard height and the number row</string>
     <string name="settings_root_intelligent_title">Intelligent input</string>
     <string name="settings_root_intelligent_summary">Suggestions, auto-correction, and learning</string>
     <string name="settings_root_tools_title">Tools</string>
-    <string name="settings_root_tools_summary">The input menu and the order of its items are on Auxiliary input</string>
+    <string name="settings_root_tools_summary">Clipboard, emoji, translate, voice, and the order of the buttons</string>
     <string name="settings_root_gestures_summary">On-screen swipes, keypad gestures, shake, and the space-bar language swipe</string>
     <string name="settings_root_sound_title">Sound and vibration</string>
     <string name="settings_root_sound_summary">Vibration, key-press sound, and the key pop-up</string>
-    <string name="settings_root_clipboard_summary">Clipboard history, how long clips are kept, and link previews are on Auxiliary input</string>
-    <string name="settings_root_emoji_summary">Emoji search for the on-screen keyboard is on On-screen keyboard. The physical keyboard has its own switch.</string>
+    <string name="settings_root_clipboard_summary">History, how long clips are kept, and link previews</string>
+    <string name="settings_root_emoji_summary">Emoji search while you type on the screen</string>
     <string name="settings_root_privacy_summary">Learned words, and fields that turn learning off</string>
 
-    <string name="settings_gestures_onscreen_summary">Swipe typing and swipe gestures are switched on the on-screen keyboard screen</string>
+    <string name="settings_gestures_onscreen_summary">Swipe typing and swipe gestures</string>
     <string name="settings_gestures_ckb_summary">Flick and swipe actions for a capacitive keypad. The enable switch is on Physical keyboard.</string>
-    <string name="settings_gestures_shake_summary">What a shake does is chosen on Auxiliary input</string>
-    <string name="settings_gestures_spacebar_summary">Swiping the space bar to change language is on Language switching</string>
+    <string name="settings_gestures_shake_summary">Choose what a shake does</string>
+    <string name="settings_gestures_spacebar_summary">Swipe the space bar to change language</string>
 
     <string name="settings_privacy_title">Privacy</string>
-    <string name="settings_privacy_personalized_summary">Opens Suggestions, where Suggest learned words is switched</string>
-    <string name="settings_privacy_learning_summary">Opens Learning, where Enable learning is switched</string>
+    <string name="settings_privacy_personalized_summary">Learned words can appear as suggestions</string>
+    <string name="settings_privacy_learning_summary">New words from your typing can be remembered</string>
     <string name="settings_privacy_incognito_title">Private fields</string>
-    <string name="settings_privacy_incognito_summary">When an app marks the field as no personalized learning, such as incognito, BBKB does not learn words, does not keep emoji recents, and does not save clipboard clips. Password fields also skip learning. The app sets this; there is no switch for it.</string>
+    <string name="settings_privacy_incognito_summary">Password fields and incognito fields are not learned, and their clipboard clips are not saved. The app decides this. There is no switch.</string>
 </resources>

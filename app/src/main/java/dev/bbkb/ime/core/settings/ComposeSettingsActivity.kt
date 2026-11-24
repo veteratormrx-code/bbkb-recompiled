@@ -10,7 +10,11 @@ import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
 import dev.bbkb.ime.core.settings.ui.SettingsTransitions
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +25,9 @@ import dev.bbkb.ime.core.settings.screens.AnimationParametersScreen
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SettingsHighlightController
 import dev.bbkb.ime.core.settings.screens.AppearanceLayoutScreen
+import dev.bbkb.ime.core.settings.screens.SizeLayoutScreen
+import dev.bbkb.ime.core.settings.screens.ToolbarSettingsScreen
+import dev.bbkb.ime.core.settings.screens.ClipboardSettingsScreen
 import dev.bbkb.ime.core.settings.screens.AutoCorrectionScreen
 import dev.bbkb.ime.core.settings.screens.CorrectionLearningScreen
 import dev.bbkb.ime.core.settings.screens.CreditsScreen
@@ -69,6 +76,14 @@ import dev.bbkb.ime.core.shared.StartupTiming
 
 /** Settings activity: a Compose NavHost over every settings screen. */
 class ComposeSettingsActivity : ComponentActivity() {
+    private val pendingRoute = mutableStateOf<String?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingRoute.value = intent.getStringExtra("screen")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         StartupTiming.anchor("settings.onCreate")
         val total = StartupTiming.begin()
@@ -107,6 +122,7 @@ class ComposeSettingsActivity : ComponentActivity() {
             BlackBerryTheme {
                 SettingsNavHost(
                     initialRoute = initialScreen,
+                    pendingRoute = pendingRoute,
                     onExit = { finish() }
                 )
             }
@@ -119,9 +135,17 @@ class ComposeSettingsActivity : ComponentActivity() {
 @Composable
 fun SettingsNavHost(
     initialRoute: String = "main",
+    pendingRoute: MutableState<String?> = mutableStateOf(null),
     onExit: () -> Unit
 ) {
     val navController = rememberNavController()
+    LaunchedEffect(pendingRoute.value) {
+        val route = SettingsRoute.fromRoute(pendingRoute.value)?.route ?: return@LaunchedEffect
+        if (navController.currentDestination?.route != route) {
+            navController.navigate(route) { launchSingleTop = true }
+        }
+        pendingRoute.value = null
+    }
     val highlightController = remember { SettingsHighlightController() }
     // Destination registrations plus SettingsRoute class-init: the real work in the first composition.
     remember { StartupTiming.mark("settings.navHostComposition"); Unit }
@@ -206,6 +230,21 @@ fun SettingsNavHost(
             )
         }
 
+        composable(SettingsRoute.SizeLayout.route) {
+            SizeLayoutScreen(onNavigateBack = back)
+        }
+
+        composable(SettingsRoute.Toolbar.route) {
+            ToolbarSettingsScreen(
+                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateBack = back,
+            )
+        }
+
+        composable(SettingsRoute.Clipboard.route) {
+            ClipboardSettingsScreen(onNavigateBack = back)
+        }
+
         composable(SettingsRoute.OnScreenKeyboard.route) {
             TouchScreenKeyboardScreen(
                 onNavigateBack = back,
@@ -221,11 +260,8 @@ fun SettingsNavHost(
 
         composable(SettingsRoute.Gestures.route) {
             GesturesSettingsScreen(
-                onNavigateToOnScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
                 onNavigateToVkbGestures = go(SettingsRoute.VkbGestures),
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
-                onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
-                onNavigateToShake = go(SettingsRoute.AuxiliaryInput),
                 onNavigateBack = back,
             )
         }
@@ -240,7 +276,9 @@ fun SettingsNavHost(
 
         composable(SettingsRoute.AuxiliaryInput.route) {
             AuxiliaryInputScreen(
-                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateToToolbar = go(SettingsRoute.Toolbar),
+                onNavigateToClipboard = go(SettingsRoute.Clipboard),
+                onNavigateToGestures = go(SettingsRoute.Gestures),
                 onNavigateBack = back,
             )
         }

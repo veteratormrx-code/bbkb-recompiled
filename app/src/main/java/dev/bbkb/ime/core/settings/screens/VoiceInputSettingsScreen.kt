@@ -167,7 +167,8 @@ fun VoiceInputSettingsScreen(
                 // Always shown; greyed out while the switch above or voice input makes it moot.
                 PreferenceScreen(
                     title = context.getString(R.string.settings_voice_input_lang_title),
-                    summary = voiceLanguageDisplayName(voiceLanguage),
+                    summary = voiceLanguageLocalName(voiceLanguage, voiceLanguageDisplayName(voiceLanguage))
+                        ?: voiceLanguageDisplayName(voiceLanguage),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
                     enabled = builtInVoiceEnabled && !useInputLanguage,
                     onClick = onNavigateToLanguageSelection

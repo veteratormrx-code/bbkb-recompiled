@@ -30,12 +30,12 @@
             latin:keyIconDisabled="!icon/settings_key"
             latin:keySpec="!icon/settings_key|!code/key_text_edit"/>
         <Key
-            latin:keyIconActive="!icon/language_switch_key"
-            latin:keyIconDisabled="!icon/language_switch_key"
-            latin:keySpec="!icon/language_switch_key|!code/key_translate"/>
+            latin:keyIconActive="!icon/translate_key"
+            latin:keyIconDisabled="!icon/translate_key"
+            latin:keySpec="!icon/translate_key|!code/key_translate"/>
         <Key
-            latin:keyIconActive="!icon/voice_input_key"
-            latin:keyIconDisabled="!icon/voice_input_key_disabled"
-            latin:keySpec="!icon/voice_input_key|!code/key_handwriting"/>
+            latin:keyIconActive="!icon/handwriting_key"
+            latin:keyIconDisabled="!icon/handwriting_key"
+            latin:keySpec="!icon/handwriting_key|!code/key_handwriting"/>
     </Row>
 </Keyboard>

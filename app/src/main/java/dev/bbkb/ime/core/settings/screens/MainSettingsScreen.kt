@@ -204,7 +204,7 @@ fun MainSettingsScreen(
                         title = context.getString(R.string.settings_root_size_title),
                         summary = context.getString(R.string.settings_root_size_summary),
                         icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_height),
-                        onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
+                        onClick = { onNavigateToScreen(SettingsRoute.SizeLayout.route) }
                     )
 
                     PreferenceScreen(
@@ -218,7 +218,7 @@ fun MainSettingsScreen(
                         title = context.getString(R.string.settings_root_tools_title),
                         summary = context.getString(R.string.settings_root_tools_summary),
                         icon = ImageVector.vectorResource(R.drawable.ic_settings_auxiliary_input),
-                        onClick = { onNavigateToScreen(SettingsRoute.AuxiliaryInput.route) }
+                        onClick = { onNavigateToScreen(SettingsRoute.Toolbar.route) }
                     )
 
                     // Voice, the physical keyboard, and the rest of the on-screen keyboard.
@@ -247,7 +247,7 @@ fun MainSettingsScreen(
                         title = context.getString(R.string.settings_uim_toggle_clipboard),
                         summary = context.getString(R.string.settings_root_clipboard_summary),
                         icon = ImageVector.vectorResource(R.drawable.ic_settings_clipboard_history),
-                        onClick = { onNavigateToScreen(SettingsRoute.AuxiliaryInput.route) }
+                        onClick = { onNavigateToScreen(SettingsRoute.Clipboard.route) }
                     )
 
                     PreferenceScreen(
