@@ -1,5 +1,9 @@
 package dev.bbkb.ime.harness
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
@@ -7,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,9 +19,11 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.FileProvider
 import androidx.core.view.ContentInfoCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
 
 /** Visible, independently focusable editors for exercising the installed IME. */
 class HarnessActivity : AppCompatActivity() {
@@ -112,6 +119,10 @@ class HarnessActivity : AppCompatActivity() {
             )
         })
         add("plain target", hint = "text only")
+        column.addView(Button(this).apply {
+            text = "Copy sample image"
+            setOnClickListener { copySampleImage() }
+        })
         val richEditor = add("image target", hint = "paste image here")
         val receivedImage = ImageView(this).apply { adjustViewBounds = true }
         val result = TextView(this).apply { text = "No image received" }
@@ -141,5 +152,20 @@ class HarnessActivity : AppCompatActivity() {
             insets
         }
         setContentView(scrollView)
+    }
+
+    private fun copySampleImage() {
+        val directory = File(cacheDir, "clipboard-fixtures").apply { mkdirs() }
+        val image = File(directory, "sample.png")
+        val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888)
+        try {
+            bitmap.eraseColor(Color.MAGENTA)
+            image.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        } finally {
+            bitmap.recycle()
+        }
+        val uri = FileProvider.getUriForFile(this, "$packageName.fixtures", image)
+        getSystemService(ClipboardManager::class.java)
+            .setPrimaryClip(ClipData.newUri(contentResolver, "BBKB sample image", uri))
     }
 }
