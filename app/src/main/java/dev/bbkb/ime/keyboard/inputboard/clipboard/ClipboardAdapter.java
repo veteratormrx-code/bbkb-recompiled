@@ -180,7 +180,9 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         holder.boundEntry = entry;
         boolean masked = isMasked(entry);
         boolean expanded = !masked && this.expandedIds.contains(entry.getId());
-        String shown = masked ? this.passwordKeeperMaskText : shownText(entry.getText(), expanded);
+        String shown = masked ? this.passwordKeeperMaskText : entry.isImage()
+                ? holder.itemView.getContext().getString(R.string.clip_data_image_description)
+                : shownText(entry.getText(), expanded);
 
         TextView text = holder.dataTextView;
         text.setMaxLines(expanded ? Integer.MAX_VALUE : COLLAPSED_MAX_LINES);
@@ -196,6 +198,17 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
     /** A link's fetched preview (thumbnail, title over address), otherwise the link/text icon and the clip. */
     private void bindPreview(ClipboardViewHolder holder, ClipEntry entry) {
         boolean masked = isMasked(entry);
+        if (!masked && entry.isImage()) {
+            Context context = holder.itemView.getContext();
+            Bitmap thumbnail = ClipboardImages.thumbnail(context, entry);
+            if (thumbnail != null) {
+                showThumbnail(holder.clipImageView, thumbnail);
+            } else {
+                showIcon(holder.clipImageView, R.drawable.ic_inputboard_clipboard_text);
+            }
+            holder.dataTextView.setText(R.string.clip_data_image_description);
+            return;
+        }
         String link = masked ? null : ClipboardWebImageProvider.webUrlOrNull(entry.getText());
         String previewUrl = link != null ? ClipboardWebImageProvider.previewUrlForLink(link) : null;
         OpenGraphMetadata preview = null;

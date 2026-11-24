@@ -117,6 +117,13 @@ object ClipboardImages {
     }
 
     @JvmStatic
+    fun thumbnail(context: android.content.Context, entry: ClipEntry): Bitmap? {
+        val image = fileFor(context.filesDir, entry.imageFile) ?: return null
+        val thumb = File(image.parentFile, image.name + ".thumb")
+        return if (thumb.isFile) BitmapFactory.decodeFile(thumb.absolutePath) else null
+    }
+
+    @JvmStatic
     fun commit(ime: InputMethodService, entry: ClipEntry, editor: EditorInfo?): Boolean {
         val file = fileFor(ime.filesDir, entry.imageFile) ?: return false
         if (!file.isFile || editor == null) return false

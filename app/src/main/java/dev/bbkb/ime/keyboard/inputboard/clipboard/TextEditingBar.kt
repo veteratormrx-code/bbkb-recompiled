@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.inputmethodservice.InputMethodService
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import dev.bbkb.ime.R
@@ -19,9 +20,10 @@ object TextEditingBar {
 
     @JvmStatic
     fun attach(parent: RelativeLayout, editorContext: Context) {
-        if (parent.findViewById<LinearLayout>(BAR_ID) != null) return
+        val list = parent.findViewById<android.view.View>(R.id.clipboardView) ?: return
+        val container = list.parent as? RelativeLayout ?: return
+        if (container.findViewById<HorizontalScrollView>(BAR_ID) != null) return
         val bar = LinearLayout(parent.context).apply {
-            id = BAR_ID
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setBackgroundColor(KeyboardColorManager.backgroundColor)
@@ -54,9 +56,14 @@ object TextEditingBar {
             RelativeLayout.LayoutParams.WRAP_CONTENT,
         )
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-        parent.addView(bar, params)
-        val list = parent.findViewById<android.view.View>(R.id.clipboardView)
+        container.addView(HorizontalScrollView(parent.context).apply {
+            id = BAR_ID
+            isHorizontalScrollBarEnabled = false
+            addView(bar)
+        }, params)
         (list.layoutParams as? RelativeLayout.LayoutParams)?.addRule(RelativeLayout.BELOW, BAR_ID)
+        val empty = container.findViewById<android.view.View>(R.id.empty_clipboard)
+        (empty?.layoutParams as? RelativeLayout.LayoutParams)?.addRule(RelativeLayout.BELOW, BAR_ID)
     }
 
     @JvmStatic
