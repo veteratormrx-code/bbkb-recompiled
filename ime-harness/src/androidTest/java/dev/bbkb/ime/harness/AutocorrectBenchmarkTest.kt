@@ -1161,18 +1161,36 @@ class AutocorrectBenchmarkTest {
             languageSwitches++
         }
 
-        /** Opens a tool panel from the drawn menu and returns to the letters. */
+        var panelPick = 0
+
+        /** Opens a tool that is actually on the menu, then returns to the letters. */
         fun cyclePanel(): Boolean {
             val labels = listOf(
                 imeText("settings_uim_toggle_emoji"),
                 imeText("settings_uim_toggle_clipboard"),
                 imeText("settings_uim_toggle_text_edit"),
+                imeText("settings_uim_toggle_translate"),
+                imeText("settings_uim_toggle_handwriting"),
+                imeText("settings_uim_toggle_numpad"),
+                imeText("settings_uim_toggle_voice"),
             )
             val letters = imeText("accessibility_keyboard_letters")
-            val label = labels[panelCycles % labels.size]
-            val node = imeNodes().firstOrNull {
-                (it.contentDescription?.toString() ?: "").equals(label, ignoreCase = true)
-            } ?: return false
+            val visible = imeNodes()
+            var node: AccessibilityNodeInfo? = null
+            var label = ""
+            for (ignored in labels.indices) {
+                val candidate = labels[panelPick % labels.size]
+                panelPick++
+                val found = visible.firstOrNull {
+                    (it.contentDescription?.toString() ?: "").equals(candidate, ignoreCase = true)
+                }
+                if (found != null) {
+                    node = found
+                    label = candidate
+                    break
+                }
+            }
+            if (node == null) return false
             val rect = Rect()
             node.getBoundsInScreen(rect)
             if (rect.width() == 0) return false
