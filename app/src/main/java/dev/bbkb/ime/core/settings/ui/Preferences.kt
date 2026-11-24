@@ -702,7 +702,7 @@ fun SliderPreference(
                     onValueChange(sliderValue.toInt())
                     showDialog = false
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.settings_common_ok))
                 }
             },
             dismissButton = {

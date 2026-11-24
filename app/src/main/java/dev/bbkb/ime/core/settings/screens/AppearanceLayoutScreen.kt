@@ -40,7 +40,6 @@ fun AppearanceLayoutScreen(
     remember { PrefsManager.migrateThemePrefs(PrefsManager.getPrefs(context)) }
 
     SettingsScreenHost(R.string.settings_appearance_layout_title, onNavigateBack, listOf(
-        Category(R.string.settings_category_appearance),
         // Classic and BB10 are fixed looks; Modern and Material expose the color controls below.
         Choice(
             store = stringPref(THEME_STYLE, "modern"),

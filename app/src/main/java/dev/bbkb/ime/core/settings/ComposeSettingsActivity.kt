@@ -10,7 +10,11 @@ import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.settings.ui.LocalSettingsColors
 import dev.bbkb.ime.core.settings.ui.SettingsTransitions
 import dev.bbkb.ime.core.settings.ui.BlackBerryTheme
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -69,6 +73,14 @@ import dev.bbkb.ime.core.shared.StartupTiming
 
 /** Settings activity: a Compose NavHost over every settings screen. */
 class ComposeSettingsActivity : ComponentActivity() {
+    private val pendingRoute = mutableStateOf<String?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingRoute.value = intent.getStringExtra("screen")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         StartupTiming.anchor("settings.onCreate")
         val total = StartupTiming.begin()
@@ -107,6 +119,7 @@ class ComposeSettingsActivity : ComponentActivity() {
             BlackBerryTheme {
                 SettingsNavHost(
                     initialRoute = initialScreen,
+                    pendingRoute = pendingRoute,
                     onExit = { finish() }
                 )
             }
@@ -119,9 +132,17 @@ class ComposeSettingsActivity : ComponentActivity() {
 @Composable
 fun SettingsNavHost(
     initialRoute: String = "main",
+    pendingRoute: MutableState<String?> = mutableStateOf(null),
     onExit: () -> Unit
 ) {
     val navController = rememberNavController()
+    LaunchedEffect(pendingRoute.value) {
+        val route = SettingsRoute.fromRoute(pendingRoute.value)?.route ?: return@LaunchedEffect
+        if (navController.currentDestination?.route != route) {
+            navController.navigate(route) { launchSingleTop = true }
+        }
+        pendingRoute.value = null
+    }
     val highlightController = remember { SettingsHighlightController() }
     // Destination registrations plus SettingsRoute class-init: the real work in the first composition.
     remember { StartupTiming.mark("settings.navHostComposition"); Unit }

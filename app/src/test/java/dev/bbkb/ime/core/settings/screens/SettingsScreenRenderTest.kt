@@ -499,13 +499,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "AppearanceLayoutScreen",
             route = SettingsRoute.AppearanceLayout.route,
-            title = "Personalization",
+            title = "Appearance",
             resources = setOf(
-                "settings_category_appearance", "settings_category_symbols",
+                "settings_category_symbols",
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_height_regular",
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
                 "settings_number_row_summary", "settings_number_row_title",
+                "settings_number_row_height_title",
                 "settings_default_currency_summary", "settings_default_currency_title",
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
@@ -521,6 +522,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Auxiliary input",
             resources = setOf(
                 "settings_auxiliary_input_title", "settings_category_input_menu",
+                "settings_toolbar_title", "settings_toolbar_mode_title", "settings_toolbar_mode_collapsed",
+                "settings_suggestion_place_title", "settings_suggestion_place_classic",
                 "settings_uim_enable_summary_on",
                 "settings_customize_menu_summary", "settings_customize_menu_title",
                 "settings_shake_title", "settings_shake_fallback_title",

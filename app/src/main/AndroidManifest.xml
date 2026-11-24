@@ -124,6 +124,7 @@
             android:name="dev.bbkb.ime.core.settings.ComposeSettingsActivity"
             android:label="@string/english_ime_settings"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
