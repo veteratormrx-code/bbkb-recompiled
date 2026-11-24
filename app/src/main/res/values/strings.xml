@@ -308,7 +308,7 @@
     <string name="text_edit_paste">Paste</string>
     <string name="text_edit_left">Left</string>
     <string name="text_edit_right">Right</string>
-    <string name="text_edit_word_back">Word</string>
+    <string name="text_edit_word_back">Previous word</string>
     <string name="settings_uim_toggle_text_edit">Text editing</string>
     <string name="settings_uim_toggle_translate">Translate</string>
     <string name="settings_uim_toggle_handwriting">Handwriting</string>

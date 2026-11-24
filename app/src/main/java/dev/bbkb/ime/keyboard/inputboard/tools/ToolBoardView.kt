@@ -7,11 +7,14 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputConnection
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
+import dev.bbkb.ime.R
+import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils
 import dev.bbkb.ime.keyboard.inputboard.clipboard.TextEditingBar
 import dev.bbkb.ime.mlkit.HandwritingView
 import dev.bbkb.ime.mlkit.MlKitModels
@@ -35,8 +38,10 @@ class ToolBoardView @JvmOverloads constructor(
     private var target = MlKitModels.russian()
     private var inkLanguage = "ru"
     private var translationResult = ""
+    private var translationConnection: InputConnection? = null
     private var translateGeneration = 0
     private var inkGeneration = 0
+    private var host: InputMethodService? = null
 
     init {
         orientation = VERTICAL
@@ -50,7 +55,12 @@ class ToolBoardView @JvmOverloads constructor(
         ink.minimumHeight = dp(88)
     }
 
-    fun show(next: Mode) {
+    fun show(next: Mode, ime: InputMethodService) {
+        host = ime
+        show(next)
+    }
+
+    private fun show(next: Mode) {
         mode = next
         detach(status)
         detach(sourceLine)
@@ -70,20 +80,27 @@ class ToolBoardView @JvmOverloads constructor(
 
     fun hideBoard() {
         visibility = GONE
+        host = null
+        dropTranslation()
+        inkGeneration++
+        sourceLine.text = ""
+        status.text = ""
+        candidates.removeAllViews()
+        ink.clear()
     }
 
     fun isUp(): Boolean = visibility == VISIBLE
 
     private fun showEdit() {
-        status.text = "Правка текста"
+        status.setText(R.string.settings_uim_toggle_text_edit)
         row(
-            "Выделить" to { TextEditingBar.perform(context, "all") },
-            "Вырезать" to { TextEditingBar.perform(context, "cut") },
-            "Копировать" to { TextEditingBar.perform(context, "copy") },
-            "Вставить" to { TextEditingBar.perform(context, "paste") },
-            "Слово" to { TextEditingBar.perform(context, "word") },
-            "Влево" to { TextEditingBar.perform(context, "left") },
-            "Вправо" to { TextEditingBar.perform(context, "right") },
+            context.getString(R.string.text_edit_select_all) to { TextEditingBar.perform(toolConnection(), "all") },
+            context.getString(R.string.text_edit_cut) to { TextEditingBar.perform(toolConnection(), "cut") },
+            context.getString(R.string.text_edit_copy) to { TextEditingBar.perform(toolConnection(), "copy") },
+            context.getString(R.string.text_edit_paste) to { TextEditingBar.perform(toolConnection(), "paste") },
+            context.getString(R.string.text_edit_word_back) to { TextEditingBar.perform(toolConnection(), "word") },
+            context.getString(R.string.text_edit_left) to { TextEditingBar.perform(toolConnection(), "left") },
+            context.getString(R.string.text_edit_right) to { TextEditingBar.perform(toolConnection(), "right") },
         )
     }
 
@@ -155,6 +172,7 @@ class ToolBoardView @JvmOverloads constructor(
     private fun dropTranslation() {
         translateGeneration++
         translationResult = ""
+        translationConnection = null
         resultLine.text = "Перевод: —"
     }
 
@@ -166,9 +184,12 @@ class ToolBoardView @JvmOverloads constructor(
         }
         val from = source
         val to = target
+        val generation = ++translateGeneration
         status.text = "Скачивание $from → $to"
         MlKitModels.downloadTranslate(from, to) { _, msg ->
-            post { if (mode == Mode.TRANSLATE) status.text = msg }
+            post {
+                if (isUp() && mode == Mode.TRANSLATE && generation == translateGeneration) status.text = msg
+            }
         }
     }
 
@@ -182,7 +203,7 @@ class ToolBoardView @JvmOverloads constructor(
             status.text = "Выберите разные языки"
             return
         }
-        val connection = findIme()?.currentInputConnection
+        val connection = toolConnection()
         if (connection == null) {
             status.text = "Нет поля ввода"
             return
@@ -191,7 +212,7 @@ class ToolBoardView @JvmOverloads constructor(
             ?: connection.getTextBeforeCursor(200, 0)?.toString().orEmpty()
         val text = selected.trim()
         if (text.isEmpty()) {
-            translationResult = ""
+            dropTranslation()
             sourceLine.text = "Текст: —"
             resultLine.text = "Перевод: —"
             status.text = "Нет текста"
@@ -201,12 +222,14 @@ class ToolBoardView @JvmOverloads constructor(
         resultLine.text = "Перевод: …"
         status.text = "Перевод…"
         translationResult = ""
+        translationConnection = null
         val from = source
         val to = target
         val generation = ++translateGeneration
         MlKitModels.translate(from, to, text) { ok, translated ->
             post {
-                if (mode != Mode.TRANSLATE || generation != translateGeneration) return@post
+                if (!isUp() || mode != Mode.TRANSLATE || generation != translateGeneration ||
+                    toolConnection() !== connection) return@post
                 if (!ok || translated.isEmpty()) {
                     translationResult = ""
                     resultLine.text = "Перевод: —"
@@ -214,6 +237,7 @@ class ToolBoardView @JvmOverloads constructor(
                     return@post
                 }
                 translationResult = translated
+                translationConnection = connection
                 resultLine.text = "Перевод: $translated"
                 status.text = "$from → $to"
             }
@@ -226,7 +250,7 @@ class ToolBoardView @JvmOverloads constructor(
             status.text = "Нет результата"
             return
         }
-        commitToEditor(text)
+        commitToEditor(text, translationConnection)
     }
 
     private fun chooseInkLanguage(tag: String) {
@@ -243,9 +267,12 @@ class ToolBoardView @JvmOverloads constructor(
             return
         }
         val language = inkLanguage
+        val generation = ++inkGeneration
         status.text = "Скачивание $language"
         MlKitModels.downloadInk(language) { _, msg ->
-            post { if (mode == Mode.INK) status.text = msg }
+            post {
+                if (isUp() && mode == Mode.INK && generation == inkGeneration) status.text = msg
+            }
         }
     }
 
@@ -255,24 +282,30 @@ class ToolBoardView @JvmOverloads constructor(
             status.text = blocked
             return
         }
+        val connection = toolConnection()
+        if (connection == null) {
+            status.text = "Нет поля ввода"
+            return
+        }
         status.text = "Распознавание…"
         val generation = ++inkGeneration
         candidates.removeAllViews()
         MlKitModels.recognizeInk(inkLanguage, ink.currentInk()) { ok, text ->
             post {
-                if (mode != Mode.INK || generation != inkGeneration) return@post
+                if (!isUp() || mode != Mode.INK || generation != inkGeneration ||
+                    toolConnection() !== connection) return@post
                 if (!ok) {
                     candidates.removeAllViews()
                     status.text = text.ifBlank { "Нет варианта" }
                     return@post
                 }
                 // recognizeInk returns one string. The row still caps at three buttons.
-                showCandidateButtons(listOf(text))
+                showCandidateButtons(listOf(text), connection)
             }
         }
     }
 
-    private fun showCandidateButtons(options: List<String>) {
+    private fun showCandidateButtons(options: List<String>, connection: InputConnection) {
         candidates.removeAllViews()
         val shown = ArrayList<String>(3)
         for (option in options) {
@@ -286,7 +319,7 @@ class ToolBoardView @JvmOverloads constructor(
             return
         }
         for (text in shown) {
-            candidates.addView(button(text) { commitToEditor(text) })
+            candidates.addView(button(text) { commitToEditor(text, connection) })
         }
         status.text = if (shown.size == 1) shown[0] else shown.joinToString(" · ")
     }
@@ -299,14 +332,20 @@ class ToolBoardView @JvmOverloads constructor(
         }
     }
 
-    private fun commitToEditor(text: String) {
-        val connection = findIme()?.currentInputConnection
-        if (connection == null) {
+    private fun commitToEditor(text: String, connection: InputConnection?) {
+        if (connection == null || toolConnection() !== connection) {
             status.text = "Нет поля ввода"
             return
         }
         connection.commitText(text, 1)
         status.text = "Вставлено"
+    }
+
+    private fun toolConnection(): InputConnection? {
+        val ime = host ?: return null
+        val editor = ime.currentInputEditorInfo ?: return null
+        if (InputTypeUtils.isAnyPasswordInputType(editor.inputType)) return null
+        return ime.currentInputConnection
     }
 
     private fun gmsBlockMessage(): String? {
@@ -405,12 +444,4 @@ class ToolBoardView @JvmOverloads constructor(
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
-    private fun findIme(): InputMethodService? {
-        var current: Context? = context
-        while (current is android.content.ContextWrapper) {
-            if (current is InputMethodService) return current
-            current = current.baseContext
-        }
-        return current as? InputMethodService
-    }
 }

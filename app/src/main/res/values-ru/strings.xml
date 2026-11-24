@@ -1173,4 +1173,14 @@
     <string name="settings_privacy_learning_summary">Открывает «Обучение», где переключается «Включить обучение»</string>
     <string name="settings_privacy_incognito_title">Приватные поля</string>
     <string name="settings_privacy_incognito_summary">Если приложение помечает поле как без персонализированного обучения (режим инкогнито), BBKB не учит слова, не хранит недавние эмодзи и не сохраняет фрагменты буфера. Поля пароля тоже не учатся. Это задаёт приложение, отдельного переключателя нет.</string>
+    <string name="settings_uim_toggle_handwriting">Рукописный ввод</string>
+    <string name="settings_uim_toggle_text_edit">Редактирование текста</string>
+    <string name="settings_uim_toggle_translate">Перевод</string>
+    <string name="text_edit_copy">Копировать</string>
+    <string name="text_edit_cut">Вырезать</string>
+    <string name="text_edit_left">Влево</string>
+    <string name="text_edit_paste">Вставить</string>
+    <string name="text_edit_right">Вправо</string>
+    <string name="text_edit_select_all">Выделить всё</string>
+    <string name="text_edit_word_back">На слово назад</string>
 </resources>

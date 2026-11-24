@@ -1,1 +1,2 @@
 *.sh text eol=lf
+/app/src/main/assets/bbmodern/emoji-unicode-18.tsv whitespace=-blank-at-eol

@@ -45,12 +45,11 @@ public final class ToolBoardController extends AbstractBoardController<Void> {
     @Override
     protected void onShow() {
         ToolBoardView view = board();
-        if (view != null) {
-            if (this.ime != null) {
-                this.ime.setFlickSuggestionsSuppressed(true);
-            }
+        BlackBerryIME host = this.ime;
+        if (view != null && host != null) {
+            host.setFlickSuggestionsSuppressed(true);
             view.bringToFront();
-            view.show(this.mode);
+            view.show(this.mode, host);
         }
     }
 

@@ -1,14 +1,16 @@
 package dev.bbkb.ime.keyboard.inputboard.clipboard
 
 import android.content.Context
-import android.content.ContextWrapper
+import android.os.SystemClock
 import android.view.Gravity
 import android.view.KeyEvent
 import android.inputmethodservice.InputMethodService
+import android.view.inputmethod.InputConnection
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils
 import dev.bbkb.ime.keyboard.KeyboardColorManager
 
 /** Editing actions on the clipboard board. Uses the focused editor, themed from the keyboard palette. */
@@ -16,7 +18,7 @@ object TextEditingBar {
     private const val BAR_ID = 0x441001
 
     @JvmStatic
-    fun attach(parent: RelativeLayout) {
+    fun attach(parent: RelativeLayout, editorContext: Context) {
         if (parent.findViewById<LinearLayout>(BAR_ID) != null) return
         val bar = LinearLayout(parent.context).apply {
             id = BAR_ID
@@ -38,7 +40,13 @@ object TextEditingBar {
                 text = parent.context.getString(label)
                 setTextColor(KeyboardColorManager.textColor)
                 setBackgroundColor(KeyboardColorManager.keyColor)
-                setOnClickListener { perform(parent.context, action) }
+                setOnClickListener {
+                    val ime = editorContext as? InputMethodService ?: return@setOnClickListener
+                    val editor = ime.currentInputEditorInfo ?: return@setOnClickListener
+                    if (!InputTypeUtils.isAnyPasswordInputType(editor.inputType)) {
+                        perform(ime.currentInputConnection, action)
+                    }
+                }
             })
         }
         val params = RelativeLayout.LayoutParams(
@@ -52,26 +60,22 @@ object TextEditingBar {
     }
 
     @JvmStatic
-    fun perform(context: Context, action: String) {
-        val ime = findIme(context) ?: return
-        val connection = ime.currentInputConnection ?: return
+    fun perform(connection: InputConnection?, action: String) {
+        if (connection == null) return
         when (action) {
             "all" -> connection.performContextMenuAction(android.R.id.selectAll)
             "cut" -> connection.performContextMenuAction(android.R.id.cut)
             "copy" -> connection.performContextMenuAction(android.R.id.copy)
             "paste" -> connection.performContextMenuAction(android.R.id.paste)
-            "left" -> connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT))
-            "right" -> connection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT))
-            "word" -> connection.deleteSurroundingText(16, 0)
+            "left" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT)
+            "right" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_RIGHT)
+            "word" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_CTRL_ON)
         }
     }
 
-    private fun findIme(context: Context): InputMethodService? {
-        var current: Context? = context
-        while (current is ContextWrapper) {
-            if (current is InputMethodService) return current
-            current = current.baseContext
-        }
-        return current as? InputMethodService
+    private fun moveCursor(connection: InputConnection, code: Int, modifiers: Int = 0) {
+        val start = SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(start, start, KeyEvent.ACTION_DOWN, code, 0, modifiers))
+        connection.sendKeyEvent(KeyEvent(start, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, code, 0, modifiers))
     }
 }

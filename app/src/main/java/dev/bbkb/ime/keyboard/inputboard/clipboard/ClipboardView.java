@@ -238,7 +238,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this.adapter.setActionCallback(this);
         this.recyclerView.setAdapter(this.adapter);
         this.clipboardHistoryManager.addHistoryChangedListener(this);
-        TextEditingBar.attach(this);
+        TextEditingBar.attach(this, context);
         onHistoryChanged();
     }
 
