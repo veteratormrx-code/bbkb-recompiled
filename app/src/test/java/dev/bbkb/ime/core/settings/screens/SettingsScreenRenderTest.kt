@@ -159,6 +159,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "LanguagePacksScreen" -> ({ LanguagePacksScreen({}) })
         "LanguageSwitchingScreen" -> ({ LanguageSwitchingScreen({}) })
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
+        "SetupScreen" -> ({ SetupScreen({}, {}, {}, {}, {}) })
         "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}) })
         "AuxiliaryInputScreen" -> ({ AuxiliaryInputScreen({}, {}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
@@ -399,7 +400,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
             "GestureLabScreen", "GesturesSettingsScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
             "LanguagePacksScreen", "LanguageSwitchingScreen",
-            "MainSettingsScreen", "OpenSourceLicensesScreen",
+            "MainSettingsScreen", "OpenSourceLicensesScreen", "SetupScreen",
             "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen",
             "PrivacySettingsScreen", "QuickPhrasesScreen",
             "ShakeTuningScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
@@ -936,6 +937,23 @@ class SettingsScreenRenderTest(private val screenName: String) {
             literals = emptySet(),
         ),
         Case(
+            name = "SetupScreen",
+            route = SettingsRoute.Setup.route,
+            title = "Set up BBKB",
+            resources = setOf(
+                "settings_setup_device_summary", "settings_setup_device_title",
+                "settings_setup_enable_summary", "settings_setup_enable_title",
+                "settings_setup_keylayout_summary", "settings_setup_keylayout_title",
+                "settings_setup_language_summary", "settings_setup_language_title",
+                "settings_setup_restore_summary", "settings_setup_restore_title",
+                "settings_setup_returning_header", "settings_setup_set_default_summary",
+                "settings_setup_set_default_title", "settings_setup_skip_summary",
+                "settings_setup_skip_title", "settings_setup_steps_header",
+                "settings_setup_title",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
             name = "MainSettingsScreen",
             route = SettingsRoute.Main.route,
             title = "BBKB Settings",
@@ -948,7 +966,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_appearance_layout_summary",
                 "settings_backup_restore_summary", "settings_backup_restore_title",
                 "settings_appearance_layout_title", "settings_category_gestures",
+                "settings_enable_keyboard_summary", "settings_enable_keyboard_title",
                 "settings_languages_summary",
+                "settings_switch_keyboard_summary", "settings_switch_keyboard_title",
                 "settings_mlkit_summary", "settings_mlkit_title",
                 "settings_pkb_multifunction_action_clipboard",
                 "settings_preferences_summary", "settings_preferences_title",

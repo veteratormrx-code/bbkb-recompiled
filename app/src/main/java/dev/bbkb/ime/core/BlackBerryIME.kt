@@ -1724,7 +1724,18 @@ class BlackBerryIME : InputMethodService(),
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$keyCode deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
-        return keyEventProcessor.onKeyUpInternal(keyCode, keyEvent)
+        // Q25 maps SYM to Alt-right. A chord still types the alternate glyph. A lone tap
+        // opens the symbol overlay. Sample the chord before key-up clears it. Left Alt is untouched.
+        val symTapToggle = keyCode == KeyEvent.KEYCODE_ALT_RIGHT && !physicalKeyboardStateTracker.isAltKeyConsumed()
+        val handled = keyEventProcessor.onKeyUpInternal(keyCode, keyEvent)
+        if (symTapToggle) {
+            physicalKeyboardStateTracker.setSymKeyCode(KeyEvent.KEYCODE_ALT_RIGHT)
+            updateSymbolShift(false)
+            // Otherwise the next letter is read as Alt+key.
+            physicalKeyboardStateTracker.resetAltStateAndNotify()
+            return true
+        }
+        return handled
     }
 
     /** Modifier/symbol state updates only, for keys the accessibility service sees with no field. */

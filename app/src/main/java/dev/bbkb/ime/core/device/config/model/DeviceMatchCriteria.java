@@ -32,7 +32,9 @@ public class DeviceMatchCriteria {
         /** Compared against {@link android.os.Build#MODEL} ("Titan Pocket", "Titan Slim"). */
         MODEL("model", true),
         /** Compared against {@link android.os.Build#MANUFACTURER} ("A-gold" on the Titans). */
-        MANUFACTURER("manufacturer", true);
+        MANUFACTURER("manufacturer", true),
+        /** Physical panel size {@code short x long}. Survives a spoofed {@code Build} and {@code wm size}. */
+        PANEL("panel", true);
 
         private final String tag;
         /** Exact rules ignore case for every field except {@code device-name}. */
@@ -136,6 +138,7 @@ public class DeviceMatchCriteria {
                 case DISPLAY:      value = android.os.Build.DISPLAY;      break;
                 case MODEL:        value = android.os.Build.MODEL;        break;
                 case MANUFACTURER: value = android.os.Build.MANUFACTURER; break;
+                case PANEL:        value = dev.bbkb.ime.core.device.config.PhysicalDisplay.resolution(); break;
                 default:           value = android.os.Build.DEVICE;       break;
             }
             if (!entry.getValue().matches(value, entry.getKey().ignoreCaseWhenExact)) return false;

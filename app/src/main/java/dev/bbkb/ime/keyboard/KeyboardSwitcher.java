@@ -1514,11 +1514,23 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (c0965eM6834l == null) {
             return false;
         }
-        if (c0965eM6834l.getKeyByCode(-3) == null && (!c0965eM6834l.isTouchKeyboard() || c0965eM6834l.isNumberOrDatetimeVariation())) {
+        // A hardware SYM key has no on-screen -3 key. Refusing every non-touch keyboard
+        // blocked the symbol overlay on Q25 and other physical keyboards. Number fields stay closed.
+        if (refusesSymbolShift(
+                c0965eM6834l.getKeyByCode(-3) != null,
+                c0965eM6834l.isTouchKeyboard(),
+                DeviceProfile.current().hasShiftedSymbolKeyboard(),
+                c0965eM6834l.isNumberOrDatetimeVariation())) {
             return false;
         }
         this.keyboardState.onSymbolShiftToggle(autoCapsFlags, recapitalizeMode, fromSwipe, fromPhysicalKeyboard);
         return true;
+    }
+
+    /** True when the symbol overlay must stay closed. A physical symbol keyboard is allowed through. */
+    static boolean refusesSymbolShift(boolean hasSymbolKey, boolean touchKeyboard,
+            boolean physicalSymbolKeyboard, boolean numberOrDatetime) {
+        return !hasSymbolKey && ((!touchKeyboard && !physicalSymbolKeyboard) || numberOrDatetime);
     }
 
     /**

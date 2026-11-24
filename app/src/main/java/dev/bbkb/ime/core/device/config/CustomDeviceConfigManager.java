@@ -85,6 +85,7 @@ public class CustomDeviceConfigManager {
     private CustomDeviceConfigManager(Context context) {
         mContext = context.getApplicationContext();
         mPrefs = PrefsManager.defaultSharedPreferences(mContext);
+        PhysicalDisplay.attach(mContext);
     }
 
     public static synchronized CustomDeviceConfigManager getInstance(Context context) {

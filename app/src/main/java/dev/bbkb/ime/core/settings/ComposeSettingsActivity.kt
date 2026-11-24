@@ -45,7 +45,9 @@ import dev.bbkb.ime.core.settings.screens.KeyPressFeedbackScreen
 import dev.bbkb.ime.core.settings.screens.LanguagePacksScreen
 import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
+import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
+import dev.bbkb.ime.core.settings.screens.SetupScreen
 import dev.bbkb.ime.core.settings.screens.MlKitToolsScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
@@ -93,6 +95,7 @@ class ComposeSettingsActivity : ComponentActivity() {
         // load, so finish it on a worker while Compose sets up.
         var t = StartupTiming.begin()
         PrefsManager.init(applicationContext)
+        val setupNeeded = SetupState.shouldShowSetup(this)
         Thread({
             try {
                 PrefsManager.getPrefs().contains(PrefsManager.Keys.KEYBOARD_THEME_MODE)
@@ -113,7 +116,7 @@ class ComposeSettingsActivity : ComponentActivity() {
 
         // Validated so an unknown "screen" extra cannot become an unregistered start destination.
         val initialScreen = SettingsRoute.fromRoute(intent.getStringExtra("screen"))?.route
-            ?: SettingsRoute.Main.route
+            ?: if (setupNeeded) SettingsRoute.Setup.route else SettingsRoute.Main.route
 
         t = StartupTiming.begin()
         setContent {
@@ -167,6 +170,23 @@ fun SettingsNavHost(
         popEnterTransition = transitions.popEnter,
         popExitTransition = transitions.popExit,
     ) {
+        composable(SettingsRoute.Setup.route) {
+            val context = LocalContext.current
+            val finishSetup: () -> Unit = {
+                SetupState.markCompleted(context)
+                navController.navigate(SettingsRoute.Main.route) {
+                    popUpTo(SettingsRoute.Setup.route) { inclusive = true }
+                }
+            }
+            SetupScreen(
+                onNavigateToDeviceConfig = go(SettingsRoute.DeviceConfiguration),
+                onNavigateToKeylayout = go(SettingsRoute.PhysicalLayouts),
+                onNavigateToLanguage = go(SettingsRoute.LanguagesHub),
+                onNavigateToBackupRestore = go(SettingsRoute.BackupRestore),
+                onDone = finishSetup,
+            )
+        }
+
         composable(SettingsRoute.Main.route) {
             MainSettingsScreen(
                 onNavigateToScreen = { route ->

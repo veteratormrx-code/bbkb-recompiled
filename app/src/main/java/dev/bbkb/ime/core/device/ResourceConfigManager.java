@@ -79,7 +79,30 @@ public final class ResourceConfigManager {
         sCachedScreenWidthDp = -1;
     }
 
+    /** A 720-wide panel from 720 to 772 px tall. Q25-class screens, including a slightly taller mode. */
+    public static boolean isNearSquareScreen(Resources resources) {
+        final DisplayMetrics metrics = resources.getDisplayMetrics();
+        return metrics.widthPixels == 720
+                && metrics.heightPixels >= 720
+                && metrics.heightPixels <= 772;
+    }
+
+    /**
+     * Height for Extra Compact on a near-square panel: 45% of the screen. Other modes and other
+     * phones keep the usual scale, including Extra Compact at 75%.
+     */
+    static int nearSquareKeyboardHeight(Resources resources, String mode) {
+        if (!isNearSquareScreen(resources) || !"extra_compact".equals(mode)) {
+            return -1;
+        }
+        return Math.round(resources.getDisplayMetrics().heightPixels * 0.45f);
+    }
+
     public static int getKeyboardHeight(Resources resources) throws Resources.NotFoundException {
+        final int nearSquareHeight = nearSquareKeyboardHeight(resources, SettingsManager.getKeyboardHeightMode());
+        if (nearSquareHeight > 0) {
+            return nearSquareHeight;
+        }
         float dimension;
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         if (DeviceProfile.current().hasPhysicalKeyboard() && resources.getConfiguration().orientation == 1 && displayMetrics.heightPixels - ((int) resources.getDimension(R.dimen.config_mercury_max_screen_height)) <= 0) {

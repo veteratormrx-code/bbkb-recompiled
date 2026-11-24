@@ -1,6 +1,8 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.Context
 import android.content.Intent
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,7 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
+import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.search.SearchDeviceCapabilities
 import dev.bbkb.ime.core.settings.search.SettingsSearchIndex
 import dev.bbkb.ime.core.settings.search.SettingsSearchResult
@@ -186,6 +189,27 @@ fun MainSettingsScreen(
                 // Each row opens a screen that already owns the controls. Size, tools, clipboard,
                 // and emoji share a destination with another row; the summary says which one.
                 PreferenceGroup {
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_enable_keyboard_title),
+                        summary = context.getString(R.string.settings_enable_keyboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
+                        modifier = Modifier.settingsSearchAnchor("settings_enable_keyboard"),
+                        onClick = {
+                            context.startActivity(
+                                Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        }
+                    )
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_switch_keyboard_title),
+                        summary = context.getString(R.string.settings_switch_keyboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
+                        modifier = Modifier.settingsSearchAnchor("settings_switch_keyboard"),
+                        onClick = {
+                            (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                                ?.showInputMethodPicker()
+                        }
+                    )
                     PreferenceScreen(
                         title = context.getString(R.string.language_selection_title),
                         summary = context.getString(R.string.settings_languages_summary),

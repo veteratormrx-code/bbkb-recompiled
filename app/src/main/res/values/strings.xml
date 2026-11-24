@@ -222,6 +222,27 @@
     <string name="settings_language_switching_title">Language switching</string>
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
+    <string name="settings_enable_keyboard_title">Enable keyboard</string>
+    <string name="settings_enable_keyboard_summary">Allow this keyboard in the system input settings</string>
+    <string name="settings_switch_keyboard_title">Switch keyboard</string>
+    <string name="settings_switch_keyboard_summary">Choose the keyboard you are typing with</string>
+    <string name="settings_setup_title">Set up BBKB</string>
+    <string name="settings_setup_returning_header">Already using BBKB?</string>
+    <string name="settings_setup_restore_title">Restore a backup</string>
+    <string name="settings_setup_restore_summary">Bring settings back from an earlier copy</string>
+    <string name="settings_setup_steps_header">First steps</string>
+    <string name="settings_setup_enable_title">Allow the keyboard</string>
+    <string name="settings_setup_enable_summary">Turn BBKB on in the system input settings</string>
+    <string name="settings_setup_set_default_title">Use BBKB to type</string>
+    <string name="settings_setup_set_default_summary">Pick BBKB in the keyboard list</string>
+    <string name="settings_setup_device_title">Check this phone</string>
+    <string name="settings_setup_device_summary">Confirm the detected device, or choose another</string>
+    <string name="settings_setup_keylayout_title">Physical key layout</string>
+    <string name="settings_setup_keylayout_summary">QWERTY, QWERTZ, AZERTY, or your own layout</string>
+    <string name="settings_setup_language_title">Keyboard language</string>
+    <string name="settings_setup_language_summary">Languages and how you switch between them</string>
+    <string name="settings_setup_skip_title">Continue without these</string>
+    <string name="settings_setup_skip_summary">You can change all of this later</string>
 
     <string name="control_key_setting_left_shift">Left shift key</string>
     <string name="control_key_setting_off">None</string>

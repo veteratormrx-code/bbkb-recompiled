@@ -327,6 +327,12 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static final float HEIGHT_SCALE_EXTRA_COMPACT = 0.75f;
 
+    /** {@code expanded}, {@code regular}, {@code compact}, or {@code extra_compact}. */
+    public static String getKeyboardHeightMode() {
+        SettingsValues values = getInstance().getSettingsValues();
+        return values == null ? "regular" : values.keyboardHeightMode;
+    }
+
     private static float getKeyboardHeightScale() {
         SettingsValues sv = getInstance().getSettingsValues();
         if (sv == null) return 1.0f;
