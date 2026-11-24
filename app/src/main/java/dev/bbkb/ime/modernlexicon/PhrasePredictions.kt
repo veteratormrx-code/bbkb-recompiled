@@ -12,31 +12,37 @@ object PhrasePredictions {
     data class Choice(val word: String, val count: Int)
 
     private val tables = AtomicReference<Map<String, List<Choice>>?>()
+    private val wordPattern = Regex("[\\p{L}\\p{M}]+(?:['’‐-][\\p{L}\\p{M}]+)*")
+    private val sentenceSeparators = charArrayOf('.', '!', '?', '…', '\n', '\r')
 
     @JvmStatic
     fun nextWords(context: Context, contextBefore: String?, locale: Locale?): List<String> {
         val tokens = tokenize(contextBefore, locale)
         if (tokens.isEmpty()) return emptyList()
-        val map = tables.get() ?: load(context).also { tables.compareAndSet(null, it) }
-        val merged = LinkedHashMap<String, Int>()
-        if (tokens.size >= 2) {
-            add(merged, map["${tokens[tokens.size - 2]} ${tokens[tokens.size - 1]}"])
+        val map = tables.get() ?: load(context).let { loaded ->
+            if (tables.compareAndSet(null, loaded)) loaded else checkNotNull(tables.get())
         }
-        add(merged, map[tokens.last()])
-        return merged.entries.sortedByDescending { it.value }.take(8).map { it.key }
+        return rank(tokens, map)
     }
 
-    private fun add(into: LinkedHashMap<String, Int>, choices: List<Choice>?) {
-        if (choices == null) return
-        for (choice in choices) {
-            into[choice.word] = maxOf(into[choice.word] ?: 0, choice.count)
-        }
+    internal fun rank(tokens: List<String>, map: Map<String, List<Choice>>): List<String> {
+        if (tokens.isEmpty()) return emptyList()
+        val trigram = if (tokens.size >= 2) map[tokens.takeLast(2).joinToString(" ")] else null
+        val bigram = map[tokens.last()]
+        return sequenceOf(trigram, bigram)
+            .filterNotNull()
+            .flatMap { it.sortedByDescending(Choice::count).asSequence() }
+            .map(Choice::word)
+            .distinct()
+            .take(8)
+            .toList()
     }
 
-    private fun tokenize(text: String?, locale: Locale?): List<String> {
+    internal fun tokenize(text: String?, locale: Locale?): List<String> {
         if (text.isNullOrBlank()) return emptyList()
-        return text.trim().lowercase(locale ?: Locale.ROOT).replace('ё', 'е')
-            .split(Regex("\\s+")).filter { it.length >= 2 }.takeLast(2)
+        val sentence = text.substring(text.lastIndexOfAny(sentenceSeparators) + 1)
+        val normalized = sentence.lowercase(locale ?: Locale.ROOT).replace('ё', 'е')
+        return wordPattern.findAll(normalized).map { it.value }.toList().takeLast(2)
     }
 
     private fun load(context: Context): Map<String, List<Choice>> {

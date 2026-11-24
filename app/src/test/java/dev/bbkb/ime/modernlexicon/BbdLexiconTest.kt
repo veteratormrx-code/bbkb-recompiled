@@ -20,6 +20,15 @@ class BbdLexiconTest {
         assertEquals("елка", BbdLexicon.normalize("Ёлка"))
     }
 
+    @Test
+    fun matchingPrefixBeyondTheCandidateWindowIsStillFound() {
+        val prefix = "при"
+        val body = (1..100).joinToString("") { "приставка$it\t1\n" } + "привет\t10\n"
+        val lexicon = BbdLexicon(sample(prefix to body))
+        assertEquals("привет", lexicon.lookup("ПРИВ", 1).single().word)
+        assertEquals("привет", lexicon.lookupWithPrefixTypos("прив", 1, emptyMap()).single().word)
+    }
+
     private fun sample(vararg buckets: Pair<String, String>): ByteArray {
         val sections = buckets.map { (prefix, body) ->
             val deflater = Deflater(7)

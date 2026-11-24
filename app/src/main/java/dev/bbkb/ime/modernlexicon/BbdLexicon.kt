@@ -2,7 +2,6 @@ package dev.bbkb.ime.modernlexicon
 
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
-import java.util.ArrayList
 import java.util.zip.InflaterInputStream
 
 /**
@@ -10,7 +9,7 @@ import java.util.zip.InflaterInputStream
  * Lookup never scans the whole file: one zlib bucket per 1–3 character key.
  */
 class BbdLexicon(private val bytes: ByteArray) {
-    private val sections: List<Section>
+    private val sections: Map<String, Section>
 
     init {
         require(bytes.size >= 8) { "bbd too small" }
@@ -18,21 +17,30 @@ class BbdLexicon(private val bytes: ByteArray) {
         val magic = buffer.int
         require(magic == MAGIC) { "not an RUL1 lexicon" }
         val count = buffer.int
-        val parsed = ArrayList<Section>(count)
+        require(count in 1..(bytes.size - 8) / 12) { "invalid RUL1 bucket count" }
+        val parsed = HashMap<String, Section>(count)
         repeat(count) {
             val prefixLen = buffer.short.toInt() and 0xFFFF
             val prefixBytes = ByteArray(prefixLen)
             buffer.get(prefixBytes)
             val offset = buffer.int
             val length = buffer.int
-            parsed.add(Section(String(prefixBytes, Charsets.UTF_8), offset, length))
+            val prefix = String(prefixBytes, Charsets.UTF_8)
+            parsed[prefix] = Section(offset, length)
         }
         sections = parsed
     }
 
-    fun lookup(prefix: String, limit: Int): List<Lexeme> = readBucket(normalize(prefix).take(3), limit)
-        .filter { normalize(it.word).startsWith(normalize(prefix)) }
-        .take(limit)
+    fun lookup(prefix: String, limit: Int): List<Lexeme> {
+        if (limit <= 0) return emptyList()
+        val norm = normalize(prefix)
+        val hits = ArrayList<Lexeme>()
+        scanBucket(norm.take(3)) { _, lexeme ->
+            if (normalize(lexeme.word).startsWith(norm)) hits.add(lexeme)
+            hits.size < limit
+        }
+        return hits
+    }
 
     /**
      * Also reads buckets whose 3-letter key is one neighbor-key substitution away, so a typo in
@@ -52,40 +60,40 @@ class BbdLexicon(private val bytes: ByteArray) {
         }
         val hits = LinkedHashMap<String, Lexeme>()
         for (key in keys) {
-            for (lexeme in readBucket(key, 80)) {
+            var exactMatches = 0
+            scanBucket(key) { index, lexeme ->
                 val wordKey = normalize(lexeme.word)
-                if (wordKey.startsWith(norm) || editDistance(norm, wordKey) <= 2) {
+                val isExact = wordKey.startsWith(norm)
+                if (isExact) exactMatches++
+                if (isExact || (index < FUZZY_WINDOW && editDistance(norm, wordKey) <= 2)) {
                     val previous = hits[lexeme.word]
                     if (previous == null || lexeme.frequency > previous.frequency) {
                         hits[lexeme.word] = lexeme
                     }
                 }
+                index + 1 < FUZZY_WINDOW || (key == head && exactMatches < limit)
             }
         }
         return hits.values.sortedWith(compareBy<Lexeme> { editDistance(norm, normalize(it.word)) }
             .thenByDescending { it.frequency }).take(limit)
     }
 
-    private fun readBucket(key: String, limit: Int): List<Lexeme> {
-        if (key.length < 2 || limit <= 0) return emptyList()
-        val section = sections.firstOrNull { it.prefix == key } ?: return emptyList()
-        if (section.offset < 0 || section.length <= 0 || section.offset + section.length > bytes.size) {
-            return emptyList()
+    private inline fun scanBucket(key: String, visit: (Int, Lexeme) -> Boolean) {
+        if (key.length < 2) return
+        val section = sections[key] ?: return
+        if (section.offset < 0 || section.length <= 0 || section.length > bytes.size - section.offset) return
+        val compressed = ByteArrayInputStream(bytes, section.offset, section.length)
+        InflaterInputStream(compressed).bufferedReader(Charsets.UTF_8).use { reader ->
+            var index = 0
+            while (true) {
+                val line = reader.readLine() ?: break
+                val tab = line.indexOf('\t')
+                if (tab <= 0) continue
+                val word = line.substring(0, tab)
+                val frequency = line.substring(tab + 1).toIntOrNull() ?: 0
+                if (!visit(index++, Lexeme(word, frequency))) break
+            }
         }
-        val compressed = bytes.copyOfRange(section.offset, section.offset + section.length)
-        val text = InflaterInputStream(ByteArrayInputStream(compressed)).use { it.readBytes() }
-            .toString(Charsets.UTF_8)
-        val hits = ArrayList<Lexeme>()
-        for (line in text.lineSequence()) {
-            if (line.isEmpty()) continue
-            val tab = line.indexOf('\t')
-            if (tab <= 0) continue
-            val word = line.substring(0, tab)
-            val frequency = line.substring(tab + 1).toIntOrNull() ?: 0
-            hits.add(Lexeme(word, frequency))
-            if (hits.size >= limit) break
-        }
-        return hits
     }
 
     private fun editDistance(a: String, b: String): Int {
@@ -105,10 +113,11 @@ class BbdLexicon(private val bytes: ByteArray) {
 
     data class Lexeme(val word: String, val frequency: Int)
 
-    private data class Section(val prefix: String, val offset: Int, val length: Int)
+    private data class Section(val offset: Int, val length: Int)
 
     companion object {
         const val MAGIC = 0x52554C31
+        private const val FUZZY_WINDOW = 80
 
         @JvmStatic
         fun normalize(word: String): String = word.lowercase().replace('ё', 'е')
