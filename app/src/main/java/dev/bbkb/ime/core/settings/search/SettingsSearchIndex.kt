@@ -219,6 +219,8 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar euro pound", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_currency_key"),
 
         SearchableSetting(R.string.settings_uim_enable_title, "unified input menu hamburger", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_uim_enabled"),
+        SearchableSetting(R.string.settings_toolbar_mode_title, "toolbar collapsed pinned hidden", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_toolbar_mode"),
+        SearchableSetting(R.string.settings_suggestion_place_title, "suggestions over keys top row", SettingsRoute.AuxiliaryInput.route, TYPING, "pref_suggestion_place"),
 
         // Emoji search: the on-screen pair, then the physical keyboard switch.
         SearchableSetting(R.string.pref_emoji_search_title, "emoji search dynamic filter composing underlined uncommitted word on-screen", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_emoji_dynamic_search"),

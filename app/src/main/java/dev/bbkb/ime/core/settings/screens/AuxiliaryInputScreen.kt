@@ -29,6 +29,23 @@ fun AuxiliaryInputScreen(
     onNavigateBack: () -> Unit,
 ) {
     SettingsScreenHost(R.string.settings_auxiliary_input_title, onNavigateBack, listOf(
+        Category(R.string.settings_toolbar_title),
+        Choice(
+            store = stringPref("pref_toolbar_mode", "collapsed"),
+            title = R.string.settings_toolbar_mode_title,
+            options = ::toolbarModes,
+            fallbackIndex = 0,
+            icon = drawableIcon(R.drawable.ic_settings_uim),
+            modifier = Modifier.settingsSearchAnchor("pref_toolbar_mode"),
+        ),
+        Choice(
+            store = stringPref("pref_suggestion_place", "classic"),
+            title = R.string.settings_suggestion_place_title,
+            options = ::suggestionPlaces,
+            fallbackIndex = 0,
+            icon = drawableIcon(R.drawable.ic_settings_prediction),
+            modifier = Modifier.settingsSearchAnchor("pref_suggestion_place"),
+        ),
         Category(R.string.settings_category_input_menu),
         Toggle(
             store = boolPref("pref_uim_enabled", true),
@@ -109,6 +126,19 @@ private fun shakeActionOptions(context: Context): List<ChoiceOption> {
         ChoiceOption(value, labels.getOrElse(index) { value })
     }
 }
+
+private fun toolbarModes(context: Context): List<ChoiceOption> = listOf(
+    ChoiceOption("collapsed", context.getString(R.string.settings_toolbar_mode_collapsed)),
+    ChoiceOption("pinned", context.getString(R.string.settings_toolbar_mode_pinned)),
+    ChoiceOption("hidden", context.getString(R.string.settings_toolbar_mode_hidden)),
+)
+
+private fun suggestionPlaces(context: Context): List<ChoiceOption> = listOf(
+    ChoiceOption("classic", context.getString(R.string.settings_suggestion_place_classic)),
+    ChoiceOption("strip", context.getString(R.string.settings_suggestion_place_strip)),
+    ChoiceOption("both", context.getString(R.string.settings_suggestion_place_both)),
+    ChoiceOption("none", context.getString(R.string.settings_suggestion_place_none)),
+)
 
 private fun retentionOptions(context: Context): List<ChoiceOption> = listOf(
     ChoiceOption(ClipboardPrefs.RETENTION_1H, context.getString(R.string.clipboard_retention_1h)),

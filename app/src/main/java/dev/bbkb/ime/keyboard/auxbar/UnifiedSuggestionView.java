@@ -87,13 +87,22 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private static final int LATIN_MAX_SUGGESTIONS = 3;
 
     private void toggleToolbar() {
+        if (CompactToolbar.isPinned(getContext()) || CompactToolbar.isHidden(getContext())) {
+            return;
+        }
         toolbarExpanded = !toolbarExpanded;
         CompactToolbar.setExpanded(getContext(), toolbarExpanded);
         applyToolbar();
     }
 
     private void applyToolbar() {
-        if (toolbarExpanded) {
+        boolean hidden = CompactToolbar.isHidden(getContext());
+        View parent = (View) getParent();
+        if (parent != null) {
+            parent.setVisibility(hidden ? View.GONE : View.VISIBLE);
+        }
+        boolean showTools = !hidden && (toolbarExpanded || CompactToolbar.isPinned(getContext()));
+        if (showTools) {
             CompactToolbar.fill(toolbarRow, getContext(), this::openTool);
             toolbarRow.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -102,15 +111,82 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             }
         } else {
             toolbarRow.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            boolean words = CompactToolbar.stripWords(getContext());
+            recyclerView.setVisibility(words ? View.VISIBLE : View.GONE);
         }
+        dev.bbkb.ime.core.BlackBerryIME ime = findIme();
+        if (ime != null && !showTools) {
+            ime.setFlickSuggestionsSuppressed(!CompactToolbar.flickWords(getContext()));
+        }
+    }
+
+    private View overflowPanel;
+
+    private void hideOverflow() {
+        if (overflowPanel != null && overflowPanel.getParent() instanceof ViewGroup) {
+            ((ViewGroup) overflowPanel.getParent()).removeView(overflowPanel);
+        }
+        overflowPanel = null;
+    }
+
+    private void showOverflow() {
+        hideOverflow();
+        ViewGroup frame = null;
+        View cursor = this;
+        while (cursor != null) {
+            if (cursor.getId() == R.id.keyboard_frame && cursor instanceof ViewGroup) {
+                frame = (ViewGroup) cursor;
+                break;
+            }
+            cursor = cursor.getParent() instanceof View ? (View) cursor.getParent() : null;
+        }
+        if (frame == null) {
+            return;
+        }
+        android.widget.LinearLayout column = new android.widget.LinearLayout(getContext());
+        column.setOrientation(android.widget.LinearLayout.VERTICAL);
+        column.setBackgroundColor(KeyboardColorManager.INSTANCE.getBackgroundColor());
+        android.widget.TextView back = new android.widget.TextView(getContext());
+        back.setText(R.string.toolbar_overflow_back);
+        back.setTextColor(KeyboardColorManager.INSTANCE.getIconColor(1f));
+        back.setPadding(32, 24, 32, 24);
+        back.setOnClickListener(v -> hideOverflow());
+        column.addView(back);
+        for (String id : CompactToolbar.overflowIds(getContext())) {
+            android.widget.TextView label = new android.widget.TextView(getContext());
+            label.setText(CompactToolbar.label(getContext(), id));
+            label.setTextColor(KeyboardColorManager.INSTANCE.getIconColor(1f));
+            label.setPadding(32, 24, 32, 24);
+            int code = dev.bbkb.ime.keyboard.inputboard.UimMenuOrder.keyCodeFor(id);
+            label.setOnClickListener(v -> {
+                hideOverflow();
+                openTool(code);
+            });
+            column.addView(label);
+        }
+        frame.addView(column, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        overflowPanel = column;
+        dev.bbkb.ime.core.BlackBerryIME ime = findIme();
+        if (ime != null) {
+            ime.setFlickSuggestionsSuppressed(true);
+        }
+    }
+
+    private dev.bbkb.ime.core.BlackBerryIME findIme() {
+        android.content.Context cursor = getContext();
+        while (cursor instanceof android.content.ContextWrapper) {
+            if (cursor instanceof dev.bbkb.ime.core.BlackBerryIME) {
+                return (dev.bbkb.ime.core.BlackBerryIME) cursor;
+            }
+            cursor = ((android.content.ContextWrapper) cursor).getBaseContext();
+        }
+        return null;
     }
 
     private void openTool(int keyCode) {
         if (keyCode == CompactToolbar.MORE) {
-            if (listener != null) {
-                listener.onHamburgerClicked();
-            }
+            showOverflow();
             return;
         }
         android.content.Context cursor = getContext();
@@ -150,6 +226,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         KeyboardColorManager.INSTANCE.addObserver(colorObserver);
+        applyToolbar();
     }
 
     @Override
@@ -222,6 +299,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             }
             return false;
         });
+        toolbarExpanded = CompactToolbar.isExpanded(getContext()) || CompactToolbar.isPinned(getContext());
+        applyToolbar();
 
         // CJK expand
         actionBtn.setOnClickListener(v -> {

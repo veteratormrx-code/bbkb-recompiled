@@ -1184,4 +1184,15 @@
     <string name="text_edit_right">Вправо</string>
     <string name="text_edit_select_all">Выделить всё</string>
     <string name="text_edit_word_back">На слово назад</string>
+    <string name="toolbar_overflow_back">Назад</string>
+    <string name="settings_toolbar_title">Панель инструментов</string>
+    <string name="settings_toolbar_mode_title">Режим панели</string>
+    <string name="settings_toolbar_mode_collapsed">Свёрнутая</string>
+    <string name="settings_toolbar_mode_pinned">Закреплённая</string>
+    <string name="settings_toolbar_mode_hidden">Скрытая</string>
+    <string name="settings_suggestion_place_title">Где показывать подсказки</string>
+    <string name="settings_suggestion_place_classic">Над клавишами</string>
+    <string name="settings_suggestion_place_strip">Верхняя строка</string>
+    <string name="settings_suggestion_place_both">Клавиши и строка</string>
+    <string name="settings_suggestion_place_none">Не показывать</string>
 </resources>

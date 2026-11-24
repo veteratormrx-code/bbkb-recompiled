@@ -314,6 +314,17 @@
     <string name="settings_uim_toggle_handwriting">Handwriting</string>
     <string name="toolbar_toggle">Show or hide tools</string>
     <string name="settings_number_row_title">Number row</string>
+    <string name="toolbar_overflow_back">Back</string>
+    <string name="settings_toolbar_title">Toolbar</string>
+    <string name="settings_toolbar_mode_title">Toolbar mode</string>
+    <string name="settings_toolbar_mode_collapsed">Collapsed</string>
+    <string name="settings_toolbar_mode_pinned">Pinned</string>
+    <string name="settings_toolbar_mode_hidden">Hidden</string>
+    <string name="settings_suggestion_place_title">Where suggestions appear</string>
+    <string name="settings_suggestion_place_classic">Over the keys</string>
+    <string name="settings_suggestion_place_strip">Top row</string>
+    <string name="settings_suggestion_place_both">Keys and top row</string>
+    <string name="settings_suggestion_place_none">Hidden</string>
     <string name="settings_number_row_summary">Always show 1–0 above the letters. Long-press a digit for its symbol.</string>
     <string name="fcc_trackpad_hint">Drag to move the cursor</string>
     <string name="fcc_chip_select">Select</string>
