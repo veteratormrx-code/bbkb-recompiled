@@ -76,9 +76,10 @@ $apk = "app\build\outputs\apk\release\app-release.apk"
 | `zipalign -c -P 16 4` | Verification successful |
 | Сертификат | локальный `C:\work\bbkey\signing\bbkb-release.jks`, SHA-256 `a4033228…a5299a` |
 
-Ключ `%USERPROFILE%\.bbkb\release.keystore` на машине сборки не найден, поэтому этот APK не
-обновит сборку с отпечатком `9f48ab89…4063`. Распознавание штрихов на устройстве со страницами
-16 КиБ не запускалось. [Требования Android](https://developer.android.com/guide/practices/page-sizes)
+На этой машине выпущен новый сертификат. Его путь, alias и отпечаток записаны в
+`docs/local/release-signing.local.md`. Каталог `docs/local/` в `.gitignore` и в git не попадает.
+Этот сертификат не обновляет сборки с отпечатком `9f48ab89…4063`. Распознавание штрихов на
+устройстве со страницами 16 КиБ не запускалось. [Требования Android](https://developer.android.com/guide/practices/page-sizes)
 
 ## Почему ключ создан заново
 

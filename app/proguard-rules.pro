@@ -8,6 +8,11 @@
 # SomeClass.class.getPackage().getName().
 -keeppackagenames com.blackberry.**
 
+# Digital Ink's SecureRandom subclass throws from setSeed. R8 merges that class with its
+# holder, so the Random constructor calls setSeed during <clinit> and the release build
+# dies on the first tap. Keep the original classes whole.
+-keep class com.google.android.gms.internal.mlkit_vision_digital_ink.zzai* { *; }
+
 # libnative-lib.so resolves NuanceSDK, KeyInfo and WordInfo by name and reads their fields and
 # constructors; app/src/main/cpp defines Java_com_blackberry_nuanceshim_* entry points.
 -keep class com.blackberry.nuanceshim.** { *; }

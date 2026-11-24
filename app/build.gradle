@@ -130,6 +130,19 @@ android {
     }
 }
 
+// The 16 KiB linker rejects a library whose RELRO segment ends on an 8 KiB
+// boundary. Strip copies the merged libraries; patch those copies before packaging.
+["Debug", "Release"].each { cap ->
+    def variant = cap.toLowerCase()
+    def outDir = layout.buildDirectory.dir(
+            "intermediates/stripped_native_libs/${variant}/strip${cap}DebugSymbols/out").get().asFile
+    def patch = tasks.register("align${cap}Relro16k", Exec) {
+        dependsOn "strip${cap}DebugSymbols"
+        commandLine "python", rootProject.file("tools/align_relro16k.py").absolutePath, outDir.absolutePath
+    }
+    tasks.matching { it.name == "package${cap}" }.configureEach { dependsOn patch }
+}
+
 dependencies {
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.collection:collection:1.6.0'

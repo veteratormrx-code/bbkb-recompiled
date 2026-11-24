@@ -16,6 +16,9 @@ captures/
 *.jar
 !/gradle/wrapper/gradle-wrapper.jar
 *.keystore
+
+# Machine-local notes: keystore path and certificate. Never commit.
+/docs/local/
 *.hprof
 
 # Cutover: pristine blob backup made by tools/cutover_deploy.sh (regenerated on demand)
