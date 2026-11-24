@@ -38,7 +38,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /** Unpinned rows kept at most. Pinned rows do not count against it and are never evicted. */
     static final int MAX_UNPINNED = 200;
 
-    /** Unpinned image and text payload budget (256 MiB). Pinned rows are not evicted by it. */
+    /** Image and text payload budget shared by pinned and unpinned rows (256 MiB). */
     static final long MAX_STORE_BYTES = 256L * 1024L * 1024L;
 
     /**
@@ -224,23 +224,25 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /** @return whether the history changed (a refreshed duplicate counts as a change). */
     private boolean addToHistory(ClipData clipData) {
         long now = this.mClock.nowMs();
+        boolean changed = refresh(now);
+        if (!ClipboardPrefs.isHistoryEnabled(this.mContext)) {
+            return changed;
+        }
         ClipEntry incoming = ClipEntry.fromClipData(0, clipData, now);
         if (incoming == null) {
             incoming = ClipboardImages.capture(this.mContext, clipData, now);
         }
         if (incoming == null) {
-            return false;
-        }
-        boolean changed = refresh(now);
-        if (!ClipboardPrefs.isHistoryEnabled(this.mContext)) {
             return changed;
         }
         changed |= removePasswordEntries();
         if (incoming.hasLabel(this.mPasswordClearLabel)) {
+            ClipboardImages.delete(this.mContext, incoming);
             return changed;
         }
         // A Password Keeper clip is never merged with an existing row: it is purged on its own.
-        if (!incoming.hasLabel(this.mPasswordAddLabel) && refreshDuplicate(incoming.getText(), now)) {
+        if (!incoming.isImage() && !incoming.hasLabel(this.mPasswordAddLabel)
+                && refreshDuplicate(incoming.getText(), now)) {
             return true;
         }
         this.mRecent.add(0, incoming.withId(this.mNextId++));
@@ -255,14 +257,14 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     private boolean refreshDuplicate(String text, long now) {
         for (int i = 0; i < this.mPinned.size(); i++) {
             ClipEntry entry = this.mPinned.get(i);
-            if (text.equals(entry.getText())) {
+            if (!entry.isImage() && text.equals(entry.getText())) {
                 this.mPinned.set(i, entry.withCreatedAt(now));
                 return true;
             }
         }
         for (int i = 0; i < this.mRecent.size(); i++) {
             ClipEntry entry = this.mRecent.get(i);
-            if (text.equals(entry.getText())) {
+            if (!entry.isImage() && text.equals(entry.getText())) {
                 this.mRecent.remove(i);
                 this.mRecent.add(0, entry.withCreatedAt(now));
                 return true;
@@ -288,6 +290,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
             this.mPinned.clear();
             this.mRecent.clear();
             if ((changed || !this.mLoaded) && this.mUnlockState.isUserUnlocked()) {
+                ClipboardImages.clear(this.mContext);
                 discardPendingLoad();
                 this.mLoaded = true;
                 this.mStore.delete();
@@ -385,12 +388,14 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         // Replay oldest first, so the newest pending clip ends up in front.
         for (int i = pending.size() - 1; i >= 0; i--) {
             ClipEntry clip = pending.get(i);
-            if (isPasswordKeeperEntry(clip) || !refreshDuplicate(clip.getText(), clip.getCreatedAtMs())) {
+            if (clip.isImage() || isPasswordKeeperEntry(clip)
+                    || !refreshDuplicate(clip.getText(), clip.getCreatedAtMs())) {
                 this.mRecent.add(0, clip.withId(this.mNextId++));
             }
         }
         Collections.sort(this.mPinned, NEWEST_PIN_FIRST);
         Collections.sort(this.mRecent, NEWEST_COPY_FIRST);
+        ClipboardImages.pruneOrphans(this.mContext, getHistory());
         return !this.mPinned.isEmpty() || !this.mRecent.isEmpty();
     }
 
@@ -404,8 +409,10 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         long oldestKept = now - retention;
         Iterator<ClipEntry> it = this.mRecent.iterator();
         while (it.hasNext()) {
-            if (it.next().getCreatedAtMs() < oldestKept) {
+            ClipEntry entry = it.next();
+            if (entry.getCreatedAtMs() < oldestKept) {
                 it.remove();
+                ClipboardImages.delete(this.mContext, entry);
                 changed = true;
             }
         }
@@ -437,13 +444,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return changed;
     }
 
-    /**
-     * Evict unpinned rows beyond {@link #MAX_UNPINNED}, and every unpinned row over
-     * {@link #MAX_PERSISTED_CHARS} except the newest (memory-only rows would otherwise be unbounded).
-     */
-    private long unpinnedBytes() {
+    private long storedBytes(List<ClipEntry> entries) {
         long bytes = 0L;
-        for (ClipEntry entry : this.mRecent) {
+        for (ClipEntry entry : entries) {
             bytes += entry.storedBytes(this.mContext.getFilesDir());
         }
         return bytes;
@@ -451,11 +454,12 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
 
     private boolean evictOverCap() {
         boolean changed = false;
-        while (this.mRecent.size() > MAX_UNPINNED || unpinnedBytes() > MAX_STORE_BYTES) {
-            if (this.mRecent.isEmpty()) {
-                break;
-            }
-            ClipEntry dropped = this.mRecent.remove(this.mRecent.size() - 1);
+        long bytes = storedBytes(this.mRecent) + storedBytes(this.mPinned);
+        while (this.mRecent.size() > MAX_UNPINNED || bytes > MAX_STORE_BYTES) {
+            // Old histories may already contain more pinned data than the combined budget.
+            List<ClipEntry> entries = this.mRecent.isEmpty() ? this.mPinned : this.mRecent;
+            ClipEntry dropped = entries.remove(entries.size() - 1);
+            bytes -= dropped.storedBytes(this.mContext.getFilesDir());
             ClipboardImages.delete(this.mContext, dropped);
             changed = true;
         }
@@ -479,8 +483,10 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         boolean removed = false;
         Iterator<ClipEntry> it = this.mRecent.iterator();
         while (it.hasNext()) {
-            if (isPasswordKeeperEntry(it.next())) {
+            ClipEntry entry = it.next();
+            if (isPasswordKeeperEntry(entry)) {
                 it.remove();
+                ClipboardImages.delete(this.mContext, entry);
                 removed = true;
             }
         }
@@ -521,8 +527,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         if (removed == null) {
             return false;
         }
+        ClipboardImages.delete(this.mContext, removed);
         String live = ClipboardItem.getTextFromClipData(this.mClipboardManager.getPrimaryClip());
-        if (removed.getText().equals(live)) {
+        if (!removed.isImage() && removed.getText().equals(live)) {
             ClipEntry next = newestPromotable();
             this.mInternalUpdate = true;
             this.mClipboardManager.setPrimaryClip(
@@ -546,6 +553,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         this.mRecent.clear();
         this.mStore.delete();
         if (this.mUnlockState.isUserUnlocked()) {
+            ClipboardImages.clear(this.mContext);
             // Nothing is left to load: the file is gone, and a read in flight read the old one.
             discardPendingLoad();
             this.mLoaded = true;
@@ -563,6 +571,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
         for (ClipboardHistoryManager manager : live) {
             manager.clearHistory();
+        }
+        if (live.isEmpty()) {
+            ClipboardImages.clear(context);
         }
         ClipboardHistoryStore.forContext(context).delete();
     }
@@ -582,7 +593,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     private ClipEntry newestPromotable() {
         ClipEntry newest = null;
         for (ClipEntry entry : getHistory()) {
-            if (!isPasswordKeeperEntry(entry)
+            if (!entry.isImage() && !isPasswordKeeperEntry(entry)
                     && (newest == null || entry.getCreatedAtMs() > newest.getCreatedAtMs())) {
                 newest = entry;
             }

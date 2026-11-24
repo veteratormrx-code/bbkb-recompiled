@@ -20,6 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.File
+import java.io.RandomAccessFile
 import java.util.concurrent.Executor
 
 /**
@@ -104,6 +105,47 @@ class ClipboardHistoryManagerTest {
     private fun passwordAddLabel() = context.getString(dev.bbkb.ime.R.string.clip_password_keeper_add)
 
     private fun passwordClearLabel() = context.getString(dev.bbkb.ime.R.string.clip_password_keeper_clear)
+
+    @Test
+    fun removingOrClearingAnImageRemovesItsFiles() {
+        val first = imageEntry(1, "first", 16)
+        val second = imageEntry(2, "second", 16)
+        file.writeText(ClipboardHistoryStore.encode(listOf(first, second)))
+        history.prune()
+
+        assertTrue(history.removeEntry(first.id))
+        assertFalse(File(context.filesDir, first.imageFile!!).exists())
+        assertFalse(File(context.filesDir, "${first.imageFile}.thumb").exists())
+        assertTrue(File(context.filesDir, second.imageFile!!).exists())
+
+        history.clearHistory()
+        assertFalse(File(context.filesDir, second.imageFile).exists())
+        assertFalse(File(context.filesDir, "${second.imageFile}.thumb").exists())
+    }
+
+    @Test
+    fun pinnedImagesContributeToTheSharedBudget() {
+        val half = ClipboardHistoryManager.MAX_STORE_BYTES / 2
+        val pinned = imageEntry(1, "pinned", half, pinned = true)
+        val oldest = imageEntry(2, "oldest", 16)
+        val latest = imageEntry(3, "latest", half - 10)
+        file.writeText(ClipboardHistoryStore.encode(listOf(pinned, oldest, latest)))
+        history.prune()
+
+        assertEquals(listOf(pinned.id), history.pinned.map { it.id })
+        assertEquals(listOf(latest.id), history.recent.map { it.id })
+        assertFalse(File(context.filesDir, oldest.imageFile!!).exists())
+        assertFalse(File(context.filesDir, "${oldest.imageFile}.thumb").exists())
+    }
+
+    private fun imageEntry(id: Long, name: String, size: Long, pinned: Boolean = false): ClipEntry {
+        val relative = "${ClipboardImages.DIR}/$name.img"
+        val image = File(context.filesDir, relative)
+        image.parentFile!!.mkdirs()
+        RandomAccessFile(image, "rw").use { it.setLength(size) }
+        File(context.filesDir, "$relative.thumb").writeBytes(byteArrayOf(1, 2, 3))
+        return ClipEntry(id, "", null, "image/png", now + id - 3, pinned, now, relative)
+    }
 
     @Test
     fun aCopiedClipIsCaptured() {

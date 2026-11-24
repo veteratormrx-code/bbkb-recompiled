@@ -49,10 +49,9 @@ data class ClipEntry(
     /** Actual UTF-8 text plus the image file and its thumbnail, when they exist. */
     fun storedBytes(filesDir: java.io.File): Long {
         var bytes = text.toByteArray(Charsets.UTF_8).size.toLong()
-        val relative = imageFile ?: return bytes
-        val image = java.io.File(filesDir, relative)
+        val image = ClipboardImages.fileFor(filesDir, imageFile) ?: return bytes
         if (image.isFile) bytes += image.length()
-        val thumb = java.io.File(filesDir, "$relative.thumb")
+        val thumb = java.io.File(image.parentFile, image.name + ".thumb")
         if (thumb.isFile) bytes += thumb.length()
         return bytes
     }
