@@ -1,0 +1,22 @@
+{
+  "apk": "app/build/outputs/apk/release/app-release.apk",
+  "artifactOrigin": "Existing local APK, built before the interface merge",
+  "applicationId": "dev.bbkb.ime",
+  "versionName": "5.0.0-beta.29",
+  "versionCode": 1442,
+  "abi": "arm64-v8a",
+  "bytes": 109986336,
+  "sha256": "9c560e30b0281fa04db3663c044b7c3b087105f3ed7bc8959f05daea68f06e91",
+  "signatureSchemeV2": true,
+  "certificateSha256": "9f48ab891e70a08872a3879b9b57c4a9455fab223c9f46eb1f8eda83fdd24063",
+  "zipalign16KiB": "PASS: zipalign -c -P 16 4",
+  "elfLoadSegmentAlignments": {
+    "libandroidx.graphics.path.so": ["0x4000", "0x4000", "0x4000"],
+    "libbbkbevdev.so": ["0x4000", "0x4000", "0x4000"],
+    "libdigitalink.so": ["0x1000", "0x1000", "0x1000"],
+    "libkb.so": ["0x4000", "0x4000", "0x4000"],
+    "libnative-lib.so": ["0x10000", "0x10000"],
+    "libtranslate_jni.so": ["0x4000", "0x4000", "0x4000"],
+    "libxt9trace.so": ["0x4000", "0x4000", "0x4000"]
+  }
+}

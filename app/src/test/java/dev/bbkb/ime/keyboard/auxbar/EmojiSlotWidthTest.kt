@@ -1,6 +1,7 @@
 package dev.bbkb.ime.keyboard.auxbar
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.os.Looper
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -8,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.suggestion.SuggestedWords
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -29,6 +32,7 @@ import org.robolectric.annotation.Config
 class EmojiSlotWidthTest {
 
     private lateinit var bar: AuxBarView
+    private lateinit var preferences: SharedPreferences
 
     private fun info(word: String, kind: Int = 0) =
         SuggestedWords.SuggestedWordInfo(word, 100, kind, null, -1, -1, null)
@@ -47,11 +51,26 @@ class EmojiSlotWidthTest {
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
         val ctx = ContextThemeWrapper(activity, R.style.KeyboardTheme_LXX)
         dev.bbkb.ime.core.locale.RichInputMethodManager.init(ctx)
+        preferences = PrefsManager.getPrefs(ctx)
+        preferences.edit()
+            .putString(CompactToolbar.PREF_SUGGESTIONS, CompactToolbar.SUGGEST_STRIP)
+            .putString(CompactToolbar.PREF_MODE, CompactToolbar.MODE_COLLAPSED)
+            .putBoolean(CompactToolbar.PREF_EXPANDED, false)
+            .commit()
         bar = AuxBarView(ctx)
         val host = FrameLayout(activity)
         host.addView(bar, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 120))
         activity.setContentView(host)
         idle()
+    }
+
+    @After
+    fun clearToolbarPreferences() {
+        preferences.edit()
+            .remove(CompactToolbar.PREF_SUGGESTIONS)
+            .remove(CompactToolbar.PREF_MODE)
+            .remove(CompactToolbar.PREF_EXPANDED)
+            .commit()
     }
 
     private fun show(words: SuggestedWords) {

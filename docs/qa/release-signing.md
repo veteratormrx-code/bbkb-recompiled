@@ -66,7 +66,7 @@ $apk = "app\build\outputs\apk\release\app-release.apk"
 `-P 16` проверяет выравнивание несжатых `.so` в APK. Для поддержки страниц 16 КиБ отдельно
 проверяются сегменты `LOAD` внутри ELF и запуск на подходящем устройстве. В этом APK
 `libdigitalink.so` имеет три `LOAD` с `p_align=0x1000`. У остальных шести библиотек значение
-не ниже `0x4000`. Поддержка страниц 16 КиБ остаётся открытой для Digital Ink. [Требования Android](https://developer.android.com/guide/practices/page-sizes)
+не ниже `0x4000`. Поддержка страниц 16 КиБ остаётся открытой для Digital Ink. [Результаты проверки](../testing/artifacts/audit-2026-11-24/merge-validation/verified-release.json) [Требования Android](https://developer.android.com/guide/practices/page-sizes)
 
 ## Почему ключ создан заново
 

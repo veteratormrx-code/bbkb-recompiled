@@ -1,0 +1,10 @@
+{
+  "tests": 3,
+  "failures": 0,
+  "skipped": 0,
+  "passed": [
+    "dev.bbkb.ime.core.settings.screens.VoiceScreensBehaviourTest.theLanguageRowOpensOnlyWhenTheKeyboardLanguageIsNotFollowed",
+    "dev.bbkb.ime.keyboard.auxbar.EmojiSlotWidthTest.theWordSlotsGrowBackOnTheUpdateThatTakesTheEmojiAway",
+    "dev.bbkb.ime.keyboard.auxbar.EmojiSlotWidthTest.theWordSlotsShrinkOnTheUpdateThatShowsTheEmoji"
+  ]
+}

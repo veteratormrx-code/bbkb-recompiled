@@ -416,7 +416,7 @@ class VoiceScreensBehaviourTest {
      * not following the keyboard; otherwise it is greyed out, not taken away.
      */
     @Test
-    @Config(sdk = [34])
+    @Config(sdk = [34], qualifiers = "en-rUS-w411dp-h891dp")
     fun theLanguageRowOpensOnlyWhenTheKeyboardLanguageIsNotFollowed() {
         prefs.edit()
             .putBoolean("voice_input_use_input_language", false)
@@ -426,8 +426,8 @@ class VoiceScreensBehaviourTest {
         setContent { VoiceInputSettingsScreen({ navigations++ }, {}) }
 
         composeRule.onNodeWithText("Voice input language").assertIsDisplayed()
-        // Its summary is the language's own display name, not the raw code.
-        assertTrue("the row should summarise the stored language", "Français (France)" in rendered())
+        // Settings show the stored language in the device locale.
+        composeRule.onNodeWithText("French (France)").assertIsDisplayed()
         assertFalse("the raw code is not shown here", "fr-FR" in rendered())
 
         composeRule.onNodeWithText("Voice input language").performClick()

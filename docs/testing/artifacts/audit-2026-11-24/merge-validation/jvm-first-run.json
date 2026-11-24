@@ -1,0 +1,11 @@
+{
+  "source": "ac956aed",
+  "tests": 4000.0,
+  "failures": 3.0,
+  "skipped": 25.0,
+  "failed": [
+    "dev.bbkb.ime.core.settings.screens.VoiceScreensBehaviourTest.theLanguageRowOpensOnlyWhenTheKeyboardLanguageIsNotFollowed",
+    "dev.bbkb.ime.keyboard.auxbar.EmojiSlotWidthTest.theWordSlotsGrowBackOnTheUpdateThatTakesTheEmojiAway",
+    "dev.bbkb.ime.keyboard.auxbar.EmojiSlotWidthTest.theWordSlotsShrinkOnTheUpdateThatShowsTheEmoji"
+  ]
+}
