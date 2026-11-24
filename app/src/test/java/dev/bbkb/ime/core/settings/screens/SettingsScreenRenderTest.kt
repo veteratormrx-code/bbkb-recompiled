@@ -688,7 +688,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Customize input menu",
             resources = setOf(
                 "settings_customize_menu_hidden_header", "settings_customize_menu_instructions",
-                "settings_customize_menu_title", "settings_pkb_multifunction_action_clipboard",
+                "settings_customize_menu_title", "settings_uim_shown_count_title",
+                "settings_pkb_multifunction_action_clipboard",
                 "settings_pkb_multifunction_action_emoji", "settings_pkb_multifunction_action_fcc",
                 "settings_pkb_multifunction_action_number_pad", "settings_uim_toggle_handwriting",
                 "settings_uim_toggle_text_edit", "settings_uim_toggle_translate", "settings_uim_toggle_voice"
@@ -698,6 +699,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "2",
                 "3",
                 "4",
+                "5",
+                "6",
+                "7",
             ),
         ),
         Case(

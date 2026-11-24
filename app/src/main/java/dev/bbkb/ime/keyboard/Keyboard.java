@@ -248,6 +248,16 @@ public class Keyboard {
         return true;
     }
 
+    /** Replace the key row. The input menu uses this when more than four tools fit. */
+    public void setKeys(java.util.List<Key> keys) {
+        this.mSortedKeys.clear();
+        this.mSortedKeys.addAll(keys);
+        synchronized (this.mKeyCache) {
+            this.mKeyCache.clear();
+        }
+        rebuildProximityGrid();
+    }
+
     /** Rebuild the proximity grid; call once after a batch of {@link #replaceKey} calls. */
     public void rebuildProximityGrid() {
         this.mProximityGrid.buildGrid();

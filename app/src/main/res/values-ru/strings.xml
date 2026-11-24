@@ -605,7 +605,8 @@
     <string name="settings_custom_macros_title">Пользовательские макросы</string>
     <string name="settings_custom_macros_intro" formatted="false">Задайте собственные заполнители %x для текстовых сокращений</string>
     <string name="settings_customize_menu_hidden_header">Не показывается на клавиатуре</string>
-    <string name="settings_customize_menu_instructions">Нажмите и удерживайте ярлык, затем перетащите его, чтобы изменить порядок. Первые четыре отображаются в меню ввода клавиатуры.</string>
+    <string name="settings_customize_menu_instructions">Удерживайте ярлык и перетащите, чтобы изменить порядок. На клавиатуре четыре кнопки, пока вы не выберете больше — максимум семь. Перетащите кнопку под черту, чтобы её скрыть. Клавиша раскладки остаётся в центре.</string>
+    <string name="settings_uim_shown_count_title">Кнопок на клавиатуре</string>
     <string name="settings_customize_menu_summary">Выберите ярлыки меню ввода и их порядок</string>
     <string name="settings_customize_menu_title">Настроить меню ввода</string>
     <string name="settings_default_currency_summary">Выберите валюту, отображаемую на клавиатуре</string>

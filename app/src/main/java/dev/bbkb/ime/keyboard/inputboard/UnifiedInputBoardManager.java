@@ -674,52 +674,56 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Rebuild the four toggle slots (bar keys in x order, minus the centre -3) to match
-     * pref_uim_menu_order, cloning prototypes from kbd_unified_input_menu_pool.xml onto the slot
-     * geometry. No-op when the order already matches the XML.
+     * Lay the bar out again: the keyboard key stays in the middle, and as many tools as fit at
+     * 48dp sit around it, in the saved order. Prototypes come from the pool so icons survive.
      */
     private void applyMenuOrder(Keyboard keyboard) {
-        List<Integer> desired = UimMenuOrder.getShownKeyCodes(PrefsManager.INSTANCE.getPrefs(this.context));
-        List<Key> slots = new ArrayList<>(keyboard.getKeys());
-        java.util.Collections.sort(slots, (a, b) -> Integer.compare(a.getX(), b.getX()));
-        for (Iterator<Key> it = slots.iterator(); it.hasNext(); ) {
-            if (it.next().getCode() == -3) {
-                it.remove();
-            }
-        }
-        if (slots.size() != desired.size()) {
-            Logger.warn(TAG, "UIM bar has " + slots.size() + " toggle slots, expected "
-                    + desired.size() + " — keeping the XML order");
-            return;
-        }
-        boolean matchesXml = true;
-        for (int i = 0; i < slots.size(); i++) {
-            if (slots.get(i).getCode() != desired.get(i)) {
-                matchesXml = false;
+        Key center = null;
+        for (Key key : keyboard.getKeys()) {
+            if (key.getCode() == -3) {
+                center = key;
                 break;
             }
         }
-        if (matchesXml) {
+        if (center == null) {
             return;
         }
+        List<Integer> desired = UimMenuOrder.getShownKeyCodes(this.context);
         Keyboard pool = this.keyboardBuilder.getKeyboardForShift(UIM_POOL_ELEMENT_ID, false);
-        boolean replacedAny = false;
-        for (int i = 0; i < slots.size(); i++) {
-            Key slotKey = slots.get(i);
-            int code = desired.get(i);
-            if (slotKey.getCode() == code) {
-                continue;
-            }
+        List<Key> tools = new ArrayList<>(desired.size());
+        for (int code : desired) {
             Key prototype = pool.getKeyByCode(code);
             if (prototype == null) {
                 Logger.warn(TAG, "No UIM pool prototype for keycode " + code);
                 continue;
             }
-            replacedAny |= keyboard.replaceKey(slotKey, new Key(prototype, slotKey));
+            tools.add(prototype);
         }
-        if (replacedAny) {
-            keyboard.rebuildProximityGrid();
+        int total = tools.size() + 1;
+        int cell = keyboard.mOccupiedWidth / total;
+        int leftover = keyboard.mOccupiedWidth - (cell * total);
+        int y = center.getHitBox().top;
+        int height = center.getHeight();
+        int leftCount = tools.size() / 2;
+        List<Key> row = new ArrayList<>(total);
+        int x = 0;
+        int placed = 0;
+        for (int i = 0; i < tools.size(); i++) {
+            if (i == leftCount) {
+                int width = cell + (placed == total - 1 ? leftover : 0);
+                row.add(new Key(center, x, y, width, height));
+                x += width;
+                placed++;
+            }
+            int width = cell + (placed == total - 1 ? leftover : 0);
+            row.add(new Key(tools.get(i), x, y, width, height));
+            x += width;
+            placed++;
         }
+        if (placed < total) {
+            row.add(new Key(center, x, y, cell + leftover, height));
+        }
+        keyboard.setKeys(row);
     }
 
     /** Rebuild (and re-show) the bar; updateTheme() does exactly that cycle. */

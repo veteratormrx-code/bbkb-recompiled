@@ -188,11 +188,11 @@ public final class CompactToolbar {
             case UimMenuOrder.TEXT_EDIT:
                 return R.drawable.ic_settings_m_edit;
             case UimMenuOrder.HANDWRITING:
-                return R.drawable.ic_auxbar_voice_enabled;
+                return R.drawable.ic_auxbar_handwriting;
             case UimMenuOrder.NUMBER_PAD:
                 return R.drawable.ic_auxbar_numpad;
             case UimMenuOrder.TRANSLATE:
-                return R.drawable.ic_settings_m_palette;
+                return R.drawable.ic_auxbar_translate;
             case UimMenuOrder.CLIPBOARD:
             default:
                 return R.drawable.ic_auxbar_clipboard_enabled;

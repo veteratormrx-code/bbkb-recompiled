@@ -423,6 +423,33 @@ public class Key implements Comparable<Key> {
         this.hashCode = calculateHashCode(this);
     }
 
+    /** Same action and icons as {@code prototype}, in a new cell. Used when the input menu grows past four slots. */
+    public Key(Key prototype, int x, int y, int cellWidth, int cellHeight) {
+        this.hitBox = new Rect();
+        this.isEnabled = true;
+        this.isHighlighted = false;
+        this.keySpec = prototype.keySpec;
+        this.hintLabel = prototype.hintLabel;
+        this.labelFlags = prototype.labelFlags;
+        this.width = cellWidth;
+        this.height = cellHeight;
+        // These fields are the draw origin, not the geometric centre: getDrawX/getY are the top-left.
+        this.centerX = x;
+        this.centerY = y;
+        this.hitBox.set(x, y, x + cellWidth + 1, y + cellHeight);
+        this.moreKeys = prototype.moreKeys == null ? null : (MoreKeySpec[]) prototype.moreKeys.clone();
+        this.keyLabelSet = prototype.keyLabelSet;
+        this.moreKeysFlags = prototype.moreKeysFlags;
+        this.backgroundType = prototype.backgroundType;
+        this.actionFlags = prototype.actionFlags;
+        this.keyData = prototype.keyData;
+        this.longPressData = prototype.longPressData;
+        this.outputText = prototype.outputText;
+        this.scanCode = prototype.scanCode;
+        this.isActive = prototype.isActive;
+        this.hashCode = calculateHashCode(this);
+    }
+
     /**
      * @param keySpec the new key spec
      * @param c1034aqArr the new more keys

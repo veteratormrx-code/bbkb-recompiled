@@ -738,7 +738,8 @@
     <string name="settings_custom_macros_title">Custom macros</string>
     <string name="settings_custom_macros_intro" formatted="false">Define your own %x placeholders for use in text shortcuts</string>
     <string name="settings_customize_menu_hidden_header">Not shown on keyboard</string>
-    <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
+    <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. Four tools are on the keyboard until you choose more, up to seven. Drag a tool below the line to hide it. The layout key stays in the centre.</string>
+    <string name="settings_uim_shown_count_title">Tools on the keyboard</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
     <string name="settings_customize_menu_title">Customize input menu</string>
     <string name="settings_default_currency_summary">Select the currency to display on the keyboard</string>

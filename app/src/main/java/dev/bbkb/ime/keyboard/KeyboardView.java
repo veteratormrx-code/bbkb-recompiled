@@ -1052,7 +1052,7 @@ public class KeyboardView extends View {
             if (key.getCode() == 32) {
                 iconHeight = (int) (6 * this.density);
             } else {
-                iconHeight = intrinsicHeight;
+                iconHeight = Math.min(intrinsicHeight, keyHeight);
             }
             int iconY = key.isAlignIconToBottom() ? keyHeight - iconHeight : (keyHeight - iconHeight) / 2;
             if (key.getCode() == 32) {

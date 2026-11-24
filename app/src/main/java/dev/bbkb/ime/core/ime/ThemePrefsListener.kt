@@ -47,7 +47,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             }
         }
 
-        if (UimMenuOrder.PREF_KEY == key) {
+        if (UimMenuOrder.PREF_KEY == key || UimMenuOrder.PREF_SHOWN == key) {
             // AuxBarManager caches the UIM keyboard; clear it so show() re-fetches the new bar.
             ime.auxBarManager?.clearKeyboardCache()
             keyboardSwitcher.getUnifiedInputBoardManager()?.onMenuOrderChanged()
