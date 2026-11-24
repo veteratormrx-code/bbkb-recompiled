@@ -147,4 +147,30 @@ class InputLogicDynamicLearningStateTest {
         assertTrue(caps(InputType.TYPE_CLASS_NUMBER, INCOGNITO).noPersonalizedLearning)
         assertFalse(EditorCapabilities.hasNoPersonalizedLearningFlag(null))
     }
+
+    @Test
+    fun searchField_showsWordsWithoutCorrectingOrLearning() {
+        val search = EditorInfo().apply {
+            inputType = InputType.TYPE_CLASS_TEXT
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+        }
+        val filter = EditorInfo().apply {
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_FILTER
+        }
+        val banned = EditorInfo().apply {
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+        }
+        val searchCaps = EditorCapabilities(search, false, "dev.bbkb.ime.debug", Locale.US, false)
+        val filterCaps = EditorCapabilities(filter, false, "dev.bbkb.ime.debug", Locale.US, false)
+        val bannedCaps = EditorCapabilities(banned, false, "dev.bbkb.ime.debug", Locale.US, false)
+        assertTrue(searchCaps.shouldShowSuggestions)
+        assertTrue(searchCaps.noAutoCorrect)
+        assertFalse(searchCaps.shouldInsertSpaces)
+        assertTrue(filterCaps.shouldShowSuggestions)
+        assertTrue(filterCaps.noAutoCorrect)
+        assertFalse(bannedCaps.shouldShowSuggestions)
+        assertFalse(InputLogic.isLearningAllowed(search))
+        assertFalse(InputLogic.isLearningAllowed(filter))
+    }
 }

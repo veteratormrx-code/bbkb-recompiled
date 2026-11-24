@@ -1731,7 +1731,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      */
     public static boolean isLearningAllowed(EditorInfo editorInfo) {
         return isLearningEnabledForInputType(editorInfo.inputType)
-                && !EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfo);
+                && !EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfo)
+                && !EditorCapabilities.isDictionarySearchField(editorInfo);
     }
 
     /**

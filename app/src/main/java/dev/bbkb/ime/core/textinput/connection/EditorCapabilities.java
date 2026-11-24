@@ -102,19 +102,28 @@ public final class EditorCapabilities {
         boolean hasAutoCompleteFlag = (InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE & inputType) != 0;
         // IME_FLAG_FORCE_ASCII disabling suggestions is intended (AOSP LatinIME does the same).
         boolean forceAscii = (editorInfo.imeOptions & EditorInfo.IME_FLAG_FORCE_ASCII) != 0;
+        // A text search or filter gets dictionary words. The typed token stays first; nothing is
+        // replaced or learned. NO_SUGGESTIONS and app autocomplete still win.
+        boolean searchQuery = isDictionarySearchField(editorInfo);
+        boolean suggestionsBlocked = this.isPassword
+                || InputTypeUtils.isEmailVariation(inputVariation)
+                || inputVariation == InputType.TYPE_TEXT_VARIATION_URI
+                || (inputVariation == InputType.TYPE_TEXT_VARIATION_FILTER && !searchQuery)
+                || hasNoSuggestionsFlag
+                || forceAscii;
         // "Force suggestions" overrides a no-suggestions text field, never a password.
-        this.shouldShowSuggestions = (forceSuggestions && !this.isPassword)
-                || !(this.isPassword || InputTypeUtils.isEmailVariation(inputVariation) || inputVariation == InputType.TYPE_TEXT_VARIATION_URI || inputVariation == InputType.TYPE_TEXT_VARIATION_FILTER || hasNoSuggestionsFlag || forceAscii);
+        this.shouldShowSuggestions = searchQuery || (forceSuggestions && !this.isPassword) || !suggestionsBlocked;
         boolean isPasswordField = this.isPassword;
         this.shouldSupportGestureInput = !isPasswordField;
         this.shouldShowChineseSuggestions = (isPasswordField || forceAscii || !LocaleUtils.isChinese(locale)) ? false : true;
         this.shouldShowJapaneseSuggestions = (this.isPassword || forceAscii || !LocaleUtils.isJapanese(locale)) ? false : true;
-        this.shouldInsertSpaces = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
+        this.shouldInsertSpaces = !searchQuery && InputTypeUtils.isAutoSpaceFriendlyType(inputType);
         
         this.isMicrophoneAllowed = !(this.isPassword || InputTypeUtils.isEmailVariation(inputVariation) || (inputVariation == InputType.TYPE_TEXT_VARIATION_URI) || isAppMicrophoneDisabled());
         // Autocorrect only when the field sets TYPE_TEXT_FLAG_AUTO_CORRECT or is multi-line
-        // (stricter than stock IMEs, on purpose).
-        this.noAutoCorrect = (inputVariation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !hasAutoCorrectFlag)
+        // (stricter than stock IMEs, on purpose). Search inserts the chosen word only.
+        this.noAutoCorrect = searchQuery
+                || (inputVariation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !hasAutoCorrectFlag)
                 || hasNoSuggestionsFlag
                 || !(hasAutoCorrectFlag || isMultiLine);
         this.hasAppSpecifiedCompletions = hasAutoCompleteFlag && allowsAppSpecifiedCompletions;
@@ -156,6 +165,34 @@ public final class EditorCapabilities {
         objArr[10] = this.isMultiLine ? " multiLine" : "";
         objArr[11] = this.packageName;
         return String.format("%s: inputType=0x%08x%s%s%s%s%s%s%s%s%s targetApp=%s\n", objArr);
+    }
+
+    /**
+     * A text search box or filter that may show dictionary words. Passwords, email, URI,
+     * {@code NO_SUGGESTIONS} and app autocomplete stay out.
+     */
+    public static boolean isDictionarySearchField(EditorInfo editorInfo) {
+        if (editorInfo == null) {
+            return false;
+        }
+        int inputType = editorInfo.inputType;
+        int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        if (inputClass != InputType.TYPE_CLASS_TEXT) {
+            return false;
+        }
+        if (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType)) {
+            return false;
+        }
+        int variation = inputType & InputType.TYPE_MASK_VARIATION;
+        if (InputTypeUtils.isEmailVariation(variation) || variation == InputType.TYPE_TEXT_VARIATION_URI) {
+            return false;
+        }
+        if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0
+                || (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
+            return false;
+        }
+        int action = editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+        return action == EditorInfo.IME_ACTION_SEARCH || variation == InputType.TYPE_TEXT_VARIATION_FILTER;
     }
 
     public static boolean hasNoPersonalizedLearningFlag(EditorInfo editorInfo) {
