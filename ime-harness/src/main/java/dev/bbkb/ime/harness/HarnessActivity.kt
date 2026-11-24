@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -75,6 +76,13 @@ class HarnessActivity : AppCompatActivity() {
         add("password", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD, "password")
         add("numeric password", InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)
         add("search", action = EditorInfo.IME_ACTION_SEARCH)
+        add("filter", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_FILTER, "filter")
+        add(
+            "search no suggestions",
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS,
+            "search banned",
+            EditorInfo.IME_ACTION_SEARCH,
+        )
         add("name", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
         add("address", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS)
         add("no suggestions", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS)
@@ -99,6 +107,11 @@ class HarnessActivity : AppCompatActivity() {
         add("action send", action = EditorInfo.IME_ACTION_SEND)
         add("action go", action = EditorInfo.IME_ACTION_GO)
         add("action done", action = EditorInfo.IME_ACTION_DONE)
+        column.addView(TextView(this).apply { text = "search view" })
+        column.addView(SearchView(this).apply {
+            queryHint = "search view"
+            isIconified = false
+        })
         column.addView(TextView(this).apply { text = "webview" })
         column.addView(WebView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -113,7 +126,7 @@ class HarnessActivity : AppCompatActivity() {
                    <input type="url" placeholder="web URL"><br>
                    <input type="tel" placeholder="web telephone"><br>
                    <input type="password" placeholder="web password"><br>
-                   <input type="search" placeholder="web search"><br>
+                   <input type="search" enterkeyhint="search" placeholder="web search"><br>
                    <input inputmode="numeric" placeholder="web inputmode numeric"><br>
                    <input inputmode="decimal" placeholder="web inputmode decimal"><br>
                    <input inputmode="tel" placeholder="web inputmode tel"><br>
