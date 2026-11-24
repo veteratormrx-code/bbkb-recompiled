@@ -203,7 +203,11 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             if (hasVerticalGap) {
                 throw new XmlParseUtils.IllegalAttribute(xmlPullParser, "Row", "verticalGap");
             }
-            return new KeyboardRow(this.mResources, this.mParams, xmlPullParser, this.mCurrentY);
+            float heightScale = 1f;
+            if (typedArrayObtainAttributes.getBoolean(R.styleable.Keyboard_digitRow, false)) {
+                heightScale = dev.bbkb.ime.keyboard.NumberRow.heightScale(this.mContext);
+            }
+            return new KeyboardRow(this.mResources, this.mParams, xmlPullParser, this.mCurrentY, heightScale);
         } finally {
             typedArrayObtainAttributes.recycle();
         }

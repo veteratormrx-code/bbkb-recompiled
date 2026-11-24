@@ -255,6 +255,7 @@ public final class KeyboardBuilder {
         private final InputMethodSubtype subtype;
         private final String keyboardLayoutSet;
         private final boolean numberRow;
+        private final String numberRowHeight;
         private final int hashCode;
 
         KeyboardCacheKey(KeyboardId id, Context context) {
@@ -276,7 +277,9 @@ public final class KeyboardBuilder {
             this.subtype = id.mSubtype;
             this.keyboardLayoutSet = id.mKeyboardLayoutSet;
             this.numberRow = NumberRow.isEnabled(context);
-            this.hashCode = 31 * id.hashCode() + (this.numberRow ? 1 : 0);
+            this.numberRowHeight = NumberRow.heightScale(context) == 0.72f ? NumberRow.HEIGHT_COMPACT
+                    : (NumberRow.heightScale(context) == 1.28f ? NumberRow.HEIGHT_TALL : NumberRow.HEIGHT_REGULAR);
+            this.hashCode = 31 * (31 * id.hashCode() + (this.numberRow ? 1 : 0)) + this.numberRowHeight.hashCode();
         }
 
         @Override
@@ -296,7 +299,7 @@ public final class KeyboardBuilder {
                     && o.imeAction == imeAction && TextUtils.equals(o.customActionLabel, customActionLabel)
                     && o.navigateNext == navigateNext && o.navigatePrevious == navigatePrevious
                     && o.subtype.equals(subtype) && TextUtils.equals(o.keyboardLayoutSet, keyboardLayoutSet)
-                    && o.numberRow == numberRow;
+                    && o.numberRow == numberRow && TextUtils.equals(o.numberRowHeight, numberRowHeight);
         }
 
         @Override

@@ -71,7 +71,8 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
         }
 
         if ("pref_keyboard_height_mode" == key || dev.bbkb.ime.keyboard.NumberRow.PREF == key
-            || "pref_toolbar_mode" == key || "pref_suggestion_place" == key) {
+            || "pref_toolbar_mode" == key || "pref_suggestion_place" == key
+            || dev.bbkb.ime.keyboard.NumberRow.HEIGHT_PREF == key) {
             ime.numberPadController?.invalidateKeyboard()
             KeyboardBuilder.clearKeyboardCache()
             ResourceConfigManager.invalidateDimensionCache()

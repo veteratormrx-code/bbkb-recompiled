@@ -77,6 +77,15 @@ fun AppearanceLayoutScreen(
             modifier = Modifier.settingsSearchAnchor("pref_number_row"),
         ),
         Choice(
+            store = stringPref(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_PREF, dev.bbkb.ime.keyboard.NumberRow.HEIGHT_REGULAR),
+            title = R.string.settings_number_row_height_title,
+            options = ::numberRowHeights,
+            fallbackIndex = 1,
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
+            modifier = Modifier.settingsSearchAnchor("pref_number_row_height"),
+            enabled = { it.bool(dev.bbkb.ime.keyboard.NumberRow.PREF) },
+        ),
+        Choice(
             store = stringPref("pref_keyboard_height_mode", "regular"),
             title = R.string.settings_keyboard_height_title,
             options = ::keyboardHeights,
@@ -149,6 +158,12 @@ private fun colorSchemes(context: Context) = listOf(
     ChoiceOption("light", context.getString(R.string.settings_appearance_light)),
     ChoiceOption("dark", context.getString(R.string.settings_appearance_dark)),
     ChoiceOption("auto", context.getString(R.string.settings_appearance_auto)),
+)
+
+private fun numberRowHeights(context: Context) = listOf(
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_COMPACT, context.getString(R.string.settings_number_row_height_compact)),
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_REGULAR, context.getString(R.string.settings_number_row_height_regular)),
+    ChoiceOption(dev.bbkb.ime.keyboard.NumberRow.HEIGHT_TALL, context.getString(R.string.settings_number_row_height_tall)),
 )
 
 private fun keyboardHeights(context: Context) = listOf(

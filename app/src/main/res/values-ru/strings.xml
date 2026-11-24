@@ -288,6 +288,10 @@
     <string name="toolbar_toggle">Показать или скрыть инструменты</string>
     <string name="settings_number_row_title">Ряд цифр</string>
     <string name="settings_number_row_summary">Постоянный ряд 1–0 над буквами. Долгое нажатие открывает символ.</string>
+    <string name="settings_number_row_height_title">Высота ряда цифр</string>
+    <string name="settings_number_row_height_compact">Компактная</string>
+    <string name="settings_number_row_height_regular">Обычная</string>
+    <string name="settings_number_row_height_tall">Высокая</string>
     <string name="fcc_trackpad_hint">Проведите, чтобы переместить курсор</string>
     <string name="fcc_chip_select">Выделить</string>
     <string name="fcc_chip_select_all">Все</string>

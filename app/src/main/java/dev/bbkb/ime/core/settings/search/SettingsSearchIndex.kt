@@ -215,6 +215,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors", DeviceRequirement.DYNAMIC_COLOR),
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
         SearchableSetting(R.string.settings_number_row_title, "number row digits 123 top", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_number_row"),
+        SearchableSetting(R.string.settings_number_row_height_title, "number row height compact tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_number_row_height"),
 
         SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar euro pound", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_currency_key"),
 

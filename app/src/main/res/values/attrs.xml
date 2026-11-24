@@ -600,6 +600,8 @@
     </attr>
     <attr name="numberRow" format="boolean">
     </attr>
+    <attr name="digitRow" format="boolean">
+    </attr>
     <attr name="physicalKeypadType" format="string">
     </attr>
     <attr name="physicalKeypadVariant" format="string">
@@ -790,6 +792,7 @@
         <attr name="iconShowKeyboardSettingsKey" />
         <attr name="iconVoiceInputSmallKey" />
         <attr name="rowHeight" />
+        <attr name="digitRow" />
         <attr name="touchPositionCorrectionData" />
         <attr name="verticalGap" />
     </declare-styleable>

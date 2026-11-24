@@ -51,10 +51,11 @@ public final class KeyboardRow {
         }
     }
 
-    public KeyboardRow(Resources resources, KeyboardParams keyboardParams, XmlPullParser xmlPullParser, int y) {
+    public KeyboardRow(Resources resources, KeyboardParams keyboardParams, XmlPullParser xmlPullParser, int y, float heightScale) {
         this.mParams = keyboardParams;
         TypedArray typedArrayObtainAttributes = resources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard);
-        this.mRowHeight = (int) ResourceConfigManager.getFractionOrDimensionOrDefault(typedArrayObtainAttributes, R.styleable.Keyboard_rowHeight, keyboardParams.mBaseHeight, keyboardParams.mDefaultRowHeight);
+        int rawHeight = (int) ResourceConfigManager.getFractionOrDimensionOrDefault(typedArrayObtainAttributes, R.styleable.Keyboard_rowHeight, keyboardParams.mBaseHeight, keyboardParams.mDefaultRowHeight);
+        this.mRowHeight = Math.max(1, Math.round(rawHeight * heightScale));
         typedArrayObtainAttributes.recycle();
         TypedArray typedArrayObtainAttributes2 = resources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard_Key);
         this.mRowAttributesStack.push(new RowAttributes(typedArrayObtainAttributes2, keyboardParams.mDefaultKeyWidth, keyboardParams.mDefaultSpacerWidth, keyboardParams.mBaseWidth));

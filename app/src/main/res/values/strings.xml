@@ -314,6 +314,10 @@
     <string name="settings_uim_toggle_handwriting">Handwriting</string>
     <string name="toolbar_toggle">Show or hide tools</string>
     <string name="settings_number_row_title">Number row</string>
+    <string name="settings_number_row_height_title">Number row height</string>
+    <string name="settings_number_row_height_compact">Compact</string>
+    <string name="settings_number_row_height_regular">Regular</string>
+    <string name="settings_number_row_height_tall">Tall</string>
     <string name="toolbar_overflow_back">Back</string>
     <string name="settings_toolbar_title">Toolbar</string>
     <string name="settings_toolbar_mode_title">Toolbar mode</string>
