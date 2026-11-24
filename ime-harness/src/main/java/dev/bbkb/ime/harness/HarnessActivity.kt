@@ -58,6 +58,12 @@ class HarnessActivity : AppCompatActivity() {
             return field
         }
         add("text", InputType.TYPE_CLASS_TEXT, "plain")
+        // Prose field: TYPE_TEXT_FLAG_AUTO_CORRECT is what makes the keyboard autocorrect at all,
+        // and it is what the autocorrect benchmark types into. Kept at the top so it is on screen.
+        // NO_PERSONALIZED_LEARNING keeps the corpus repeatable: without it every mistyped sample
+        // the benchmark commits is learned and starts outranking the real correction next run.
+        add("prose", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT, "prose",
+            EditorInfo.IME_ACTION_NEXT or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING)
         add("multiline", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE, "multiline", EditorInfo.IME_ACTION_NONE)
         add("number", InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED, "number")
         add("integer", InputType.TYPE_CLASS_NUMBER)

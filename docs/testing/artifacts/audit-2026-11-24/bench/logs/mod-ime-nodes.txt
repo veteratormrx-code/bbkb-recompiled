@@ -1,0 +1,98 @@
+window=Rect(0, 1569 - 1080, 2400)
+id=null cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 136 - 1080, 2400) clickable=false
+id=null cls=android.widget.LinearLayout text='null' desc='null' Rect(0, 136 - 1080, 2337) clickable=false
+id=android:id/content cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=com.blackberry.keyboard:id/keyboard_view cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=android:id/parentPanel cls=android.widget.LinearLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=android:id/inputArea cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=com.blackberry.keyboard:id/main_keyboard_frame cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 136 - 1080, 2274) clickable=false
+id=com.blackberry.keyboard:id/unified_input_menu_bar_view cls=android.view.View text='null' desc='null' Rect(0, 1569 - 1080, 1674) clickable=false
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Voice dictation mode' Rect(0, 1570 - 217, 1675) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Emojis' Rect(216, 1570 - 433, 1675) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Keyboard mode' Rect(432, 1570 - 649, 1675) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Select, cut, or copy' Rect(648, 1570 - 865, 1675) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Clipboard' Rect(864, 1570 - 1080, 1675) clickable=true
+id=com.blackberry.keyboard:id/keyboard_frame cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 1674 - 1080, 2274) clickable=false
+id=com.blackberry.keyboard:id/keyboard_view cls=android.view.View text='null' desc='null' Rect(0, 1674 - 1080, 2274) clickable=false
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='q' desc='q' Rect(0, 1683 - 109, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='w' desc='w' Rect(108, 1683 - 217, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='e' desc='e' Rect(216, 1683 - 325, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='r' desc='r' Rect(324, 1683 - 433, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='t' desc='t' Rect(432, 1683 - 541, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='y' desc='y' Rect(540, 1683 - 649, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='u' desc='u' Rect(648, 1683 - 757, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='i' desc='i' Rect(756, 1683 - 865, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='o' desc='o' Rect(864, 1683 - 973, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='p' desc='p' Rect(972, 1683 - 1080, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='a' desc='a' Rect(0, 1832 - 121, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='s' desc='s' Rect(120, 1832 - 241, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='d' desc='d' Rect(240, 1832 - 361, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='f' desc='f' Rect(360, 1832 - 481, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='g' desc='g' Rect(480, 1832 - 601, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='h' desc='h' Rect(600, 1832 - 721, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='j' desc='j' Rect(720, 1832 - 841, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='k' desc='k' Rect(840, 1832 - 961, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='l' desc='l' Rect(960, 1832 - 1081, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Shift' Rect(0, 1981 - 163, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='z' desc='z' Rect(162, 1981 - 271, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='x' desc='x' Rect(270, 1981 - 379, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='c' desc='c' Rect(378, 1981 - 487, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='v' desc='v' Rect(486, 1981 - 595, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='b' desc='b' Rect(594, 1981 - 703, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='n' desc='n' Rect(702, 1981 - 811, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='m' desc='m' Rect(810, 1981 - 919, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Delete' Rect(918, 1981 - 1080, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='?123' desc='Symbols' Rect(0, 2130 - 163, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text=',' desc=',' Rect(162, 2130 - 271, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='null' desc='Space' Rect(270, 2130 - 811, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='.' desc='.' Rect(810, 2130 - 919, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='Next' desc='Next' Rect(918, 2130 - 1080, 2279) clickable=true
+id=null cls=android.view.View text='null' desc='null' Rect(0, 1674 - 540, 2274) clickable=false
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='7' desc='7' Rect(0, 1683 - 109, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='8' desc='8' Rect(108, 1683 - 217, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='9' desc='9' Rect(216, 1683 - 325, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='&' desc='&' Rect(324, 1683 - 433, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='*' desc='*' Rect(432, 1683 - 541, 1832) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='4' desc='4' Rect(0, 1832 - 109, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='5' desc='5' Rect(108, 1832 - 217, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='6' desc='6' Rect(216, 1832 - 325, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='$' desc='$' Rect(324, 1832 - 433, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='%' desc='%' Rect(432, 1832 - 541, 1981) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='1' desc='1' Rect(0, 1981 - 109, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='2' desc='2' Rect(108, 1981 - 217, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='3' desc='3' Rect(216, 1981 - 325, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='@' desc='@' Rect(324, 1981 - 433, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='#' desc='#' Rect(432, 1981 - 541, 2130) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='0' desc='0' Rect(0, 2130 - 109, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='.' desc='.' Rect(108, 2130 - 217, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text=',' desc=',' Rect(216, 2130 - 325, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='?' desc='?' Rect(324, 2130 - 433, 2279) clickable=true
+id=null cls=com.blackberry.inputmethod.keyboard.Key text='!' desc='!' Rect(432, 2130 - 541, 2279) clickable=true
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1674 - 540, 2274) clickable=false
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1674 - 540, 2274) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_list cls=android.support.v7.widget.RecyclerView text='null' desc='null' Rect(0, 1674 - 540, 2197) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_text_container cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1674 - 540, 1797) clickable=true
+id=com.blackberry.keyboard:id/quick_phrase_text cls=android.widget.TextView text='How are you? ' desc='null' Rect(26, 1694 - 514, 1777) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_text_container cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1797 - 540, 1897) clickable=true
+id=com.blackberry.keyboard:id/quick_phrase_text cls=android.widget.TextView text='On my way ' desc='null' Rect(26, 1818 - 514, 1875) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_text_container cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1897 - 540, 1997) clickable=true
+id=com.blackberry.keyboard:id/quick_phrase_text cls=android.widget.TextView text='That's great! ' desc='null' Rect(26, 1918 - 514, 1975) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_text_container cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 1997 - 540, 2097) clickable=true
+id=com.blackberry.keyboard:id/quick_phrase_text cls=android.widget.TextView text='Thank you ' desc='null' Rect(26, 2018 - 514, 2075) clickable=false
+id=com.blackberry.keyboard:id/quick_phrase_text_container cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 2097 - 540, 2197) clickable=true
+id=com.blackberry.keyboard:id/quick_phrase_text cls=android.widget.TextView text='I'm at work ' desc='null' Rect(26, 2118 - 514, 2175) clickable=false
+id=com.blackberry.keyboard:id/emoji_palettes_view_frame cls=android.widget.RelativeLayout text='null' desc='null' Rect(0, 2274 - 0, 2274) clickable=false
+id=android:id/navigationBarBackground cls=android.view.View text='null' desc='null' Rect(0, 2274 - 1080, 2400) clickable=false
+id=null cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 2274 - 1080, 2400) clickable=false
+id=android:id/input_method_navigation_bar_view cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 2274 - 1080, 2400) clickable=false
+id=android:id/input_method_nav_inflater cls=android.widget.FrameLayout text='null' desc='null' Rect(0, 2274 - 1080, 2400) clickable=false
+id=android:id/input_method_nav_horizontal cls=android.widget.FrameLayout text='null' desc='null' Rect(47, 2274 - 1033, 2400) clickable=false
+id=android:id/input_method_nav_buttons cls=android.widget.FrameLayout text='null' desc='null' Rect(68, 2274 - 1012, 2400) clickable=false
+id=android:id/input_method_nav_ends_group cls=android.widget.LinearLayout text='null' desc='null' Rect(68, 2274 - 1012, 2400) clickable=false
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(68, 2274 - 251, 2400) clickable=false
+id=android:id/input_method_nav_back cls=android.widget.ImageView text='null' desc='Back' Rect(68, 2274 - 251, 2400) clickable=true
+id=null cls=android.widget.RelativeLayout text='null' desc='null' Rect(829, 2274 - 1012, 2400) clickable=false
+id=android:id/input_method_nav_ime_switcher cls=android.widget.ImageView text='null' desc='Switch input method' Rect(829, 2274 - 1012, 2400) clickable=true
+id=android:id/input_method_nav_center_group cls=android.widget.LinearLayout text='null' desc='null' Rect(445, 2274 - 634, 2400) clickable=false

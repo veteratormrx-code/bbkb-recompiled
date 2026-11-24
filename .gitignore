@@ -40,6 +40,8 @@ captures/
 # RE / instrumentation scratch output
 /sensor_viz_out/
 /taps.txt
+/tools/qa/out/
+/docs/testing/artifacts/audit-*/bench/logs/*-logcat.txt
 
 # Python bytecode cache
 tools/__pycache__/

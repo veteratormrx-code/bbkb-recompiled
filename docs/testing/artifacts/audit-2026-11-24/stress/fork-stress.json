@@ -1,0 +1,18 @@
+{
+  "ime": "dev.bbkb.ime.debug\/dev.bbkb.ime.core.BlackBerryIME",
+  "keys": 10003,
+  "elapsedMs": 1708215,
+  "keysPerSecond": 5.85582025681779,
+  "lostCharacters": 0,
+  "duplicatedCharacters": 0,
+  "panelCycles": 0,
+  "panelFailures": 33,
+  "keyboardCycles": 25,
+  "languageSwitches": 12,
+  "russianAvailable": true,
+  "latencySamples": 1458,
+  "latencyP50": 0,
+  "latencyP95": 13,
+  "latencyP99": 20,
+  "errors": []
+}

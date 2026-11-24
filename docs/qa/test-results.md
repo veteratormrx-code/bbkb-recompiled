@@ -12,6 +12,7 @@ Windows 11 10.0.26200, Intel Core i5-12500H, 12 ядер / 16 потоков и 
 | JVM-регрессии затронутых функций | 124 PASS перед последней правкой. После неё 114 PASS в выборке по буферу и полосе правки. Выборки пересекаются. | [JUnit 124](../testing/artifacts/audit-2026-11-24/junit-final-regression.zip), [JUnit 114](../testing/artifacts/audit-2026-11-24/junit-clipboard-final.zip) |
 | Python публикации | 68 PASS из 68 | [Лог](../testing/artifacts/audit-2026-11-24/dist-python.txt) |
 | Native C | 16 PASS, 1 FAIL, 2 этапа SKIP в общем прогоне. Проверка ELF отдельно PASS. | [Native](../testing/artifacts/audit-2026-11-24/native-final/native.txt), [ELF](../testing/artifacts/audit-2026-11-24/xt9-apk-guard.txt) |
+| Native C после объединения | 21 этап PASS в WSL, включая отрицательные контроли. Для golden используется допуск `1e-4` и проверка состава кандидатов. | [Сводка](../testing/artifacts/audit-2026-11-24/merge-validation/native-summary.txt) |
 | Основной ввод на Android 17 | 9 PASS из 9. По три сценария на каждую сборку. | [Upstream](../testing/artifacts/audit-2026-11-24/api37/upstream/results.json), [4PDA](../testing/artifacts/audit-2026-11-24/api37/mod/results.json), [форк](../testing/artifacts/audit-2026-11-24/api37/fork/results.json) |
 | Цифровая WebView-форма | Форк открыл цифровую раскладку и ввёл `-12.5` | [Раскладка](../testing/artifacts/audit-2026-11-24/api37/fork-web-number-open/screen.png), [значение](../testing/artifacts/audit-2026-11-24/api37/fork-vkb-number/screen.png) |
 | Открытие панелей форка | Видны правка текста и перевод. Подсказки на этих кадрах отсутствуют. | [Правка](../testing/artifacts/audit-2026-11-24/api37/fork-edit-board/screen.png), [перевод](../testing/artifacts/audit-2026-11-24/api37/fork-translate-board/screen.png) |
@@ -19,7 +20,9 @@ Windows 11 10.0.26200, Intel Core i5-12500H, 12 ядер / 16 потоков и 
 | ML Kit Translate | PASS для EN→RU, RU→EN и вставки результата без сети после загрузки модели. | [Отчёт](mlkit-report.md) |
 | Замена debug-сборки | Сохранены четыре настройки при установке поверх переподписанного upstream с тем же application ID и versionCode. | [Миграция](upgrade-migration-report.md) |
 | Инструментованный короткий ввод на API 35 | PASS для двух нажатий в тестовом редакторе | [Лог](../testing/artifacts/audit-2026-11-24/api35-instrumentation-retest.txt) |
-| Инструментованный ввод на API 37 | 100 нажатий PASS. Прогон 10 000 прерван при завершении сессии. | [Нагрузка](stress-test-report.md) |
+| Инструментованный ввод на API 37 | 10 003 касания, ноль расхождений по длине порций, падений и ANR. PSS 266→296 МБ. Циклы панелей открыты. | [Нагрузка](stress-test-report.md) |
+| Память эмулятора на хосте | Обрезка рабочего набора вернула 6,2 ГБ без перезапуска; сторож держит 3,5–3,8 ГБ и 226–277 потоков вместо 13 ГБ и 1 635 потоков. | [Ограничения](known-limitations.md) |
+| Подписанный release | `app-release.apk`, RSA 4096, схема v2, отпечаток `9f:48:ab…40:63`; `zipalign -c 4` без нарушений, все `lib/*.so` проходят 16-КиБ проверку. | [Подпись](release-signing.md) |
 | Изображения в буфере | PNG скопирован, показан в истории и вставлен в MIME-редактор на API 35 на итоговой сборке. | [Буфер обмена](clipboard-report.md) |
 | Словари и фразы | 3 708 431 уникальная строка, 3 606 701 после нормализации. Индексы совпали после генерации из шардов. | [RUL1](../testing/artifacts/audit-2026-11-24/dictionaries.json), [RU/EN](../testing/artifacts/audit-2026-11-24/phrases.json) |
 

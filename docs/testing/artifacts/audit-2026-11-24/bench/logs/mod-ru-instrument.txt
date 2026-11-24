@@ -1,0 +1,23 @@
+﻿
+dev.bbkb.ime.harness.AutocorrectBenchmarkTest:
+Error in runCorpus(dev.bbkb.ime.harness.AutocorrectBenchmarkTest):
+java.lang.IllegalStateException: could not switch the keyboard to 'ru' by swiping the space bar (last probe 'y' at 60,1820 over space 540,2207)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.selectLanguage(AutocorrectBenchmarkTest.kt:561)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.calibrate(AutocorrectBenchmarkTest.kt:396)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.calibrate$default(AutocorrectBenchmarkTest.kt:306)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.runCorpus(AutocorrectBenchmarkTest.kt:811)
+
+
+Time: 219.768
+There was 1 failure:
+1) runCorpus(dev.bbkb.ime.harness.AutocorrectBenchmarkTest)
+java.lang.IllegalStateException: could not switch the keyboard to 'ru' by swiping the space bar (last probe 'y' at 60,1820 over space 540,2207)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.selectLanguage(AutocorrectBenchmarkTest.kt:561)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.calibrate(AutocorrectBenchmarkTest.kt:396)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.calibrate$default(AutocorrectBenchmarkTest.kt:306)
+	at dev.bbkb.ime.harness.AutocorrectBenchmarkTest.runCorpus(AutocorrectBenchmarkTest.kt:811)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

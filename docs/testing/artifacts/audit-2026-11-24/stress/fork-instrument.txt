@@ -1,0 +1,8 @@
+
+dev.bbkb.ime.harness.AutocorrectBenchmarkTest:.
+
+Time: 1,828.484
+
+OK (1 test)
+
+

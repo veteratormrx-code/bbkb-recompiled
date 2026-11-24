@@ -19,7 +19,19 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = '17' }
+    // The benchmark drives the corpus that lives with the QA documents; copy it in rather than
+    // keeping a second copy that can drift.
+    sourceSets {
+        main.assets.srcDirs += "$buildDir/generated/assets"
+    }
 }
+
+tasks.register('copyAutocorrectCorpus', Copy) {
+    from rootProject.file('docs/qa/autocorrect-corpus.csv')
+    into "$buildDir/generated/assets"
+}
+
+tasks.named('preBuild') { dependsOn 'copyAutocorrectCorpus' }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'

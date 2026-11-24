@@ -1,0 +1,26 @@
+Source code: ac956aed (merged interface and Windows QA fixes).
+Command: bash xt9kdb-scaffold/cpp/test/run_tests.sh (WSL)
+
+==== stage results ====
+  PASS  owned self-test
+  PASS  cutover selection contract (ctx+0x04 selector, NKL+0x04 invariant)
+  PASS  NKL emitter (geometry must match the 324 XT9NKL dump)
+  PASS  NKL vkb header (regional maxW: RADX 120, not the 540 SPACE)
+  PASS  multi-code keyCodes (L13): Greek/Arabic NKL == committed dumps
+  PASS  athena uneven row bands (90/180/180)
+  PASS  owned-recall index (O(N) builder == reference; negative control)
+  PASS  gesture decoder (synthetic curved paths; shallow corners must resolve)
+  PASS  ranker path precompute (scores bit-identical to the original scorer)
+  PASS  frequency table (blob + offsets == what the generator wrote; C-6)
+  PASS  owned-recall top 8 over every corpus == committed golden
+  PASS  recall golden comparator negative control (corrupt a score -> must FAIL)
+  PASS  owned LDB reader (mapped stored assets; blob-identical heap paths; P-9)
+  PASS  touch/gesture ABI contracts (session, admission, size, getKeys, tap)
+  PASS  touch/gesture ABI contracts, CUTOVER (per-context keyboard scale)
+  PASS  getKeys probe (one-shot capture rule, audit §4.3)
+  PASS  DIFF harness self-check (model -> baseline -> diff must MATCH)
+  PASS  DIFF harness negative control (corrupt a row -> must FAIL)
+  PASS  blob call-site evidence (INERT_NO_CALLERS has no callers)
+  PASS  symbol-interposition guard
+  PASS  interposition guard negative control (blob = libkb must FAIL)
+ALL 21 STAGES PASSED
