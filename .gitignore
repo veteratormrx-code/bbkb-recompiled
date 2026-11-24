@@ -14,6 +14,7 @@ captures/
 *.aab
 *.aar
 *.jar
+!/gradle/wrapper/gradle-wrapper.jar
 *.keystore
 *.hprof
 

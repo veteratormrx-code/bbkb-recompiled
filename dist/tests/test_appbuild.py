@@ -30,7 +30,7 @@ class GradleVersionTest(unittest.TestCase):
         real = appbuild.read_gradle_version(GRADLE)
         self.assertGreater(real.version_code, 1429)
         self.assertRegex(real.version_name, r"^\d+\.\d+\.\d+")
-        self.assertEqual(23, real.min_sdk)
+        self.assertEqual(26, real.min_sdk)
         self.assertEqual("-debug", real.suffixes["debug"])
 
     def test_the_debug_build_type_carries_a_version_name_suffix(self):
