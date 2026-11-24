@@ -4,6 +4,7 @@
  * and an FNV-1a digest per arm. Tests the state hypothesis only, not main-thread timing.
  * Usage: getkeys_probe_drv <corpus> <kdb.xml> <wordlist> --n=<N> [--drop=K] [--verbose]
  * Driven by test/getkeys_probe.sh (N = 0, 1, 20, plus the --drop negative control). */
+#define _POSIX_C_SOURCE 200809L
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"

@@ -5,6 +5,7 @@
  * Build:  cc -std=c11 -Iinclude src/kdb_*.c test/recall_index_selftest.c -lm -o recall_index_selftest
  * Run:    ./recall_index_selftest          (no KDB needed; pure table work)
  */
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <time.h>
 #include "et9kdb.h"

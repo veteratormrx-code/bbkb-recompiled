@@ -76,7 +76,7 @@ multicode_stage() {
         if ! "$OUT/nkl" --dump "$f" > "$OUT/$l.txt"; then
             echo "  FAIL $l: dump failed"; rc=1; continue
         fi
-        if diff -u "$d/nkl_${l}_after.txt" "$OUT/$l.txt" > "$OUT/$l.diff"; then
+        if diff -u <(sed $'s/\r$//' "$d/nkl_${l}_after.txt") "$OUT/$l.txt" > "$OUT/$l.diff"; then
             echo "  OK   $l matches $d/nkl_${l}_after.txt"
         else
             echo "  FAIL $l differs from $d/nkl_${l}_after.txt:"; head -24 "$OUT/$l.diff"; rc=1
@@ -101,7 +101,7 @@ recall_top8_stage() {
         $A/keypad_pkb_athena_test.xml test/data/w6_s1_corpus.txt \
         $A/qwerty_vkb.xml test/data/vkb_s1_corpus.txt $A/qwerty_vkb.xml test/data/vkb_s2_corpus.txt \
         > "$OUT/recall_top8.txt" 2>/dev/null || { echo "  FAIL: recall dump exited non-zero"; return 1; }
-    if diff -u test/data/recall_top8_golden.txt "$OUT/recall_top8.txt" > "$OUT/recall_top8.diff"; then
+    if diff -u <(sed $'s/\r$//' test/data/recall_top8_golden.txt) "$OUT/recall_top8.txt" > "$OUT/recall_top8.diff"; then
         echo "  OK: $(wc -l < "$OUT/recall_top8.txt" | tr -d ' ') gestures, recall top 8 identical to the golden"
     else
         echo "  FAIL: recall top 8 differs from test/data/recall_top8_golden.txt:"; head -20 "$OUT/recall_top8.diff"; return 1
