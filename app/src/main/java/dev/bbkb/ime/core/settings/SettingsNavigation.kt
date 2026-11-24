@@ -11,6 +11,9 @@ sealed class SettingsRoute(val route: String, val title: String) {
 
     object Preferences : SettingsRoute("preferences", "Preferences")
     object AppearanceLayout : SettingsRoute("appearance_layout", "Appearance and layout")
+    object SizeLayout : SettingsRoute("size_layout", "Size and layout")
+    object Toolbar : SettingsRoute("toolbar", "Toolbar")
+    object Clipboard : SettingsRoute("clipboard", "Clipboard")
     object Advanced : SettingsRoute("advanced", "Advanced")
 
     object OnScreenKeyboard : SettingsRoute("on_screen_keyboard", "On-Screen Keyboard")
@@ -84,6 +87,9 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 SuggestionCorrection.route, "prediction_correction", "correction_learning" -> SuggestionCorrection
                 Preferences.route, "customization" -> Preferences
                 AppearanceLayout.route, "personalization" -> AppearanceLayout
+                SizeLayout.route -> SizeLayout
+                Toolbar.route -> Toolbar
+                Clipboard.route -> Clipboard
                 Advanced.route -> Advanced
                 MlKitTools.route -> MlKitTools
                 OnScreenKeyboard.route -> OnScreenKeyboard
@@ -95,7 +101,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 DeviceCompatibility.route -> DeviceCompatibility
                 LanguageSwitching.route -> LanguageSwitching
                 QuickPhrases.route -> QuickPhrases
-                "shake" -> AuxiliaryInput
+                "shake" -> Gestures
                 VoiceInput.route -> VoiceInput
                 AuxiliaryInput.route -> AuxiliaryInput
                 VoiceLanguageSelection.route -> VoiceLanguageSelection
@@ -121,7 +127,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeMenu.route -> CustomizeMenu
                 Gestures.route -> Gestures
                 Privacy.route -> Privacy
-                "clipboard" -> AuxiliaryInput
                 About.route -> About
                 Licenses.route -> Licenses
                 Updates.route -> Updates

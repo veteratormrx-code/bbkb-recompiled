@@ -133,6 +133,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "AdvancedSettingsScreen" -> ({ AdvancedSettingsScreen({}, {}, {}) })
         "AnimationParametersScreen" -> ({ AnimationParametersScreen({}) })
         "AppearanceLayoutScreen" -> ({ AppearanceLayoutScreen({}, {}) })
+        "SizeLayoutScreen" -> ({ SizeLayoutScreen({}) })
+        "ToolbarSettingsScreen" -> ({ ToolbarSettingsScreen({}, {}) })
+        "ClipboardSettingsScreen" -> ({ ClipboardSettingsScreen({}) })
         "AutoCorrectionScreen" -> ({ AutoCorrectionScreen({}) })
         "BackupRestoreScreen" -> ({ BackupRestoreScreen({}) })
         "CkbGesturesScreen" -> ({ CkbGesturesScreen({}) })
@@ -149,7 +152,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "DeviceConfigurationScreen" -> ({ DeviceConfigurationScreen({}, {}) })
         "DictionariesLearningScreen" -> ({ DictionariesLearningScreen({}, {}, {}, {}) })
         "GestureLabScreen" -> ({ GestureLabScreen({}) })
-        "GesturesSettingsScreen" -> ({ GesturesSettingsScreen({}, {}, {}, {}, {}, {}) })
+        "GesturesSettingsScreen" -> ({ GesturesSettingsScreen({}, {}, {}) })
         "PrivacySettingsScreen" -> ({ PrivacySettingsScreen({}, {}, {}) })
         "KeyPressFeedbackScreen" -> ({ KeyPressFeedbackScreen({}) })
         "KeyboardHelperScreen" -> ({ KeyboardHelperScreen({}) })
@@ -157,7 +160,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "LanguageSwitchingScreen" -> ({ LanguageSwitchingScreen({}) })
         "MainSettingsScreen" -> ({ MainSettingsScreen({}, {}) })
         "TouchScreenKeyboardScreen" -> ({ TouchScreenKeyboardScreen({}, {}, {}) })
-        "AuxiliaryInputScreen" -> ({ AuxiliaryInputScreen({}, {}) })
+        "AuxiliaryInputScreen" -> ({ AuxiliaryInputScreen({}, {}, {}, {}) })
         "PhysicalKeyboardScreen" -> ({ PhysicalKeyboardScreen({}, {}) })
         "PhysicalLayoutsScreen" -> ({ PhysicalLayoutsScreen({}, builtInDocuments = OneBuiltInLayout) })
         "PredictionsSuggestionsScreen" -> ({ PredictionsSuggestionsScreen({}) })
@@ -389,6 +392,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
             "AppearanceLayoutScreen", "AutoCorrectionScreen", "AuxiliaryInputScreen", "BackupRestoreScreen", "CkbGesturesScreen",
+            "ClipboardSettingsScreen",
             "CorrectionLearningScreen", "CreditsScreen", "CustomMacrosScreen",
             "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
@@ -399,7 +403,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen",
             "PrivacySettingsScreen", "QuickPhrasesScreen",
             "ShakeTuningScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
-            "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
+            "SizeLayoutScreen", "SymbolCustomizationScreen", "TextShortcutsScreen", "ToolbarSettingsScreen", "TouchScreenKeyboardScreen",
             "TouchSurfaceHelperScreen",
             "UpdatesScreen", "UserDictionaryScreen", "VoiceInputSettingsScreen",
             "VoiceLanguageSelectionScreen",
@@ -503,10 +507,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_category_symbols",
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
-                "settings_color_scheme_title", "settings_keyboard_height_regular",
-                "settings_keyboard_height_title", "settings_keyboard_theme_title",
-                "settings_number_row_summary", "settings_number_row_title",
-                "settings_number_row_height_title",
+                "settings_color_scheme_title", "settings_keyboard_theme_title",
                 "settings_default_currency_summary", "settings_default_currency_title",
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
@@ -521,21 +522,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.AuxiliaryInput.route,
             title = "Auxiliary input",
             resources = setOf(
-                "settings_auxiliary_input_title", "settings_category_input_menu",
-                "settings_toolbar_title", "settings_toolbar_mode_title", "settings_toolbar_mode_collapsed",
-                "settings_suggestion_place_title", "settings_suggestion_place_classic",
-                "settings_uim_enable_summary_on",
-                "settings_customize_menu_summary", "settings_customize_menu_title",
-                "settings_shake_title", "settings_shake_fallback_title",
-                "settings_shake_x_axis_title", "settings_shake_y_axis_title", "settings_shake_z_axis_title",
-                // The clipboard group's "Clipboard" header is a category, which the recorder
-                // does not count.
-                "clipboard_history_title", "clipboard_history_summary",
-                "clipboard_retention_title", "clipboard_retention_1h",
-                "clipboard_link_previews_title", "clipboard_link_previews_summary", "settings_pkb_multifunction_action_clipboard"
+                "settings_auxiliary_input_title",
+                "settings_root_tools_title", "settings_root_tools_summary",
+                "settings_pkb_multifunction_action_clipboard", "settings_root_clipboard_summary",
+                "settings_shake_title", "settings_gestures_shake_summary",
             ),
-            // The four shake rows' summary: the chosen action's label, from a string array.
-            literals = setOf("No action"),
+            literals = emptySet(),
             // The clipboard group's header reuses the "Clipboard" string upper-cased, which the
             // recorder sees as a literal.
         ),
@@ -893,13 +885,49 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "ckb_gestures_configure_summary",
                 "settings_category_gestures",
-                "settings_category_on_screen_keyboard",
-                "settings_gestures_onscreen_summary",
-                "settings_gestures_shake_summary",
-                "settings_gestures_spacebar_summary",
-                "settings_lang_spacebar_switch_title",
-                "settings_shake_title",
+                "settings_lang_spacebar_switch_summary", "settings_lang_spacebar_switch_title",
+                "settings_shake_fallback_title", "settings_shake_title",
+                "settings_shake_x_axis_title", "settings_shake_y_axis_title", "settings_shake_z_axis_title",
+                "settings_vkb_swipe_gestures_switch_summary", "settings_vkb_swipe_gestures_title",
+                "settings_vkb_type_by_swiping_summary", "settings_screen_type_by_swiping",
                 "vkb_gestures_configure_title",
+            ),
+            literals = setOf("No action"),
+        ),
+        Case(
+            name = "SizeLayoutScreen",
+            route = SettingsRoute.SizeLayout.route,
+            title = "Size and layout",
+            resources = setOf(
+                "settings_root_size_title",
+                "settings_number_row_title", "settings_number_row_summary",
+                "settings_number_row_height_title", "settings_keyboard_height_regular",
+                "settings_keyboard_height_title",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "ToolbarSettingsScreen",
+            route = SettingsRoute.Toolbar.route,
+            title = "Tools",
+            resources = setOf(
+                "settings_root_tools_title",
+                "settings_toolbar_title", "settings_toolbar_mode_title", "settings_toolbar_mode_collapsed",
+                "settings_suggestion_place_title", "settings_suggestion_place_classic",
+                "settings_category_input_menu", "settings_uim_enable_summary_on",
+                "settings_customize_menu_title", "settings_customize_menu_summary",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "ClipboardSettingsScreen",
+            route = SettingsRoute.Clipboard.route,
+            title = "Clipboard",
+            resources = setOf(
+                "settings_pkb_multifunction_action_clipboard",
+                "clipboard_history_title", "clipboard_history_summary",
+                "clipboard_retention_title", "clipboard_retention_1h",
+                "clipboard_link_previews_title", "clipboard_link_previews_summary",
             ),
             literals = emptySet(),
         ),
@@ -915,7 +943,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_advanced_summary", "settings_advanced_title",
                 "settings_appearance_layout_summary",
                 "settings_backup_restore_summary", "settings_backup_restore_title",
-                "settings_category_appearance", "settings_category_gestures",
+                "settings_appearance_layout_title", "settings_category_gestures",
                 "settings_languages_summary",
                 "settings_mlkit_summary", "settings_mlkit_title",
                 "settings_pkb_multifunction_action_clipboard",

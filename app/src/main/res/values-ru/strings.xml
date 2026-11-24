@@ -51,7 +51,7 @@
     <string name="contact_permission_rationale">Предусмотрена возможность вывода предлагаемых имен из вашего списка контактов при вводе текста с помощью клавиатуры. Если вы хотите использовать информацию о своих контактах для функции прогнозирования, выберите Запрашивать разрешение.</string>
     <string name="deny">Отклонить</string>
     <string name="settings_auxiliary_input_title">Вспомогательный ввод</string>
-    <string name="settings_auxiliary_input_summary">Меню ввода, буфер обмена и действия при встряхивании</string>
+    <string name="settings_auxiliary_input_summary">Панель инструментов, буфер и встряхивание</string>
     <string name="settings_category_input_menu">Меню ввода</string>
     <string name="settings_category_emoji">Эмодзи</string>
     <string name="settings_autocorrect_enable_title">Включить автоисправление</string>
@@ -65,7 +65,7 @@
     <string name="prefs_category_developer">Разработчик</string>
     <string name="prefs_shake_tuning_title">Настройка жеста встряхивания</string>
     <string name="prefs_shake_tuning_summary">Число срабатываний, порог ускорения и время</string>
-    <string name="settings_category_slideboard">Slideboard</string>
+    <string name="settings_category_slideboard">Боковая панель</string>
     <string name="settings_category_feedback">Отклик</string>
     <string name="settings_category_appearance">Внешний вид</string>
     <string name="settings_category_symbols">Символы</string>
@@ -317,7 +317,7 @@
     <string name="settings_color_scheme_title">Цветовая схема</string>
     <string name="settings_use_system_colors_title">Динамические цвета</string>
     <string name="settings_use_system_colors_summary">Окрашивать клавиатуру и настройки в цвета ваших обоев</string>
-    <string name="settings_appearance_layout_summary">Тема, высота клавиатуры и символы</string>
+    <string name="settings_appearance_layout_summary">Тема, цвета и символы</string>
     <string name="settings_appearance_layout_title">Внешний вид</string>
     <string name="settings_appearance_light">Светлая</string>
     <string name="settings_keyboard_height_compact">Компактная</string>
@@ -334,10 +334,10 @@
     <string name="settings_vkb_customize_numberpad_title">Настроить цифровую панель</string>
     <string name="settings_vkb_quick_phrases_title">Быстрые фразы</string>
     <string name="settings_vkb_slideboard_enable_summary">Сдвиньте клавиатуру влево или вправо для доступа к быстрым фразам и цифровой панели</string>
-    <string name="settings_vkb_slideboard_enable_title">Включить Slideboard</string>
+    <string name="settings_vkb_slideboard_enable_title">Показывать боковую панель</string>
     <string name="settings_vkb_slideboard_swap_summary_default">Быстрые фразы слева, цифровая панель справа</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Цифровая панель слева, быстрые фразы справа</string>
-    <string name="settings_vkb_slideboard_swap_title">Поменять местами панели Slideboard</string>
+    <string name="settings_vkb_slideboard_swap_title">Поменять стороны боковой панели</string>
     <string name="settings_vkb_swipe_gestures_title">Жесты смахивания</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Смахивания влево, вправо и вниз на клавиатуре</string>
     <string name="vkb_gestures_configure_title">Настроить жесты смахивания</string>
@@ -359,7 +359,7 @@
     <string name="customize_slideboard_reset_to_default">Сброс до стандартной раскладки</string>
     <string name="settings_slideboard_hub_summary">Цифровая панель, смена сторон и быстрые фразы</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
-    <string name="settings_slideboard_settings_title">Настройки Slideboard</string>
+    <string name="settings_slideboard_settings_title">Боковая панель</string>
     <string name="customized_symbol_page_add_button_description">Добавить символ Юникода</string>
     <string name="customized_symbols_page_reset_to_blank">Сбросить настройки до пустой раскладки</string>
     <string name="customized_symbols_page_reset_to_page_1">Сброс до стандартной раскладки 1</string>

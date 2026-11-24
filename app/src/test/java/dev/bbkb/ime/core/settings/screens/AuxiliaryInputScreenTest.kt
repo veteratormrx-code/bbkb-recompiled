@@ -56,7 +56,7 @@ class AuxiliaryInputScreenTest {
         composeRule.setContent {
             BlackBerryTheme {
                 CompositionLocalProvider(LocalSettingsHighlight provides SettingsHighlightController()) {
-                    AuxiliaryInputScreen(
+                    ToolbarSettingsScreen(
                         onNavigateToCustomizeMenu = { customizeMenuOpened++ },
                         onNavigateBack = {},
                     )

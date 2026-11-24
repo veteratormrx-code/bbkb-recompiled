@@ -75,7 +75,7 @@
     <string name="settings_dict_add_reverted_words_title">Show add word button</string>
     <string name="settings_dict_add_reverted_words_summary">After backspace undoes a correction, show a button to add the word</string>
     <string name="settings_auxiliary_input_title">Auxiliary input</string>
-    <string name="settings_auxiliary_input_summary">Input menu, clipboard, and shake actions</string>
+    <string name="settings_auxiliary_input_summary">Toolbar, clipboard, and shake</string>
     <string name="settings_category_input_menu">Input menu</string>
     <string name="settings_category_emoji">Emoji</string>
     <string name="settings_autocorrect_enable_title">Enable auto-correction</string>
@@ -378,7 +378,7 @@
     <string name="settings_color_scheme_title">Color scheme</string>
     <string name="settings_use_system_colors_title">Dynamic color</string>
     <string name="settings_use_system_colors_summary">Tint the keyboard and settings with colors from your wallpaper</string>
-    <string name="settings_appearance_layout_summary">Theme, keyboard height, and symbols</string>
+    <string name="settings_appearance_layout_summary">Theme, colors, and symbols</string>
     <string name="settings_appearance_layout_title">Appearance</string>
     <string name="settings_appearance_light">Light</string>
     <string name="settings_keyboard_height_compact">Compact</string>

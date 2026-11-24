@@ -25,6 +25,9 @@ import dev.bbkb.ime.core.settings.screens.AnimationParametersScreen
 import dev.bbkb.ime.core.settings.search.LocalSettingsHighlight
 import dev.bbkb.ime.core.settings.search.SettingsHighlightController
 import dev.bbkb.ime.core.settings.screens.AppearanceLayoutScreen
+import dev.bbkb.ime.core.settings.screens.SizeLayoutScreen
+import dev.bbkb.ime.core.settings.screens.ToolbarSettingsScreen
+import dev.bbkb.ime.core.settings.screens.ClipboardSettingsScreen
 import dev.bbkb.ime.core.settings.screens.AutoCorrectionScreen
 import dev.bbkb.ime.core.settings.screens.CorrectionLearningScreen
 import dev.bbkb.ime.core.settings.screens.CreditsScreen
@@ -227,6 +230,21 @@ fun SettingsNavHost(
             )
         }
 
+        composable(SettingsRoute.SizeLayout.route) {
+            SizeLayoutScreen(onNavigateBack = back)
+        }
+
+        composable(SettingsRoute.Toolbar.route) {
+            ToolbarSettingsScreen(
+                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateBack = back,
+            )
+        }
+
+        composable(SettingsRoute.Clipboard.route) {
+            ClipboardSettingsScreen(onNavigateBack = back)
+        }
+
         composable(SettingsRoute.OnScreenKeyboard.route) {
             TouchScreenKeyboardScreen(
                 onNavigateBack = back,
@@ -242,11 +260,8 @@ fun SettingsNavHost(
 
         composable(SettingsRoute.Gestures.route) {
             GesturesSettingsScreen(
-                onNavigateToOnScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
                 onNavigateToVkbGestures = go(SettingsRoute.VkbGestures),
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
-                onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
-                onNavigateToShake = go(SettingsRoute.AuxiliaryInput),
                 onNavigateBack = back,
             )
         }
@@ -261,7 +276,9 @@ fun SettingsNavHost(
 
         composable(SettingsRoute.AuxiliaryInput.route) {
             AuxiliaryInputScreen(
-                onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
+                onNavigateToToolbar = go(SettingsRoute.Toolbar),
+                onNavigateToClipboard = go(SettingsRoute.Clipboard),
+                onNavigateToGestures = go(SettingsRoute.Gestures),
                 onNavigateBack = back,
             )
         }
