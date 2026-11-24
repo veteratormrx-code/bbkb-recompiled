@@ -67,17 +67,13 @@ public final class InputTypeUtils {
 
     /** @param inputType an EditorInfo input type */
     public static boolean isNumberInputType(int inputType) {
-        // The mask strips TYPE_NUMBER_FLAG_SIGNED/DECIMAL, so the two flagged comparisons never match.
-        final int classAndVariation = inputType & MASK_CLASS_AND_VARIATION;
-        return classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD)
-                || classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED)
-                || classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL)
-                || classAndVariation == InputType.TYPE_CLASS_NUMBER;
+        // Any number class, including signed/decimal flags and web-form variations.
+        return (inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_NUMBER;
     }
 
     /** @param inputType an EditorInfo input type */
     public static boolean isPhoneInputType(int inputType) {
-        return inputType == InputType.TYPE_CLASS_PHONE;
+        return (inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_PHONE;
     }
 
     /** @param inputType an EditorInfo input type */

@@ -2624,6 +2624,11 @@ class BlackBerryIME : InputMethodService(),
         flickSuggestionView?.hide()
     }
 
+    /** Keeps on-key predictions hidden until the covering panel or language bar closes. */
+    fun setFlickSuggestionsSuppressed(suppressed: Boolean) {
+        flickSuggestionView?.setSuppressed(suppressed)
+    }
+
     fun clearSuggestions() = suggestionStrip.clear()
 
     override fun setNeutralSuggestionStrip() = suggestionStrip.showNeutral()

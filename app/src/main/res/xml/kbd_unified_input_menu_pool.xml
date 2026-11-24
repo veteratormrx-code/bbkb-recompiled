@@ -25,5 +25,17 @@
             latin:keyIconActive="!icon/number_pad_active_key"
             latin:keyIconDisabled="!icon/number_pad_key_disabled"
             latin:keySpec="!icon/number_pad_key|!code/key_number_pad"/>
+        <Key
+            latin:keyIconActive="!icon/settings_key"
+            latin:keyIconDisabled="!icon/settings_key"
+            latin:keySpec="!icon/settings_key|!code/key_text_edit"/>
+        <Key
+            latin:keyIconActive="!icon/language_switch_key"
+            latin:keyIconDisabled="!icon/language_switch_key"
+            latin:keySpec="!icon/language_switch_key|!code/key_translate"/>
+        <Key
+            latin:keyIconActive="!icon/voice_input_key"
+            latin:keyIconDisabled="!icon/voice_input_key_disabled"
+            latin:keySpec="!icon/voice_input_key|!code/key_handwriting"/>
     </Row>
 </Keyboard>

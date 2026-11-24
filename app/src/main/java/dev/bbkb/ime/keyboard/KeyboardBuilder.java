@@ -254,9 +254,10 @@ public final class KeyboardBuilder {
         private final boolean navigatePrevious;
         private final InputMethodSubtype subtype;
         private final String keyboardLayoutSet;
+        private final boolean numberRow;
         private final int hashCode;
 
-        KeyboardCacheKey(KeyboardId id) {
+        KeyboardCacheKey(KeyboardId id, Context context) {
             this.elementId = id.mElementId;
             this.mode = id.mMode;
             this.width = id.mWidth;
@@ -274,7 +275,8 @@ public final class KeyboardBuilder {
             this.navigatePrevious = id.navigatePrevious();
             this.subtype = id.mSubtype;
             this.keyboardLayoutSet = id.mKeyboardLayoutSet;
-            this.hashCode = id.hashCode();
+            this.numberRow = NumberRow.isEnabled(context);
+            this.hashCode = 31 * id.hashCode() + (this.numberRow ? 1 : 0);
         }
 
         @Override
@@ -293,7 +295,8 @@ public final class KeyboardBuilder {
                     && o.inputBoardBarEnabled == inputBoardBarEnabled && o.multiLine == multiLine
                     && o.imeAction == imeAction && TextUtils.equals(o.customActionLabel, customActionLabel)
                     && o.navigateNext == navigateNext && o.navigatePrevious == navigatePrevious
-                    && o.subtype.equals(subtype) && TextUtils.equals(o.keyboardLayoutSet, keyboardLayoutSet);
+                    && o.subtype.equals(subtype) && TextUtils.equals(o.keyboardLayoutSet, keyboardLayoutSet)
+                    && o.numberRow == numberRow;
         }
 
         @Override
@@ -417,7 +420,7 @@ public final class KeyboardBuilder {
         
         Keyboard c0965e = null;
         boolean zM6720l = keyboardId.isTypingKeyboard();
-        final KeyboardCacheKey cacheKey = zM6720l ? new KeyboardCacheKey(keyboardId) : null;
+        final KeyboardCacheKey cacheKey = zM6720l ? new KeyboardCacheKey(keyboardId, this.mContext) : null;
         if (cacheKey != null) {
             synchronized (sKeyboardCache) {
                 purgeClearedKeyboards();

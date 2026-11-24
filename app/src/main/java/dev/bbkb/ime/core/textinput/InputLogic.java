@@ -981,6 +981,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /** Finishes any composing text, then commits {@code charSequence} (no-op when null). */
+    public boolean pasteImage(dev.bbkb.ime.keyboard.inputboard.clipboard.ClipEntry entry) {
+        return dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardImages.commit(
+                this.mIme, entry, getCurrentEditorInfo());
+    }
+
     public void pasteText(CharSequence charSequence) {
         if (charSequence != null) {
             this.mRichInputConnection.beginBatchEdit();

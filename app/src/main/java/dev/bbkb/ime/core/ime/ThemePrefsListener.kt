@@ -70,7 +70,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             KeyboardBuilder.clearKeyboardCache()
         }
 
-        if ("pref_keyboard_height_mode" == key) {
+        if ("pref_keyboard_height_mode" == key || dev.bbkb.ime.keyboard.NumberRow.PREF == key) {
             ime.numberPadController?.invalidateKeyboard()
             KeyboardBuilder.clearKeyboardCache()
             ResourceConfigManager.invalidateDimensionCache()

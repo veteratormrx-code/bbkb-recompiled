@@ -157,6 +157,7 @@ fun BlackBerryTheme(content: @Composable () -> Unit) {
 
     val systemInDarkMode = isSystemInDarkTheme()
     val plainStyle = themeStyle == "classic" || themeStyle == "bb10"
+        || themeStyle == "oled" || themeStyle == "oled_seamless"
     val isDarkTheme = when {
         plainStyle -> systemInDarkMode
         themeMode == "light" -> false

@@ -1012,6 +1012,15 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         if (InlineAutofillManager.isSupported()) {
             registerComponent(InlineAutofillManager.getInstance(this.context));
         }
+        registerComponent(new dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController(
+                this.imeService, dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController.KEY_TEXT_EDIT,
+                dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardView.Mode.EDIT));
+        registerComponent(new dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController(
+                this.imeService, dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController.KEY_TRANSLATE,
+                dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardView.Mode.TRANSLATE));
+        registerComponent(new dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController(
+                this.imeService, dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardController.KEY_HANDWRITING,
+                dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardView.Mode.INK));
     }
     
     /**

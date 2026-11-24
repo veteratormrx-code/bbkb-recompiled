@@ -1,0 +1,5 @@
+Russian and English annotations from Unicode CLDR 49.
+https://github.com/unicode-org/cldr/tree/release-49/common/annotations
+https://github.com/unicode-org/cldr/tree/release-49/common/annotationsDerived
+Fallback names from Unicode Emoji 18.0.
+https://www.unicode.org/Public/18.0.0/emoji/emoji-test.txt

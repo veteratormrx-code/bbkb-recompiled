@@ -598,6 +598,8 @@
     </attr>
     <attr name="passwordInput" format="boolean">
     </attr>
+    <attr name="numberRow" format="boolean">
+    </attr>
     <attr name="physicalKeypadType" format="string">
     </attr>
     <attr name="physicalKeypadVariant" format="string">
@@ -949,6 +951,7 @@
         <attr name="navigateNext" />
         <attr name="navigatePrevious" />
         <attr name="passwordInput" />
+        <attr name="numberRow" />
         <attr name="physicalKeypadType" />
         <attr name="physicalKeypadVariant" />
         <attr name="voiceInputKeyEnabled" />

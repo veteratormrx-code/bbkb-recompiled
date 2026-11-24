@@ -23,6 +23,8 @@ data class ClipEntry(
     val createdAtMs: Long,
     val isPinned: Boolean = false,
     val pinnedAtMs: Long = 0L,
+    /** App-private image file, relative to filesDir. Null for text clips. */
+    val imageFile: String? = null,
 ) {
 
     fun withId(newId: Long): ClipEntry = copy(id = newId)
@@ -41,6 +43,19 @@ data class ClipEntry(
         else copy(createdAtMs = minOf(createdAtMs, nowMs), pinnedAtMs = minOf(pinnedAtMs, nowMs))
 
     fun hasLabel(expected: String): Boolean = expected == label
+
+    fun isImage(): Boolean = !imageFile.isNullOrEmpty()
+
+    /** Actual UTF-8 text plus the image file and its thumbnail, when they exist. */
+    fun storedBytes(filesDir: java.io.File): Long {
+        var bytes = text.toByteArray(Charsets.UTF_8).size.toLong()
+        val relative = imageFile ?: return bytes
+        val image = java.io.File(filesDir, relative)
+        if (image.isFile) bytes += image.length()
+        val thumb = java.io.File(filesDir, "$relative.thumb")
+        if (thumb.isFile) bytes += thumb.length()
+        return bytes
+    }
 
     /** [sensitive] marks it [ClipDescription.EXTRA_IS_SENSITIVE] (API 33+) so the system's copy confirmation hides it. */
     fun toClipData(sensitive: Boolean): ClipData {

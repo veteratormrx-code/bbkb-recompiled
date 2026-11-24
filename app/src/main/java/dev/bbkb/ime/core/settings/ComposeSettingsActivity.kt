@@ -28,6 +28,8 @@ import dev.bbkb.ime.core.settings.screens.OpenSourceLicensesScreen
 import dev.bbkb.ime.core.settings.screens.CustomizationScreen
 import dev.bbkb.ime.core.settings.screens.DebugSettingsScreen
 import dev.bbkb.ime.core.settings.screens.GestureLabScreen
+import dev.bbkb.ime.core.settings.screens.GesturesSettingsScreen
+import dev.bbkb.ime.core.settings.screens.PrivacySettingsScreen
 import dev.bbkb.ime.core.settings.screens.CkbGesturesScreen
 import dev.bbkb.ime.core.settings.screens.VkbGesturesScreen
 import dev.bbkb.ime.core.settings.screens.DeviceCompatibilityScreen
@@ -37,6 +39,7 @@ import dev.bbkb.ime.core.settings.screens.LanguagePacksScreen
 import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
+import dev.bbkb.ime.core.settings.screens.MlKitToolsScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
@@ -154,8 +157,13 @@ fun SettingsNavHost(
                 onNavigateBack = back,
                 onNavigateToDeviceCompatibility = go(SettingsRoute.DeviceCompatibility),
                 onNavigateToDebug = go(SettingsRoute.Debug),
-                onNavigateToBackupRestore = go(SettingsRoute.BackupRestore)
+                onNavigateToBackupRestore = go(SettingsRoute.BackupRestore),
+                onNavigateToMlKit = go(SettingsRoute.MlKitTools),
             )
+        }
+
+        composable(SettingsRoute.MlKitTools.route) {
+            MlKitToolsScreen(onNavigateBack = back)
         }
 
         composable(SettingsRoute.BackupRestore.route) {
@@ -209,6 +217,25 @@ fun SettingsNavHost(
 
         composable(SettingsRoute.VkbGestures.route) {
             VkbGesturesScreen(onNavigateBack = back)
+        }
+
+        composable(SettingsRoute.Gestures.route) {
+            GesturesSettingsScreen(
+                onNavigateToOnScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
+                onNavigateToVkbGestures = go(SettingsRoute.VkbGestures),
+                onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
+                onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
+                onNavigateToShake = go(SettingsRoute.AuxiliaryInput),
+                onNavigateBack = back,
+            )
+        }
+
+        composable(SettingsRoute.Privacy.route) {
+            PrivacySettingsScreen(
+                onNavigateToSuggestions = go(SettingsRoute.Suggestion),
+                onNavigateToLearning = go(SettingsRoute.Learning),
+                onNavigateBack = back,
+            )
         }
 
         composable(SettingsRoute.AuxiliaryInput.route) {

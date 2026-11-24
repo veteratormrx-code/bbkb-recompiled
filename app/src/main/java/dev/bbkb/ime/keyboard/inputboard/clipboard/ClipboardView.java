@@ -47,6 +47,10 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     public interface OnPasteListener {
         /** Insert {@code text} into the focused field. */
         void onPaste(CharSequence text);
+
+        default void onPasteEntry(ClipEntry entry) {
+            onPaste(entry.getText());
+        }
     }
 
     public ClipboardView(Context context, AttributeSet attributeSet) {
@@ -234,6 +238,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this.adapter.setActionCallback(this);
         this.recyclerView.setAdapter(this.adapter);
         this.clipboardHistoryManager.addHistoryChangedListener(this);
+        TextEditingBar.attach(this);
         onHistoryChanged();
     }
 
@@ -244,7 +249,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     @Override
     public void onPasteClip(ClipEntry entry) {
         if (this.keyboardDelegate != null) {
-            this.keyboardDelegate.onPaste(entry.getText());
+            this.keyboardDelegate.onPasteEntry(entry);
         }
         AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-1, this);
     }

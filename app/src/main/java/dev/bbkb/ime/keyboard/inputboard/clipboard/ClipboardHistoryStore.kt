@@ -115,6 +115,7 @@ class ClipboardHistoryStore private constructor(
                     w.name("createdAt").value(entry.createdAtMs)
                     w.name("pinned").value(entry.isPinned)
                     w.name("pinnedAt").value(entry.pinnedAtMs)
+                    if (entry.imageFile != null) w.name("imageFile").value(entry.imageFile)
                     w.endObject()
                 }
                 w.endArray()
@@ -156,6 +157,7 @@ class ClipboardHistoryStore private constructor(
                 createdAtMs = createdAt,
                 isPinned = pinned,
                 pinnedAtMs = if (pinned) longOrNull("pinnedAt") ?: createdAt else 0L,
+                imageFile = stringOrNull("imageFile"),
             )
         }
 

@@ -1,6 +1,6 @@
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
-}
+// Foojay 0.8 references JvmVendorSpec.IBM_SEMERU, removed from Gradle 9.6.
+// The build uses JAVA_HOME instead of a downloaded toolchain.
 
 rootProject.name = 'BlackBerry Keyboard'
 include ':app'
+include ':ime-harness'

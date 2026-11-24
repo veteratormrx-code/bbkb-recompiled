@@ -43,6 +43,7 @@ fun AdvancedSettingsScreen(
     onNavigateToDeviceCompatibility: () -> Unit = {},
     onNavigateToDebug: () -> Unit = {},
     onNavigateToBackupRestore: () -> Unit = {},
+    onNavigateToMlKit: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -65,6 +66,12 @@ fun AdvancedSettingsScreen(
             onClick = { onNavigateToDebug() },
         ),
 
+        Nav(
+            title = R.string.settings_mlkit_title,
+            summary = R.string.settings_mlkit_summary,
+            icon = drawableIcon(R.drawable.ic_settings_m_palette),
+            onClick = { onNavigateToMlKit() },
+        ),
         Category(R.string.settings_category_manage_data),
         Nav(
             title = R.string.settings_backup_restore_title,

@@ -280,8 +280,8 @@ class EmojibaseDataProvider(private val context: Context) {
     }
 
     /**
-     * Searches description, tags and aliases; up to MAX_SEARCH_RESULTS by relevance (0 = no match),
-     * ties in dataset order. Thread-safe.
+     * Searches description, tags, shortcodes and Russian annotations; up to MAX_SEARCH_RESULTS by
+     * relevance (0 = no match), ties in dataset order. Thread-safe.
      */
     fun searchEmojis(query: String): List<EmojiData> {
         val lowerQuery = query.trim().lowercase()
@@ -330,7 +330,71 @@ class EmojibaseDataProvider(private val context: Context) {
 
     /** The search fields lower-cased once per dataset, since the strip searches on every keystroke. */
     private fun searchData(): SearchData =
-        searchData ?: SearchData(getAllEmojis().map { SearchEntry.of(it) }).also { searchData = it }
+        searchData ?: SearchData(getAllEmojis().map { SearchEntry.of(it, annotationsFor(it.emoji)) }).also { searchData = it }
+
+    private val russianAnnotations: Map<String, List<String>> by lazy { loadRussianAnnotations() }
+
+    /**
+     * Russian words for [emoji]. CLDR rows in `emoji-search.tsv` omit U+FE0F; emojibase stores the
+     * fully-qualified form, so a miss on the raw key tries the selector-stripped one.
+     */
+    private fun annotationsFor(emoji: String): List<String>? {
+        russianAnnotations[emoji]?.let { return it }
+        val stripped = stripVariationSelectors(emoji)
+        if (stripped == null || stripped == emoji) return null
+        return russianAnnotations[stripped]
+    }
+
+    private fun loadRussianAnnotations(): Map<String, List<String>> {
+        val map = HashMap<String, List<String>>()
+        try {
+            context.assets.open("bbmodern/emoji-search.tsv").bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split('\t')
+                    if (parts.size < 2) return@forEach
+                    val words = LinkedHashSet<String>()
+                    // The Russian short name is one alias when it has no Latin letters or digits, so
+                    // "большой палец вверх" matches whole. A mixed name ("значок SOS") is not kept
+                    // whole: the Latin piece would make a query like "s" hit it. Tokens below still
+                    // match single Russian words. English-only tokens are skipped.
+                    val label = parts[1].trim().lowercase()
+                    if (label.length >= 2 && isRussianAlias(label) && label.none { it in 'a'..'z' || it in '0'..'9' }) {
+                        words.add(label)
+                    }
+                    parts.drop(1).forEach { field ->
+                        field.split('|', ' ').forEach { token ->
+                            val word = token.trim().lowercase()
+                            if (word.length >= 2 && isRussianAlias(word)) words.add(word)
+                        }
+                    }
+                    if (words.isEmpty()) return@forEach
+                    val list = words.toList()
+                    map[parts[0]] = list
+                    val stripped = stripVariationSelectors(parts[0])
+                    if (stripped != null && stripped != parts[0] && !map.containsKey(stripped)) {
+                        map[stripped] = list
+                    }
+                }
+            }
+        } catch (ignored: Exception) {
+            // The annotation asset is optional; English emojibase search still works.
+        }
+        return map
+    }
+
+    private fun isRussianAlias(word: String): Boolean = word.any { it in 'а'..'я' || it == 'ё' }
+
+    /** The score [searchEmojis] and [topHit] use, including Russian annotations. For the index test. */
+    internal fun indexedScore(data: EmojiData, query: String): Int {
+        val lowerQuery = query.trim().lowercase()
+        if (lowerQuery.isEmpty()) return 0
+        return EmojiSearchScoring.score(
+            data.description.lowercase(),
+            data.tags?.map { it.lowercase() } ?: emptyList(),
+            (data.aliases?.map { it.lowercase() } ?: emptyList()) + (annotationsFor(data.emoji) ?: emptyList()),
+            lowerQuery
+        )
+    }
 
     private class SearchEntry(
         val data: EmojiData,
@@ -339,11 +403,11 @@ class EmojibaseDataProvider(private val context: Context) {
         val aliases: List<String>
     ) {
         companion object {
-            fun of(data: EmojiData) = SearchEntry(
+            fun of(data: EmojiData, extraAliases: List<String>? = null) = SearchEntry(
                 data,
                 data.description.lowercase(),
                 data.tags?.map { it.lowercase() } ?: emptyList(),
-                data.aliases?.map { it.lowercase() } ?: emptyList()
+                (data.aliases?.map { it.lowercase() } ?: emptyList()) + (extraAliases ?: emptyList())
             )
         }
     }
@@ -429,7 +493,10 @@ class EmojibaseDataProvider(private val context: Context) {
  * 30, contains 5. Zero is exactly "no match". Inputs are already lower-cased.
  */
 object EmojiSearchScoring {
-    /** What a strip hit needs: an exact or prefix match on the description or a tag. */
+    /**
+     * What a strip hit needs: an exact or prefix match on the description or a tag.
+     * An exact Russian alias scores 30, so a purely Russian query does not qualify alone.
+     */
     const val STRIP_MIN_RELEVANCE = 40
 
     @JvmStatic

@@ -36,7 +36,10 @@ import java.util.concurrent.Executors;
 public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipChangedListener {
 
     /** Unpinned rows kept at most. Pinned rows do not count against it and are never evicted. */
-    static final int MAX_UNPINNED = 25;
+    static final int MAX_UNPINNED = 200;
+
+    /** Unpinned image and text payload budget (256 MiB). Pinned rows are not evicted by it. */
+    static final long MAX_STORE_BYTES = 256L * 1024L * 1024L;
 
     /**
      * Longer clips are kept in memory only (the file is decoded at every process start); of the
@@ -222,6 +225,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     private boolean addToHistory(ClipData clipData) {
         long now = this.mClock.nowMs();
         ClipEntry incoming = ClipEntry.fromClipData(0, clipData, now);
+        if (incoming == null) {
+            incoming = ClipboardImages.capture(this.mContext, clipData, now);
+        }
         if (incoming == null) {
             return false;
         }
@@ -435,10 +441,22 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
      * Evict unpinned rows beyond {@link #MAX_UNPINNED}, and every unpinned row over
      * {@link #MAX_PERSISTED_CHARS} except the newest (memory-only rows would otherwise be unbounded).
      */
+    private long unpinnedBytes() {
+        long bytes = 0L;
+        for (ClipEntry entry : this.mRecent) {
+            bytes += entry.storedBytes(this.mContext.getFilesDir());
+        }
+        return bytes;
+    }
+
     private boolean evictOverCap() {
         boolean changed = false;
-        while (this.mRecent.size() > MAX_UNPINNED) {
-            this.mRecent.remove(this.mRecent.size() - 1);
+        while (this.mRecent.size() > MAX_UNPINNED || unpinnedBytes() > MAX_STORE_BYTES) {
+            if (this.mRecent.isEmpty()) {
+                break;
+            }
+            ClipEntry dropped = this.mRecent.remove(this.mRecent.size() - 1);
+            ClipboardImages.delete(this.mContext, dropped);
             changed = true;
         }
         boolean keptOne = false;

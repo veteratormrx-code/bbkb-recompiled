@@ -298,6 +298,22 @@
     <string name="settings_appearance_dark">Dark</string>
     <string name="settings_appearance_material">Material</string>
     <string name="settings_appearance_bb10">BB10</string>
+    <string name="settings_appearance_oled">OLED</string>
+    <string name="settings_appearance_oled_seamless">OLED seamless</string>
+    <string name="settings_mlkit_title">Translate and handwriting</string>
+    <string name="settings_mlkit_summary">Google ML Kit models. Typing stays offline.</string>
+    <string name="text_edit_select_all">All</string>
+    <string name="text_edit_cut">Cut</string>
+    <string name="text_edit_copy">Copy</string>
+    <string name="text_edit_paste">Paste</string>
+    <string name="text_edit_left">Left</string>
+    <string name="text_edit_right">Right</string>
+    <string name="text_edit_word_back">Word</string>
+    <string name="settings_uim_toggle_text_edit">Text editing</string>
+    <string name="settings_uim_toggle_translate">Translate</string>
+    <string name="settings_uim_toggle_handwriting">Handwriting</string>
+    <string name="settings_number_row_title">Number row</string>
+    <string name="settings_number_row_summary">Always show 1–0 above the letters. Long-press a digit for its symbol.</string>
     <string name="fcc_trackpad_hint">Drag to move the cursor</string>
     <string name="fcc_chip_select">Select</string>
     <string name="fcc_chip_select_all">All</string>
@@ -1129,4 +1145,29 @@
     <string name="settings_spellcheck_enable_title">Enable BBKB spell checker</string>
     <string name="settings_spellcheck_enable_summary">Detect typos and suggest corrections</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>
+
+    <!-- Root rows that open a screen which already holds the controls. -->
+    <string name="settings_root_size_title">Size and layout</string>
+    <string name="settings_root_size_summary">Keyboard height and the number row are on Personalization</string>
+    <string name="settings_root_intelligent_title">Intelligent input</string>
+    <string name="settings_root_intelligent_summary">Suggestions, auto-correction, and learning</string>
+    <string name="settings_root_tools_title">Tools</string>
+    <string name="settings_root_tools_summary">The input menu and the order of its items are on Auxiliary input</string>
+    <string name="settings_root_gestures_summary">On-screen swipes, keypad gestures, shake, and the space-bar language swipe</string>
+    <string name="settings_root_sound_title">Sound and vibration</string>
+    <string name="settings_root_sound_summary">Vibration, key-press sound, and the key pop-up</string>
+    <string name="settings_root_clipboard_summary">Clipboard history, how long clips are kept, and link previews are on Auxiliary input</string>
+    <string name="settings_root_emoji_summary">Emoji search for the on-screen keyboard is on On-screen keyboard. The physical keyboard has its own switch.</string>
+    <string name="settings_root_privacy_summary">Learned words, and fields that turn learning off</string>
+
+    <string name="settings_gestures_onscreen_summary">Swipe typing and swipe gestures are switched on the on-screen keyboard screen</string>
+    <string name="settings_gestures_ckb_summary">Flick and swipe actions for a capacitive keypad. The enable switch is on Physical keyboard.</string>
+    <string name="settings_gestures_shake_summary">What a shake does is chosen on Auxiliary input</string>
+    <string name="settings_gestures_spacebar_summary">Swiping the space bar to change language is on Language switching</string>
+
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_privacy_personalized_summary">Opens Suggestions, where Suggest learned words is switched</string>
+    <string name="settings_privacy_learning_summary">Opens Learning, where Enable learning is switched</string>
+    <string name="settings_privacy_incognito_title">Private fields</string>
+    <string name="settings_privacy_incognito_summary">When an app marks the field as no personalized learning, such as incognito, BBKB does not learn words, does not keep emoji recents, and does not save clipboard clips. Password fields also skip learning. The app sets this; there is no switch for it.</string>
 </resources>

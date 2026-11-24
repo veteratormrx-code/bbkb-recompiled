@@ -681,12 +681,13 @@ public class KeyboardView extends View {
         }
 
         // Hairline dividers on the left and right edges of normal, empty (emoji) and slide keys.
-        if (key.backgroundType == 1 || key.backgroundType == 0 || isSlideKey(key)) {
+        if (spec.getDrawKeySeparators()
+                && (key.backgroundType == 1 || key.backgroundType == 0 || isSlideKey(key))) {
             final float density = this.density;
             final Paint dividerPaint = this.dividerPaint;
             dividerPaint.setColor(isSlideKey(key)
                     ? KeyboardColorManager.INSTANCE.getSlideSeparatorColor()
-                    : KeyboardColorManager.INSTANCE.getBackgroundColor());
+                    : KeyboardColorManager.INSTANCE.getKeySeparatorColor());
             float dividerWidth = 0.5f * density;
             float topPadding = keyHeight * 0.08f;
             float bottomPadding = keyHeight * 0.05f;

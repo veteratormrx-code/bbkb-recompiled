@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 /**
  * topHit and searchEmojis score only bigram-index candidates and memoise; their answers must equal a full scan's,
- * ties included, checked against a brute-force copy over the real dataset and a few thousand queries.
+ * ties included. The scan uses [EmojibaseDataProvider.indexedScore], Russian annotations included.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -36,7 +36,7 @@ class EmojibaseTopHitIndexTest {
         var best: EmojiData? = null
         var bestScore = minRelevance - 1
         for (e in provider.getAllEmojis()) {
-            val score = e.searchRelevance(q)
+            val score = provider.indexedScore(e, q)
             if (score > bestScore) {
                 bestScore = score
                 best = e
@@ -49,7 +49,7 @@ class EmojibaseTopHitIndexTest {
         val q = query.trim().lowercase()
         if (q.isEmpty()) return emptyList()
         return provider.getAllEmojis()
-            .map { it to it.searchRelevance(q) }
+            .map { it to provider.indexedScore(it, q) }
             .filter { it.second > 0 }
             .sortedByDescending { it.second }
             .take(80)

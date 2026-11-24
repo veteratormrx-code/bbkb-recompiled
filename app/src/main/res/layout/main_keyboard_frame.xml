@@ -27,6 +27,12 @@
             android:clickable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <dev.bbkb.ime.keyboard.inputboard.tools.ToolBoardView
+            android:id="@+id/inputboard_tool_view"
+            android:visibility="gone"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
         <dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardView
             android:id="@+id/inputboard_clipboard_view"
             android:background="@color/input_board_background_color"

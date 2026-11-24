@@ -72,6 +72,9 @@ private fun toggleInfo(id: String): UimToggleInfo = when (id) {
     UimMenuOrder.EMOJI -> UimToggleInfo(R.string.settings_uim_toggle_emoji, R.drawable.ic_auxbar_emoji_enabled)
     UimMenuOrder.FCC -> UimToggleInfo(R.string.settings_uim_toggle_fcc, R.drawable.ic_auxbar_fcc_enabled)
     UimMenuOrder.CLIPBOARD -> UimToggleInfo(R.string.settings_uim_toggle_clipboard, R.drawable.ic_auxbar_clipboard_enabled)
+    UimMenuOrder.TEXT_EDIT -> UimToggleInfo(R.string.settings_uim_toggle_text_edit, R.drawable.ic_auxbar_clipboard_enabled)
+    UimMenuOrder.TRANSLATE -> UimToggleInfo(R.string.settings_uim_toggle_translate, R.drawable.ic_settings_m_palette)
+    UimMenuOrder.HANDWRITING -> UimToggleInfo(R.string.settings_uim_toggle_handwriting, R.drawable.ic_auxbar_voice_enabled)
     else -> UimToggleInfo(R.string.settings_uim_toggle_numpad, R.drawable.ic_auxbar_numpad)
 }
 

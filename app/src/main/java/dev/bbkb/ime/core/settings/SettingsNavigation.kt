@@ -49,6 +49,9 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object CustomizeSlideBoard : SettingsRoute("customize_slideboard", "Customize SlideBoard")
     object SlideboardSettings : SettingsRoute("slideboard_settings", "Touch Screen Keyboard")
     object CustomizeMenu : SettingsRoute("customize_menu", "Customize Menu")
+    object Gestures : SettingsRoute("gestures", "Gestures")
+    /** Explains the learning preference and the incognito field flag. No switches of its own. */
+    object Privacy : SettingsRoute("privacy", "Privacy")
     object About : SettingsRoute("about", "About")
     object Updates : SettingsRoute("updates", "Updates")
     object Licenses : SettingsRoute("licenses", "Open-source licenses")
@@ -58,6 +61,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object DeviceProfileBuilder : SettingsRoute("device_profile_builder", "Build a device profile")
     object PhysicalLayouts : SettingsRoute("physical_layouts", "Custom keypad layouts")
     object BackupRestore : SettingsRoute("backup_restore", "Backup and restore")
+    object MlKitTools : SettingsRoute("mlkit_tools", "Translate and handwriting")
 
     /** Back-compat deep link onto the same page as [TouchFeedback]; nothing navigates here. */
     object KeyPressFeedback : SettingsRoute("key_press_feedback", "Key Press Feedback")
@@ -81,6 +85,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 Preferences.route, "customization" -> Preferences
                 AppearanceLayout.route, "personalization" -> AppearanceLayout
                 Advanced.route -> Advanced
+                MlKitTools.route -> MlKitTools
                 OnScreenKeyboard.route -> OnScreenKeyboard
                 PhysicalKeyboard.route -> PhysicalKeyboard
                 VoiceInputMain.route -> VoiceInputMain
@@ -114,6 +119,8 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeSlideBoard.route -> CustomizeSlideBoard
                 SlideboardSettings.route -> SlideboardSettings
                 CustomizeMenu.route -> CustomizeMenu
+                Gestures.route -> Gestures
+                Privacy.route -> Privacy
                 "clipboard" -> AuxiliaryInput
                 About.route -> About
                 Licenses.route -> Licenses

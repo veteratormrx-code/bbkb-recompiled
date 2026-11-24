@@ -1,0 +1,5 @@
+ru-opencorpora.bbd uses Cyrillic forms from OpenCorpora revision 417150 as packaged in pymorphy3-dicts-ru 2.4.417150.4580142. OpenCorpora dictionary data is CC BY-SA 3.0.
+Source: https://opencorpora.org/?page=downloads and https://pypi.org/project/pymorphy3-dicts-ru/
+ru-unimorph.bbd uses the Russian UniMorph data derived from Wiktionary. Source: https://github.com/unimorph/rus and https://en.wiktionary.org/wiki/Wiktionary:Copyrights
+The Wiktionary-derived data remains under CC BY-SA. Both dictionaries were filtered to single Cyrillic word forms, deduplicated against the existing packs, and reindexed.
+Emoji data: Unicode 18.0 https://www.unicode.org/Public/18.0.0/emoji/emoji-test.txt. Noto Color Emoji v2.057: https://github.com/googlefonts/noto-emoji/releases/tag/v2026-09-24-unicode18_0.

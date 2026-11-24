@@ -112,6 +112,13 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private BlackBerryIME blackberryIme;
 
+    /** On-key predictions stay hidden while a language bar or covering panel is up. */
+    public void setFlickSuggestionsSuppressed(boolean suppressed) {
+        if (this.blackberryIme != null) {
+            this.blackberryIme.setFlickSuggestionsSuppressed(suppressed);
+        }
+    }
+
     /** Built lazily so it also exists when the constructor never ran (JVM tests). */
     private KeyboardStateCoordinator stateTransitions;
 

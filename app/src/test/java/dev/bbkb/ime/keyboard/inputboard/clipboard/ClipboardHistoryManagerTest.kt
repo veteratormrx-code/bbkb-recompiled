@@ -162,19 +162,19 @@ class ClipboardHistoryManagerTest {
 
     @Test
     fun theHistoryHoldsTwentyFiveUnpinnedEntries() {
-        repeat(25) { copy("clip $it") }
+        repeat(200) { copy("clip $it") }
 
-        assertEquals(25, history.history.size)
-        assertEquals("clip 24", texts().first())
+        assertEquals(200, history.history.size)
+        assertEquals("clip 199", texts().first())
         assertEquals("clip 0", texts().last())
     }
 
     @Test
     fun theTwentySixthClipEvictsTheOldest() {
-        repeat(26) { copy("clip $it") }
+        repeat(201) { copy("clip $it") }
 
-        assertEquals("still twenty-five", 25, history.history.size)
-        assertEquals("the newest is at the front", "clip 25", texts().first())
+        assertEquals("still two hundred", 200, history.history.size)
+        assertEquals("the newest is at the front", "clip 200", texts().first())
         assertFalse("the oldest is gone", texts().contains("clip 0"))
     }
 
@@ -183,11 +183,11 @@ class ClipboardHistoryManagerTest {
         copy("keep me")
         history.setPinned(entry("keep me").id, true)
 
-        repeat(30) { copy("clip $it") }
+        repeat(210) { copy("clip $it") }
 
         assertEquals(listOf("keep me"), pinnedTexts())
-        assertEquals("twenty-five unpinned besides the pin", 25, recentTexts().size)
-        assertEquals(26, history.history.size)
+        assertEquals("two hundred unpinned besides the pin", 200, recentTexts().size)
+        assertEquals(201, history.history.size)
     }
 
     @Test
@@ -679,11 +679,11 @@ class ClipboardHistoryManagerTest {
     fun unpinningIntoAFullRecentSectionEvictsTheOldestUnpinned() {
         copy("pinned")
         history.setPinned(entry("pinned").id, true)
-        repeat(25) { copy("clip $it") }
+        repeat(200) { copy("clip $it") }
 
         history.setPinned(entry("pinned").id, false)
 
-        assertEquals(25, recentTexts().size)
+        assertEquals(200, recentTexts().size)
         assertEquals("pinned", recentTexts().first())
         assertFalse(recentTexts().contains("clip 0"))
     }

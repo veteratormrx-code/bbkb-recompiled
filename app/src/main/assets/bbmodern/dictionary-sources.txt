@@ -1,0 +1,7 @@
+ru-common.bbd is adapted from FrequencyWords Russian 2018 50k, by Hermit Dave and contributors, based on OpenSubtitles2018 (OPUS).
+Source: https://github.com/hermitdave/FrequencyWords/blob/master/content/2018/ru/ru_50k.txt
+Changes: filtered Cyrillic word forms and reindexed for the keyboard. The adapted data is licensed under CC BY-SA 4.0.
+
+ru-spelling.bbd is adapted from Russian Hunspell Dictionary 1.0.9, by Goudron and contributors, under MPL 2.0.
+Source: https://github.com/Goudron/ru-spelling-dictionary/releases/tag/v1.0.9
+Changes: selected Cyrillic word forms from ru_RU.txt.gz and reindexed them. The adapted data is licensed under MPL 2.0. The source of the indexing change is included as make_lexicons.py.

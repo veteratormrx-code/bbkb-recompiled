@@ -264,6 +264,16 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mSuggestedWords = SuggestedWords.EMPTY;
     }
 
+    /** While a panel, language bar or settings surface is up, new suggestion updates must not redraw words on the keys. */
+    private boolean mSuppressed;
+
+    public void setSuppressed(boolean suppressed) {
+        this.mSuppressed = suppressed;
+        if (suppressed) {
+            hide();
+        }
+    }
+
     public void hide() {
         this.mShownValid = false;
         if (this.mKeyboardView == null) {
@@ -286,6 +296,10 @@ public final class FlickSuggestionView extends RelativeLayout {
      * (the keyboard view slid sideways); a pre-clear on every update would relayout the frame.
      */
     public void showSuggestions(SuggestedWords words, boolean rtl) {
+        if (this.mSuppressed) {
+            hide();
+            return;
+        }
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
         if (mainKeyboardView == null || mainKeyboardView.getX() != 0.0f) {
             if (getVisibility() == View.VISIBLE) {
@@ -301,6 +315,10 @@ public final class FlickSuggestionView extends RelativeLayout {
      * @param isRtl true for a right-to-left layout
      */
     public void setSuggestions(SuggestedWords suggestedWords, boolean isRtl) {
+        if (this.mSuppressed) {
+            hide();
+            return;
+        }
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
         if (mainKeyboardView != null && mainKeyboardView.getX() == 0.0f) {
             boolean colorsChanged = refreshTextColors();

@@ -281,6 +281,12 @@
     <string name="settings_appearance_dark">Темная</string>
     <string name="settings_appearance_material">Material</string>
     <string name="settings_appearance_bb10">BB10</string>
+    <string name="settings_appearance_oled">OLED</string>
+    <string name="settings_appearance_oled_seamless">OLED без разделителей</string>
+    <string name="settings_mlkit_title">Перевод и рукописный ввод</string>
+    <string name="settings_mlkit_summary">Модели Google ML Kit. Обычный набор остаётся офлайн.</string>
+    <string name="settings_number_row_title">Ряд цифр</string>
+    <string name="settings_number_row_summary">Постоянный ряд 1–0 над буквами. Долгое нажатие открывает символ.</string>
     <string name="fcc_trackpad_hint">Проведите, чтобы переместить курсор</string>
     <string name="fcc_chip_select">Выделить</string>
     <string name="fcc_chip_select_all">Все</string>
@@ -1143,4 +1149,28 @@
     <string name="settings_spellcheck_enable_title">Включить проверку орфографии BBKB</string>
     <string name="settings_spellcheck_enable_summary">Находит опечатки и предлагает исправления</string>
     <string name="settings_credits_version">Версия %1$s (сборка %2$s)</string>
+
+    <string name="settings_root_size_title">Размер и раскладка</string>
+    <string name="settings_root_size_summary">Высота клавиатуры и цифровой ряд находятся в разделе «Персонализация»</string>
+    <string name="settings_root_intelligent_title">Интеллектуальный ввод</string>
+    <string name="settings_root_intelligent_summary">Подсказки, автоисправление и обучение</string>
+    <string name="settings_root_tools_title">Инструменты</string>
+    <string name="settings_root_tools_summary">Меню ввода и порядок его пунктов находятся в разделе «Вспомогательный ввод»</string>
+    <string name="settings_root_gestures_summary">Свайпы на экране, жесты клавиатуры, встряхивание и смена языка свайпом по пробелу</string>
+    <string name="settings_root_sound_title">Звук и вибрация</string>
+    <string name="settings_root_sound_summary">Вибрация, звук нажатия и всплывающая подсказка клавиши</string>
+    <string name="settings_root_clipboard_summary">История буфера, срок хранения и превью ссылок находятся в разделе «Вспомогательный ввод»</string>
+    <string name="settings_root_emoji_summary">Поиск эмодзи для экранной клавиатуры находится в разделе «Экранная клавиатура». У физической клавиатуры свой переключатель.</string>
+    <string name="settings_root_privacy_summary">Выученные слова и поля, в которых обучение отключается</string>
+
+    <string name="settings_gestures_onscreen_summary">Ввод свайпом и жесты свайпа включаются на экране экранной клавиатуры</string>
+    <string name="settings_gestures_ckb_summary">Действия свайпов и фликов для ёмкостной клавиатуры. Переключатель включения находится в разделе «Физическая клавиатура».</string>
+    <string name="settings_gestures_shake_summary">Действие при встряхивании выбирается в разделе «Вспомогательный ввод»</string>
+    <string name="settings_gestures_spacebar_summary">Смена языка свайпом по пробелу находится в разделе «Переключение языков»</string>
+
+    <string name="settings_privacy_title">Конфиденциальность</string>
+    <string name="settings_privacy_personalized_summary">Открывает «Подсказки», где переключается «Предлагать выученные слова»</string>
+    <string name="settings_privacy_learning_summary">Открывает «Обучение», где переключается «Включить обучение»</string>
+    <string name="settings_privacy_incognito_title">Приватные поля</string>
+    <string name="settings_privacy_incognito_summary">Если приложение помечает поле как без персонализированного обучения (режим инкогнито), BBKB не учит слова, не хранит недавние эмодзи и не сохраняет фрагменты буфера. Поля пароля тоже не учатся. Это задаёт приложение, отдельного переключателя нет.</string>
 </resources>

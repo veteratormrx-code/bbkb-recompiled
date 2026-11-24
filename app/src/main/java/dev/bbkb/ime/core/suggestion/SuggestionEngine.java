@@ -119,7 +119,7 @@ public final class SuggestionEngine {
      */
     public void getSuggestedWords(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
         if (composingTracker.isPredictionMode) {
-            getPredictions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, suggestionType, callback);
+            getPredictions(context, composingTracker, prevWordsInfo, proximityGrid, stripSettings, suggestionType, callback);
         } else {
             getCorrections(context, composingTracker, prevWordsInfo, proximityGrid, stripSettings, suggestionType, autoCorrectEnabled, callback);
         }
@@ -149,6 +149,9 @@ public final class SuggestionEngine {
                 && this.mDictionaryLoader.isWordValid(composingText, true);
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 0);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), composingText, perfLogger.locale);
+        if (!this.mBlockAutoCorrect) {
+            dev.bbkb.ime.modernlexicon.ModernLexicon.merge(context, composingText, perfLogger.getSuggestions(), perfLogger.locale);
+        }
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
         boolean isPrediction = !composingTracker.isComposing;
         boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
@@ -223,9 +226,23 @@ public final class SuggestionEngine {
         callback.onSuggestionsReady(new SuggestedWords(suggestions, !isPrediction && !hasGoodCorrection, willAutoCorrect, finalSuggestionType));
     }
 
-    private void getPredictions(ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
+    private void getPredictions(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), null, perfLogger.locale);
+        if (!this.mBlockAutoCorrect && prevWordsInfo != null) {
+            String phraseContext = prevWordsInfo.getContextBefore();
+            if ((phraseContext == null || phraseContext.length() == 0) && prevWordsInfo.wordInfos[0] != null
+                    && prevWordsInfo.wordInfos[0].word != null) {
+                phraseContext = prevWordsInfo.wordInfos[0].word.toString();
+            }
+            java.util.List<String> next = dev.bbkb.ime.modernlexicon.PhrasePredictions.nextWords(
+                    context, phraseContext, perfLogger.locale);
+            for (String word : next) {
+                perfLogger.getSuggestions().add(new SuggestedWords.SuggestedWordInfo(
+                        word, 10_000, 7, dev.bbkb.ime.core.engine.Dictionary.DICTIONARY_HARDCODED,
+                        -1, perfLogger.getSuggestions().size(), null));
+            }
+        }
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
         // Drop any engine emoji that slips through; strip emoji come from emojibase.
         EmojibaseStripSuggestion.dropEngineEmoji(predictions);

@@ -501,6 +501,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
                 stateBeforeAccentBar = auxBarView.getCurrentState();
             }
             auxBarView.showKeys(accentKeyboard, AuxBarState.ACCENT_BAR);
+            KeyboardSwitcher.getInstance().setFlickSuggestionsSuppressed(true);
         } else {
             if (BuildConfig.DEBUG) Log.e(TAG, "showAccentBar: failed to build keyboard from accents: " + accents);
         }
@@ -515,6 +516,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         if (auxBarView == null || auxBarView.getCurrentState() != AuxBarState.ACCENT_BAR) {
             return;
         }
+        KeyboardSwitcher.getInstance().setFlickSuggestionsSuppressed(false);
         AuxBarState covered = stateBeforeAccentBar;
         stateBeforeAccentBar = AuxBarState.NONE;
         restoreCovered(covered);
@@ -535,6 +537,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             stateBeforeLanguageChips = auxBarView.getCurrentState();
         }
         auxBarView.showLanguageChips(chips);
+        KeyboardSwitcher.getInstance().setFlickSuggestionsSuppressed(true);
     }
 
     public boolean isShowingLanguageChips() {
@@ -547,6 +550,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         }
         AuxBarState covered = stateBeforeLanguageChips;
         stateBeforeLanguageChips = AuxBarState.NONE;
+        KeyboardSwitcher.getInstance().setFlickSuggestionsSuppressed(false);
         switch (covered) {
             case LATIN_SUGGESTIONS:
             case CJK_SUGGESTIONS:

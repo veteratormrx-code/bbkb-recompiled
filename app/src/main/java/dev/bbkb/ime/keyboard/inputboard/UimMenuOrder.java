@@ -24,9 +24,12 @@ public final class UimMenuOrder {
     public static final String FCC = "fcc";
     public static final String CLIPBOARD = "clipboard";
     public static final String NUMBER_PAD = "numpad";
+    public static final String TEXT_EDIT = "text_edit";
+    public static final String TRANSLATE = "translate";
+    public static final String HANDWRITING = "handwriting";
 
     private static final List<String> DEFAULT_ORDER = Collections.unmodifiableList(
-            Arrays.asList(VOICE, EMOJI, FCC, CLIPBOARD, NUMBER_PAD));
+            Arrays.asList(EMOJI, CLIPBOARD, TEXT_EDIT, TRANSLATE, VOICE, HANDWRITING, FCC, NUMBER_PAD));
 
     private UimMenuOrder() {
         // Static utility.
@@ -44,6 +47,9 @@ public final class UimMenuOrder {
             case FCC: return -42;
             case CLIPBOARD: return -25;
             case NUMBER_PAD: return -46;
+            case TEXT_EDIT: return -47;
+            case TRANSLATE: return -48;
+            case HANDWRITING: return -49;
             default: return 0;
         }
     }

@@ -411,7 +411,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     private void setFlickSuggestionVisibility(int visibility) {
         FlickSuggestionView view = getFlickSuggestionView();
         if (view != null) {
-            view.setVisibility(visibility);
+            // INVISIBLE (4) must stick: the next suggestion update would otherwise paint words over the open panel.
+            view.setSuppressed(visibility != View.VISIBLE);
         }
     }
 

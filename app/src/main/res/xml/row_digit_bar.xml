@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabet|alphabetManualShifted|alphabetAutomaticShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            latin:numberRow="true"
+            latin:passwordInput="false">
+            <Row latin:keyWidth="10%p">
+                <Key latin:keySpec="1" latin:moreKeys="!" />
+                <Key latin:keySpec="2" latin:moreKeys="\@" />
+                <Key latin:keySpec="3" latin:moreKeys="\#" />
+                <Key latin:keySpec="4" latin:moreKeys="$" />
+                <Key latin:keySpec="5" latin:moreKeys="%" />
+                <Key latin:keySpec="6" latin:moreKeys="^" />
+                <Key latin:keySpec="7" latin:moreKeys="&amp;" />
+                <Key latin:keySpec="8" latin:moreKeys="*" />
+                <Key latin:keySpec="9" latin:moreKeys="(" />
+                <Key latin:keySpec="0" latin:moreKeys=")" />
+            </Row>
+        </case>
+    </switch>
+</merge>

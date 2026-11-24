@@ -398,6 +398,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_navigateNext, c0977g.navigateNext())
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_navigatePrevious, c0977g.navigatePrevious())
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_passwordInput, c0977g.passwordInput())
+                    && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_numberRow, dev.bbkb.ime.keyboard.NumberRow.isEnabled(this.mContext))
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_clobberSettingsKey, c0977g.mClobberSettingsKey)
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_voiceInputKeyEnabled, c0977g.mVoiceKeyEnabled)
                     && matchBoolean(typedArrayObtainAttributes, R.styleable.Keyboard_Case_languageSwitchKeyEnabled, c0977g.mLanguageSwitchKeyEnabled)

@@ -149,6 +149,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         "DeviceConfigurationScreen" -> ({ DeviceConfigurationScreen({}, {}) })
         "DictionariesLearningScreen" -> ({ DictionariesLearningScreen({}, {}, {}, {}) })
         "GestureLabScreen" -> ({ GestureLabScreen({}) })
+        "GesturesSettingsScreen" -> ({ GesturesSettingsScreen({}, {}, {}, {}, {}, {}) })
+        "PrivacySettingsScreen" -> ({ PrivacySettingsScreen({}, {}, {}) })
         "KeyPressFeedbackScreen" -> ({ KeyPressFeedbackScreen({}) })
         "KeyboardHelperScreen" -> ({ KeyboardHelperScreen({}) })
         "LanguagePacksScreen" -> ({ LanguagePacksScreen({}) })
@@ -391,10 +393,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
             "CustomSymbolPageScreen_PKB", "CustomSymbolPageScreen_VKB", "CustomizationScreen",
             "CustomizeMenuScreen", "CustomizeSlideBoardScreen", "DebugSettingsScreen",
             "DeviceCompatibilityScreen", "DeviceConfigurationScreen", "DictionariesLearningScreen",
-            "GestureLabScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
+            "GestureLabScreen", "GesturesSettingsScreen", "KeyPressFeedbackScreen", "KeyboardHelperScreen",
             "LanguagePacksScreen", "LanguageSwitchingScreen",
             "MainSettingsScreen", "OpenSourceLicensesScreen",
-            "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen", "QuickPhrasesScreen",
+            "PhysicalKeyboardScreen", "PhysicalLayoutsScreen", "PredictionsSuggestionsScreen",
+            "PrivacySettingsScreen", "QuickPhrasesScreen",
             "ShakeTuningScreen", "SlideboardLayoutScreen", "SpellCheckerSettingsScreen",
             "SymbolCustomizationScreen", "TextShortcutsScreen", "TouchScreenKeyboardScreen",
             "TouchSurfaceHelperScreen",
@@ -453,6 +456,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_backup_restore_summary", "settings_backup_restore_title",
                 "settings_debug_summary", "prefs_advanced_settings_title", "settings_device_compatibility_summary",
                 "settings_device_compatibility_title",
+                "settings_mlkit_summary", "settings_mlkit_title",
                 // "Reset" resolves to the first resource with that value; the row's own is
                 // settings_reset_title.
                 "reset_dialog_confirm", "settings_reset_summary", "settings_category_manage_data",
@@ -501,6 +505,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_height_regular",
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
+                "settings_number_row_summary", "settings_number_row_title",
                 "settings_default_currency_summary", "settings_default_currency_title",
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
@@ -690,7 +695,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_customize_menu_hidden_header", "settings_customize_menu_instructions",
                 "settings_customize_menu_title", "settings_pkb_multifunction_action_clipboard",
                 "settings_pkb_multifunction_action_emoji", "settings_pkb_multifunction_action_fcc",
-                "settings_pkb_multifunction_action_number_pad", "settings_uim_toggle_voice"
+                "settings_pkb_multifunction_action_number_pad", "settings_uim_toggle_handwriting",
+                "settings_uim_toggle_text_edit", "settings_uim_toggle_translate", "settings_uim_toggle_voice"
             ),
             literals = setOf(
                 "1",
@@ -878,17 +884,62 @@ class SettingsScreenRenderTest(private val screenName: String) {
             literals = emptySet(),
         ),
         Case(
+            name = "GesturesSettingsScreen",
+            route = SettingsRoute.Gestures.route,
+            title = "Gestures",
+            resources = setOf(
+                "ckb_gestures_configure_summary",
+                "settings_category_gestures",
+                "settings_category_on_screen_keyboard",
+                "settings_gestures_onscreen_summary",
+                "settings_gestures_shake_summary",
+                "settings_gestures_spacebar_summary",
+                "settings_lang_spacebar_switch_title",
+                "settings_shake_title",
+                "vkb_gestures_configure_title",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
             name = "MainSettingsScreen",
             route = SettingsRoute.Main.route,
             title = "BBKB Settings",
             resources = setOf(
+                "ckb_action_emoji",
                 "english_ime_settings",
+                "language_selection_title",
                 "settings_about_title",
-                "settings_advanced_summary", "settings_advanced_title", "settings_appearance_layout_summary",
-                "settings_appearance_layout_title", "settings_languages_summary", "settings_languages_title",
-                "settings_preferences_summary",
-                "settings_preferences_title", "settings_search_hint", "settings_suggestion_correction_summary",
-                "settings_suggestion_correction_title"
+                "settings_advanced_summary", "settings_advanced_title",
+                "settings_appearance_layout_summary",
+                "settings_backup_restore_summary", "settings_backup_restore_title",
+                "settings_category_appearance", "settings_category_gestures",
+                "settings_languages_summary",
+                "settings_mlkit_summary", "settings_mlkit_title",
+                "settings_pkb_multifunction_action_clipboard",
+                "settings_preferences_summary", "settings_preferences_title",
+                "settings_privacy_title",
+                "settings_root_clipboard_summary", "settings_root_emoji_summary",
+                "settings_root_gestures_summary", "settings_root_intelligent_summary",
+                "settings_root_intelligent_title", "settings_root_privacy_summary",
+                "settings_root_size_summary", "settings_root_size_title",
+                "settings_root_sound_summary", "settings_root_sound_title",
+                "settings_root_tools_summary", "settings_root_tools_title",
+                "settings_search_hint",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
+            name = "PrivacySettingsScreen",
+            route = SettingsRoute.Privacy.route,
+            title = "Privacy",
+            resources = setOf(
+                "settings_dict_dynamic_learning_title",
+                "settings_pred_personalized_title",
+                "settings_privacy_incognito_summary",
+                "settings_privacy_incognito_title",
+                "settings_privacy_learning_summary",
+                "settings_privacy_personalized_summary",
+                "settings_privacy_title",
             ),
             literals = emptySet(),
         ),

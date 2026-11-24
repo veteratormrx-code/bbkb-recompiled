@@ -214,6 +214,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_color_scheme_title, "color scheme dark light auto night", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_mode"),
         SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors", DeviceRequirement.DYNAMIC_COLOR),
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
+        SearchableSetting(R.string.settings_number_row_title, "number row digits 123 top", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_number_row"),
 
         SearchableSetting(R.string.settings_default_currency_title, "currency symbol dollar euro pound", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_currency_key"),
 
@@ -326,14 +327,18 @@ object SettingsSearchIndex {
 
     /**
      * Every reachable settings page, titled as the row that opens it. Left out on purpose: the
-     * back-compat routes, the device profile builder and the Gesture Lab. Query [screensFor].
+     * back-compat routes, the device profile builder and the Gesture Lab. Root rows that share a
+     * route (size, tools, sound, clipboard, emoji, backup) are not listed twice. Query [screensFor].
      */
     val screens: List<SearchableScreen> = listOf(
         // The five categories on the settings root
         SearchableScreen(LANGUAGES, "languages keyboards add remove layout predict multi-language", SettingsRoute.LanguagesHub.route, emptyList()),
-        SearchableScreen(TYPING, "input typing keyboards", SettingsRoute.Preferences.route, emptyList()),
-        SearchableScreen(SUGGESTION, "assistance suggestions predictions corrections autocorrect spelling learning dictionary", SettingsRoute.SuggestionCorrection.route, emptyList()),
-        SearchableScreen(APPEARANCE, "personalization personalisation appearance look theme colour color height symbols", SettingsRoute.AppearanceLayout.route, emptyList()),
+        SearchableScreen(TYPING, "input typing keyboards voice", SettingsRoute.Preferences.route, emptyList()),
+        SearchableScreen(SUGGESTION, "assistance intelligent input suggestions predictions corrections autocorrect spelling learning dictionary", SettingsRoute.SuggestionCorrection.route, emptyList()),
+        SearchableScreen(APPEARANCE, "personalization personalisation appearance look theme colour color height size and layout number row symbols", SettingsRoute.AppearanceLayout.route, emptyList()),
+        SearchableScreen(R.string.settings_category_gestures, "gestures swipe flick shake motion spacebar", SettingsRoute.Gestures.route, emptyList()),
+        SearchableScreen(R.string.settings_privacy_title, "privacy incognito private personalized learning password clipboard recents", SettingsRoute.Privacy.route, emptyList()),
+        SearchableScreen(R.string.settings_mlkit_title, "translate translation handwriting ink mlkit ml kit google", SettingsRoute.MlKitTools.route, emptyList()),
         SearchableScreen(ADVANCED, "advanced", SettingsRoute.Advanced.route, emptyList()),
 
         // Language
@@ -341,15 +346,15 @@ object SettingsSearchIndex {
         SearchableScreen(R.string.settings_language_packs_title, "download language pack packs dictionary files", SettingsRoute.LanguagePacks.route, listOf(LANGUAGES)),
 
         // Input
-        SearchableScreen(ON_SCREEN, "on-screen onscreen on screen virtual touch keyboard vkb", SettingsRoute.OnScreenKeyboard.route, listOf(TYPING)),
+        SearchableScreen(ON_SCREEN, "on-screen onscreen on screen virtual touch keyboard vkb emoji", SettingsRoute.OnScreenKeyboard.route, listOf(TYPING)),
         SearchableScreen(SLIDEBOARD, "slideboard slide board number pad", SettingsRoute.SlideboardSettings.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(R.string.settings_vkb_customize_numberpad_title, "slideboard number pad numpad customize keys", SettingsRoute.CustomizeSlideBoard.route, listOf(TYPING, ON_SCREEN, SLIDEBOARD)),
         SearchableScreen(R.string.settings_vkb_quick_phrases_title, "quick phrases canned slideboard", SettingsRoute.QuickPhrases.route, listOf(TYPING, ON_SCREEN, SLIDEBOARD)),
-        SearchableScreen(R.string.settings_touch_feedback_title, "touch key press keypress feedback haptic vibration sound popup", SettingsRoute.TouchFeedback.route, listOf(TYPING, ON_SCREEN)),
+        SearchableScreen(R.string.settings_touch_feedback_title, "touch key press keypress feedback haptic vibration sound and vibration popup", SettingsRoute.TouchFeedback.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(PHYSICAL, "physical hardware keypad keys pkb", SettingsRoute.PhysicalKeyboard.route, listOf(TYPING), DeviceRequirement.PHYSICAL_KEYBOARD),
         SearchableScreen(R.string.vkb_gestures_configure_title, "on-screen keyboard swipe gestures configure assign action", SettingsRoute.VkbGestures.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(R.string.ckb_gestures_configure_title, "ckb capacitive keypad gestures flick swipe configure", SettingsRoute.CkbGestures.route, listOf(TYPING, PHYSICAL), DeviceRequirement.TOUCH_KEYPAD),
-        SearchableScreen(AUXILIARY, "auxiliary input menu clipboard shake gestures motion", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
+        SearchableScreen(AUXILIARY, "auxiliary tools input menu clipboard shake gestures motion", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_customize_menu_title, "unified input menu order reorder customize", SettingsRoute.CustomizeMenu.route, listOf(TYPING, AUXILIARY)),
         SearchableScreen(VOICE, "voice dictation speech mic microphone", SettingsRoute.VoiceInput.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_voice_input_lang_title, "voice dictation language", SettingsRoute.VoiceLanguageSelection.route, listOf(TYPING, VOICE)),

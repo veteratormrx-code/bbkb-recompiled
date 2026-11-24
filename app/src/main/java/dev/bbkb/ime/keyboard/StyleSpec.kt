@@ -52,6 +52,8 @@ data class StyleSpec(
      * clipboard cards, trackpad FCC, emphasized 48dp suggestion strip, flat aux bars.
      */
     val modernBoards: Boolean,
+    /** Hairline gaps between flat keys. OLED seamless turns this off so the board stays pure black. */
+    val drawKeySeparators: Boolean = true,
 ) {
     companion object {
         /** Classic/Modern: full-bleed rendering everywhere. */
@@ -116,5 +118,11 @@ data class StyleSpec(
             previewElevationDp = 2f,
             modernBoards = true,
         )
+
+        /** OLED with thin separators. Same flat BlackBerry geometry as Classic, true-black surfaces. */
+        val OLED = LEGACY.copy(drawKeySeparators = true)
+
+        /** OLED without separators. */
+        val OLED_SEAMLESS = LEGACY.copy(drawKeySeparators = false)
     }
 }

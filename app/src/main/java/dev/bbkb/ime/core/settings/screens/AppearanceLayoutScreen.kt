@@ -69,6 +69,13 @@ fun AppearanceLayoutScreen(
             enabled = { it.hasColorScheme() },
             visible = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
         ),
+        Toggle(
+            store = boolPref(dev.bbkb.ime.keyboard.NumberRow.PREF, true),
+            title = R.string.settings_number_row_title,
+            summary = RowSummary.Res(R.string.settings_number_row_summary),
+            icon = drawableIcon(R.drawable.ic_settings_keyboard_height),
+            modifier = Modifier.settingsSearchAnchor("pref_number_row"),
+        ),
         Choice(
             store = stringPref("pref_keyboard_height_mode", "regular"),
             title = R.string.settings_keyboard_height_title,
@@ -126,7 +133,7 @@ private fun CurrencyPicker() {
 /** Classic and BB10 are fixed looks, so they hide the colour controls. */
 private fun dev.bbkb.ime.core.settings.ui.SettingsEnv.hasColorScheme(): Boolean {
     val style = str(THEME_STYLE)
-    return style != "classic" && style != "bb10"
+    return style != "classic" && style != "bb10" && style != "oled" && style != "oled_seamless"
 }
 
 private fun themeStyles(context: Context) = listOf(
@@ -134,6 +141,8 @@ private fun themeStyles(context: Context) = listOf(
     ChoiceOption("modern", context.getString(R.string.settings_appearance_modern)),
     ChoiceOption("material", context.getString(R.string.settings_appearance_material)),
     ChoiceOption("bb10", context.getString(R.string.settings_appearance_bb10)),
+    ChoiceOption("oled", context.getString(R.string.settings_appearance_oled)),
+    ChoiceOption("oled_seamless", context.getString(R.string.settings_appearance_oled_seamless)),
 )
 
 private fun colorSchemes(context: Context) = listOf(

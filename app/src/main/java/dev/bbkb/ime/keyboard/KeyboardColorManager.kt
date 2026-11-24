@@ -37,7 +37,9 @@ object KeyboardColorManager {
         CLASSIC(true),
         MODERN(false),
         MATERIAL(false),
-        BB10(true);
+        BB10(true),
+        OLED(true),
+        OLED_SEAMLESS(true);
 
         companion object {
             @JvmStatic
@@ -45,6 +47,8 @@ object KeyboardColorManager {
                 "classic" -> CLASSIC
                 "material" -> MATERIAL
                 "bb10" -> BB10
+                "oled" -> OLED
+                "oled_seamless" -> OLED_SEAMLESS
                 else -> MODERN
             }
         }
@@ -85,6 +89,8 @@ object KeyboardColorManager {
          */
         val slide: Int = key,
         val onSlide: Int = text,
+        /** Hairline between flat keys. Defaults to the board background (invisible when keys match it). */
+        val keySeparator: Int = background,
     ) {
         companion object {
             val EMPTY = Palette(0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -136,9 +142,12 @@ object KeyboardColorManager {
     fun styleSpec(): StyleSpec = when (currentStyle) {
         Style.MATERIAL -> StyleSpec.MATERIAL
         Style.BB10 -> StyleSpec.BB10
+        Style.OLED -> StyleSpec.OLED
+        Style.OLED_SEAMLESS -> StyleSpec.OLED_SEAMLESS
         else -> StyleSpec.LEGACY
     }
 
+    val keySeparatorColor: Int get() = palette.keySeparator
     val slideKeyColor: Int get() = palette.slide
     val slideTextColor: Int get() = palette.onSlide
     /** The panel behind the slide keys and phrase tiles: 10% on-color over the container. */
@@ -250,6 +259,8 @@ object KeyboardColorManager {
     private fun currentPalette(): Palette = when {
         currentStyle == Style.CLASSIC -> classicPalette()
         currentStyle == Style.BB10 -> bb10Palette()
+        currentStyle == Style.OLED -> oledPalette(separators = true)
+        currentStyle == Style.OLED_SEAMLESS -> oledPalette(separators = false)
         systemColorsActive() -> dynamicPalette(isDarkResolved())
         isDarkResolved() -> darkPalette()
         else -> lightPalette()
@@ -296,6 +307,23 @@ object KeyboardColorManager {
         accent = appContext.getColor(R.color.bb_color_key_pressed),
         slide = appContext.getColor(R.color.bb_color_slide_key),
         onSlide = appContext.getColor(R.color.bb_color_slide_text),
+    )
+
+    /** True black (#000000) board and keys. Pressed state is a near-black so a tap still reads. */
+    private fun oledPalette(separators: Boolean) = Palette(
+        icon = 0xFFE8E8E8.toInt(),
+        iconAlt = 0xFFB0B0B0.toInt(),
+        hint = 0xFF9E9E9E.toInt(),
+        text = 0xFFFFFFFF.toInt(),
+        background = 0xFF000000.toInt(),
+        key = 0xFF000000.toInt(),
+        keyAlt = 0xFF000000.toInt(),
+        keyPressed = 0xFF1A1A1A.toInt(),
+        accent = 0xFF4FC3F7.toInt(),
+        fret = 0xFF000000.toInt(),
+        slide = 0xFF000000.toInt(),
+        onSlide = 0xFFFFFFFF.toInt(),
+        keySeparator = if (separators) 0xFF3A3A3A.toInt() else 0xFF000000.toInt(),
     )
 
     /** BlackBerry 10 look: near-black board, dark sculpted caps, electric-blue accent. */

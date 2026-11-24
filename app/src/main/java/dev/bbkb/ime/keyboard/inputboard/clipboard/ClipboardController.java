@@ -131,6 +131,15 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
     }
 
     @Override
+    public void onPasteEntry(ClipEntry entry) {
+        if (entry.isImage() && this.ime != null) {
+            this.ime.getInputLogic().pasteImage(entry);
+            return;
+        }
+        onPaste(entry.getText());
+    }
+
+    @Override
     protected void onHide() {
         hideClipboard();
     }

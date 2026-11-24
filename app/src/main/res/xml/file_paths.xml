@@ -17,6 +17,9 @@
     <files-path
         name="letter_layouts"
         path="layouts/letter/"/>
+    <files-path
+        name="clipboard_images"
+        path="clipboard_images/"/>
     <!-- Downloaded APKs: the installer needs a content:// URI (file:// refused since API 24) -->
     <cache-path
         name="downloads"

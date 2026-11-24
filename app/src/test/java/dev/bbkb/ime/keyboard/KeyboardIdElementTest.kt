@@ -314,12 +314,9 @@ class KeyboardIdElementTest {
             multiLine = false, imeAction = EditorInfo.IME_ACTION_UNSPECIFIED,
             navNext = false, navPrev = false
         ),
-        // Known bug: isPhoneLayout() is a raw `inputType == TYPE_CLASS_PHONE` check without
-        // masking, so a phone field with any flag is not a phone layout, while getKeyboardMode()
-        // still returns mode 4.
         EditorRow(
             "phone + multiline flag", PHONE or MULTILINE_FLAG,
-            password = false, number = false, phone = false, dateTime = false,
+            password = false, number = false, phone = true, dateTime = false,
             multiLine = true, imeAction = EditorInfo.IME_ACTION_UNSPECIFIED,
             navNext = false, navPrev = false
         ),

@@ -183,16 +183,45 @@ fun MainSettingsScreen(
                 }
 
                 Spacer(modifier = Modifier.height(spacing.small))
+                // Each row opens a screen that already owns the controls. Size, tools, clipboard,
+                // and emoji share a destination with another row; the summary says which one.
                 PreferenceGroup {
-                    // Straight to the Language screen; the Languages menu route stays registered
-                    // for deep links and search results.
                     PreferenceScreen(
-                        title = context.getString(R.string.settings_languages_title),
+                        title = context.getString(R.string.language_selection_title),
                         summary = context.getString(R.string.settings_languages_summary),
                         icon = ImageVector.vectorResource(R.drawable.ic_settings_m_language),
                         onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
                     )
 
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_category_appearance),
+                        summary = context.getString(R.string.settings_appearance_layout_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_palette),
+                        onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_root_size_title),
+                        summary = context.getString(R.string.settings_root_size_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_height),
+                        onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_root_intelligent_title),
+                        summary = context.getString(R.string.settings_root_intelligent_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_spellcheck),
+                        onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_root_tools_title),
+                        summary = context.getString(R.string.settings_root_tools_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_auxiliary_input),
+                        onClick = { onNavigateToScreen(SettingsRoute.AuxiliaryInput.route) }
+                    )
+
+                    // Voice, the physical keyboard, and the rest of the on-screen keyboard.
                     PreferenceScreen(
                         title = context.getString(R.string.settings_preferences_title),
                         summary = context.getString(R.string.settings_preferences_summary),
@@ -201,17 +230,52 @@ fun MainSettingsScreen(
                     )
 
                     PreferenceScreen(
-                        title = context.getString(R.string.settings_suggestion_correction_title),
-                        summary = context.getString(R.string.settings_suggestion_correction_summary),
-                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_spellcheck),
-                        onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
+                        title = context.getString(R.string.settings_category_gestures),
+                        summary = context.getString(R.string.settings_root_gestures_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_swipe),
+                        onClick = { onNavigateToScreen(SettingsRoute.Gestures.route) }
                     )
 
                     PreferenceScreen(
-                        title = context.getString(R.string.settings_appearance_layout_title),
-                        summary = context.getString(R.string.settings_appearance_layout_summary),
-                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_palette),
-                        onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
+                        title = context.getString(R.string.settings_root_sound_title),
+                        summary = context.getString(R.string.settings_root_sound_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_vibrate),
+                        onClick = { onNavigateToScreen(SettingsRoute.TouchFeedback.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_uim_toggle_clipboard),
+                        summary = context.getString(R.string.settings_root_clipboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_clipboard_history),
+                        onClick = { onNavigateToScreen(SettingsRoute.AuxiliaryInput.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_category_emoji),
+                        summary = context.getString(R.string.settings_root_emoji_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_emoji_search),
+                        onClick = { onNavigateToScreen(SettingsRoute.OnScreenKeyboard.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_mlkit_title),
+                        summary = context.getString(R.string.settings_mlkit_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_text_fields),
+                        onClick = { onNavigateToScreen(SettingsRoute.MlKitTools.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_privacy_title),
+                        summary = context.getString(R.string.settings_root_privacy_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_learned_words),
+                        onClick = { onNavigateToScreen(SettingsRoute.Privacy.route) }
+                    )
+
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_backup_restore_title),
+                        summary = context.getString(R.string.settings_backup_restore_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_settings_backup_restore),
+                        onClick = { onNavigateToScreen(SettingsRoute.BackupRestore.route) }
                     )
 
                     PreferenceScreen(
