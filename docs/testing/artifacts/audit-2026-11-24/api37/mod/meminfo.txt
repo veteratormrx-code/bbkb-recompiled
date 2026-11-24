@@ -1,0 +1,76 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 350205 Realtime: 350205
+
+** MEMINFO in pid 5816 [com.blackberry.keyboard] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    31812    30780     1004    14054    34584    60756    53841     3071
+  Dalvik Heap     6421     6320       12       34    12308     9144     6858     2286
+ Dalvik Other     1455     1188      180       73     2180                           
+        Stack      516      452       64      172      520                           
+    Other dev        8        0        8        0      428                           
+     .so mmap     5552      260     2944      893    49436                           
+    .jar mmap     1371        0        0        0    41908                           
+    .apk mmap    10144        0    10028        0    12444                           
+    .ttf mmap      203        0       60        0      824                           
+    .dex mmap      405        0      396        0     1324                           
+    .oat mmap      548        0       60        0    12208                           
+    .art mmap      818      380      100       13    23324                           
+   Other mmap      390       28      180       16     1904                           
+        Memfd     2630     1460      800     3372     3600                           
+      Unknown     3363     2984      364     1809     4244                           
+        TOTAL    86072    43852    16200    20436   201236    69900    60699     5357
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:     6800                          35632
+         Native Heap:    30780                          34584
+                Code:    13752                         118312
+               Stack:      452                            520
+            Graphics:        0                              0
+       Private Other:     8268
+              System:    26020
+             Unknown:                                   12188
+ 
+           TOTAL PSS:    86072            TOTAL RSS:   201236       TOTAL SWAP PSS:    20436
+ 
+ Objects
+               Views:      420         ViewRootImpl:        1
+         AppContexts:        7           Activities:        0
+              Assets:       22        AssetManagers:        0
+       Local Binders:       43        Proxy Binders:       62
+       Parcel memory:       42         Parcel count:       72
+    Death Recipients:        0             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+   Bitmap (malloced):      502                           8779
+Bitmap (nonmalloced):        8                            228
+    Other (malloced):     1843                            174
+ Other (nonmalloced):      138                             91
+ 
+ Mapped Bitmaps
+                         Count                       Size(KB)
+                        ------                         ------
+              Mapped:        0                              0
+              Unique:        0                              0
+ 
+ SQL
+         MEMORY_USED:      401
+  PAGECACHE_OVERFLOW:      177          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4       20             36     1    27     4  /data/user/0/com.blackberry.keyboard/no_backup/bb_phrase_history.db
+         4       96            107     8    72    10  /data/user/0/com.blackberry.keyboard/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4       96             32     2    15     3  /data/user/0/com.blackberry.keyboard/no_backup/androidx.work.workdb (3)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+              1            28             4  /data/user/0/com.blackberry.keyboard/no_backup/bb_phrase_history.db
+             10            91            13  /data/user/0/com.blackberry.keyboard/no_backup/androidx.work.workdb
+ 

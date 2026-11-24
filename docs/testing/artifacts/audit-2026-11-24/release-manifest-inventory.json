@@ -1,0 +1,103 @@
+{
+  "application": {
+    "allowBackup": "true",
+    "dataExtractionRules": "@xml/data_extraction_rules",
+    "fullBackupContent": "@xml/backupscheme"
+  },
+  "permissions": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.INTERNET",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.READ_CONTACTS",
+    "android.permission.READ_USER_DICTIONARY",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.REQUEST_INSTALL_PACKAGES",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.WRITE_USER_DICTIONARY",
+    "dev.bbkb.ime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+    "moe.shizuku.manager.permission.API_V23"
+  ],
+  "explicitly_exported": [
+    {
+      "type": "service",
+      "name": "dev.bbkb.ime.core.BlackBerryIME",
+      "permission": "android.permission.BIND_INPUT_METHOD"
+    },
+    {
+      "type": "service",
+      "name": "dev.bbkb.ime.core.spellcheck.AndroidSpellCheckerService",
+      "permission": "android.permission.BIND_TEXT_SERVICE"
+    },
+    {
+      "type": "receiver",
+      "name": "dev.bbkb.ime.core.SystemBroadcastReceiver",
+      "permission": null
+    },
+    {
+      "type": "activity",
+      "name": "dev.bbkb.ime.core.settings.ComposeSettingsActivity",
+      "permission": null
+    },
+    {
+      "type": "activity",
+      "name": "dev.bbkb.ime.core.settings.KeyInterceptorSettingsActivity",
+      "permission": null
+    },
+    {
+      "type": "activity",
+      "name": "dev.bbkb.ime.core.settings.SpellCheckerComposeActivity",
+      "permission": null
+    },
+    {
+      "type": "receiver",
+      "name": "dev.bbkb.ime.core.suggestion.SuggestionSpanReceiver",
+      "permission": null
+    },
+    {
+      "type": "provider",
+      "name": "rikka.shizuku.ShizukuProvider",
+      "permission": "android.permission.INTERACT_ACROSS_USERS_FULL"
+    },
+    {
+      "type": "service",
+      "name": "androidx.work.impl.background.systemjob.SystemJobService",
+      "permission": "android.permission.BIND_JOB_SERVICE"
+    },
+    {
+      "type": "receiver",
+      "name": "androidx.work.impl.diagnostics.DiagnosticsReceiver",
+      "permission": "android.permission.DUMP"
+    },
+    {
+      "type": "receiver",
+      "name": "androidx.profileinstaller.ProfileInstallReceiver",
+      "permission": "android.permission.DUMP"
+    }
+  ],
+  "providers": [
+    {
+      "name": "rikka.shizuku.ShizukuProvider",
+      "authorities": "dev.bbkb.ime.shizuku",
+      "exported": "true"
+    },
+    {
+      "name": "androidx.core.content.FileProvider",
+      "authorities": "dev.bbkb.ime.fileprovider",
+      "exported": "false",
+      "grantUriPermissions": "true"
+    },
+    {
+      "name": "androidx.startup.InitializationProvider",
+      "authorities": "dev.bbkb.ime.androidx-startup",
+      "exported": "false"
+    },
+    {
+      "name": "com.google.mlkit.common.internal.MlKitInitProvider",
+      "authorities": "dev.bbkb.ime.mlkitinitprovider",
+      "exported": "false"
+    }
+  ]
+}

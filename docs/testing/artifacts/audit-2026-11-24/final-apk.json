@@ -1,0 +1,29 @@
+{
+  "apk": "dist/bbkb-audit-android17-debug.apk",
+  "bytes": 133348451,
+  "sha256": "e785f67d7770ec53efa74020805e2451e5faee93af559635e2d73f8fa3b3db88",
+  "badging": [
+    "package: name='dev.bbkb.ime.debug' versionCode='1442' versionName='5.0.0-beta.29-debug' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+    "targetSdkVersion:'36'",
+    "native-code: 'arm64-v8a'"
+  ],
+  "signature": [
+    "Verifies",
+    "Verified using v1 scheme (JAR signing): false",
+    "Verified using v2 scheme (APK Signature Scheme v2): true",
+    "Verified using v3 scheme (APK Signature Scheme v3): false",
+    "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+    "Verified using v4 scheme (APK Signature Scheme v4): false",
+    "Verified for SourceStamp: false",
+    "Number of signers: 1",
+    "Signer #1 certificate DN: CN=Android Debug, O=Android, C=US",
+    "Signer #1 certificate SHA-256 digest: 6b7654aa563b615fe8b2ef913dfadce51e2833ad8a01838d71199cb219586f8b",
+    "Signer #1 certificate SHA-1 digest: 5ff6207e2fb4b4aca8c889b63456e2af78e88df3",
+    "Signer #1 certificate MD5 digest: f2a7af998898161c6b7ee5e7a1e6aa7f",
+    "Signer #1 key algorithm: RSA",
+    "Signer #1 key size (bits): 2048",
+    "Signer #1 public key SHA-256 digest: 7b7c612c7d692b2aeb3566c30caf4c5c7b065c6dcf80fd727f2ab667014c06b4",
+    "Signer #1 public key SHA-1 digest: ee82d0461d97ee1eb12aa8d0be590bee0f6a01d4",
+    "Signer #1 public key MD5 digest: 55533bd502156445aa1cfafd54891745"
+  ]
+}

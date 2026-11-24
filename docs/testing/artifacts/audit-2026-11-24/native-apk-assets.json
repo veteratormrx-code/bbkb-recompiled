@@ -1,0 +1,23 @@
+{
+  "native_libraries": {
+    "lib/arm64-v8a/libandroidx.graphics.path.so": 10096,
+    "lib/arm64-v8a/libbbkbevdev.so": 11104,
+    "lib/arm64-v8a/libdigitalink.so": 4617312,
+    "lib/arm64-v8a/libkb.so": 1052224,
+    "lib/arm64-v8a/libnative-lib.so": 2140152,
+    "lib/arm64-v8a/libtranslate_jni.so": 16361032,
+    "lib/arm64-v8a/libxt9trace.so": 33936
+  },
+  "ldb_stored": {
+    "assets/ldb/Blackberry_1305_r1-10_RUusUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-17-10-3_ZHsbUNps_GB2312_xt9_big_ALM.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-17_ENubUNUK_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-18_ITusUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-20_DEusUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-21_FRusUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-5_ENubUNUS_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-6_UKlsUN_xt9_ALM3.ldb": true,
+    "assets/ldb/Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb": true
+  }
+}

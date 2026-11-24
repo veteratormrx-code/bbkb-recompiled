@@ -1,5 +1,22 @@
 # Тестирование
 
+## Воспроизведение текущего аудита
+
+```powershell
+.\tools\qa\Invoke-Audit.ps1 -Task Environment
+.\tools\qa\Invoke-Audit.ps1 -Task CleanBuild
+.\tools\qa\Invoke-Audit.ps1 -Task Jvm
+.\tools\qa\Invoke-Audit.ps1 -Task Native
+.\tools\qa\Invoke-Audit.ps1 -Task Dictionaries -Apk BlackBerryKeyboard-mod-Android17.apk
+.\tools\qa\Invoke-Audit.ps1 -Task Dist
+```
+
+`Install` принимает список APK и серийный номер AVD. `Capture` собирает реальные PNG, XML и crash Logcat. Для `ime_smoke.py` нужно выбрать IME и измерить координаты видимых клавиш на конкретном AVD. Записи в редакторе создаются тапами. `KeyboardTapTest` из `:ime-harness` требует аргументов `bbkbIme`, `bbkbKeyX`, `bbkbKeyY`. Число нажатий задаёт `bbkbTapCount`. Без калибровки тест пропускается.
+
+[Результаты](qa/test-results.md) [Покрытие задания](qa/master-test-plan.md)
+
+## Предыдущий прогон
+
 ## Команды, которые прошли
 
 ```

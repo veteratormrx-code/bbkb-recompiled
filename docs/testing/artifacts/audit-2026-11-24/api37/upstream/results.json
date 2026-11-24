@@ -1,0 +1,37 @@
+{
+  "ime": "dev.bbkb.ime/.core.BlackBerryIME",
+  "serial": "emulator-5752",
+  "results": [
+    {
+      "scenario": "type-bb",
+      "expected": "bb",
+      "actual": "bb",
+      "status": "PASS",
+      "evidence": [
+        "type-bb.xml",
+        "type-bb.png"
+      ]
+    },
+    {
+      "scenario": "type-bbb",
+      "expected": "bbb",
+      "actual": "bbb",
+      "status": "PASS",
+      "evidence": [
+        "type-bbb.xml",
+        "type-bbb.png"
+      ]
+    },
+    {
+      "scenario": "backspace",
+      "expected": "bb",
+      "actual": "bb",
+      "status": "PASS",
+      "evidence": [
+        "backspace.xml",
+        "backspace.png"
+      ]
+    }
+  ],
+  "ime_running": true
+}

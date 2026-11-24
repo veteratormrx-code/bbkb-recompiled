@@ -1,0 +1,7 @@
+17
+37
+x86_64,arm64-v8a
+Physical size: 1080x2400
+Physical density: 420
+package:/apex/com.google.android.gmssystem/priv-app/PrebuiltGmsCoreVic@CE2A.260420.051.A2/PrebuiltGmsCoreVic.apk
+package:/product/priv-app/Phonesky/Phonesky.apk

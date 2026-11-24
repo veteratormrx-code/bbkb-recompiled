@@ -1,0 +1,355 @@
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+
+> Configure project :app
+WARNING: The option setting 'android.usesSdkInManifest.disallowed=false' is deprecated.
+The current default is 'true'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: The option setting 'android.sdk.defaultTargetSdkToCompileSdkIfUnset=false' is deprecated.
+The current default is 'true'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: The option setting 'android.builtInKotlin=false' is deprecated.
+The current default is 'true'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: The option setting 'android.newDsl=false' is deprecated.
+The current default is 'true'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: The option setting 'android.r8.optimizedResourceShrinking=false' is deprecated.
+The current default is 'true'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: The option setting 'android.defaults.buildfeatures.resvalues=true' is deprecated.
+The current default is 'false'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+Add android.sync.suppressAgpWarnings=UNSUPPORTED_PROJECT_OPTION_USE to the gradle.properties file to suppress this warning.
+WARNING: API 'applicationVariants' is obsolete and has been replaced with 'AndroidComponentsExtension'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+The legacy variant API is disabled by default in AGP 9.0, but can be re-enabled by adding 
+    android.newDsl=false
+to this project's gradle.properties file.
+For more information, see http://developer.android.com/build/r/new-dsl.
+
+To determine what is calling applicationVariants, use -Pandroid.debug.obsoleteApi=true on the command line to display more information.
+Add android.sync.suppressAgpWarnings=DEPRECATED_DSL to the gradle.properties file to suppress this warning.
+WARNING: API 'testVariants' is obsolete and has been replaced with 'AndroidComponentsExtension'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+The legacy variant API is disabled by default in AGP 9.0, but can be re-enabled by adding 
+    android.newDsl=false
+to this project's gradle.properties file.
+For more information, see http://developer.android.com/build/r/new-dsl.
+
+To determine what is calling testVariants, use -Pandroid.debug.obsoleteApi=true on the command line to display more information.
+Add android.sync.suppressAgpWarnings=DEPRECATED_DSL to the gradle.properties file to suppress this warning.
+WARNING: API 'unitTestVariants' is obsolete and has been replaced with 'AndroidComponentsExtension'.
+It will be removed in version 10.0 of the Android Gradle plugin.
+The legacy variant API is disabled by default in AGP 9.0, but can be re-enabled by adding 
+    android.newDsl=false
+to this project's gradle.properties file.
+For more information, see http://developer.android.com/build/r/new-dsl.
+
+To determine what is calling unitTestVariants, use -Pandroid.debug.obsoleteApi=true on the command line to display more information.
+Add android.sync.suppressAgpWarnings=DEPRECATED_DSL to the gradle.properties file to suppress this warning.
+WARNING: The property android.dependency.excludeLibraryComponentsFromConstraints improves project import performance for very large projects. It should be enabled to improve performance.
+To suppress this warning, add android.generateSyncIssueWhenLibraryConstraintsAreEnabled=false to gradle.properties
+Add android.sync.suppressAgpWarnings=LIBRARY_CONSTRAINTS_SHOULD_BE_DISABLED to the gradle.properties file to suppress this warning.
+WARNING: The property android.dependency.excludeLibraryComponentsFromConstraints improves project import performance for very large projects. It should be enabled to improve performance.
+To suppress this warning, add android.generateSyncIssueWhenLibraryConstraintsAreEnabled=false to gradle.properties
+Add android.sync.suppressAgpWarnings=LIBRARY_CONSTRAINTS_SHOULD_BE_DISABLED to the gradle.properties file to suppress this warning.
+WARNING: The property android.dependency.excludeLibraryComponentsFromConstraints improves project import performance for very large projects. It should be enabled to improve performance.
+To suppress this warning, add android.generateSyncIssueWhenLibraryConstraintsAreEnabled=false to gradle.properties
+Add android.sync.suppressAgpWarnings=LIBRARY_CONSTRAINTS_SHOULD_BE_DISABLED to the gradle.properties file to suppress this warning.
+WARNING: The property android.dependency.excludeLibraryComponentsFromConstraints improves project import performance for very large projects. It should be enabled to improve performance.
+To suppress this warning, add android.generateSyncIssueWhenLibraryConstraintsAreEnabled=false to gradle.properties
+Add android.sync.suppressAgpWarnings=LIBRARY_CONSTRAINTS_SHOULD_BE_DISABLED to the gradle.properties file to suppress this warning.
+
+> Task :app:ensureDebugKeystore SKIPPED
+> Task :app:nodeSetup UP-TO-DATE
+> Task :app:npmSetup UP-TO-DATE
+
+> Task :app:npmInstall
+
+up to date, audited 3 packages in 19s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+> Task :app:generateEmojibaseCompact UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:compileDebugAidl UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:packageDebugUnitTestForUnitTest
+
+> Task :app:mergeDebugUnitTestManifest
+Z:\BBK-upstream-audit\app\src\debug\AndroidManifest.xml Warning:
+	meta-data#androidx.emoji2.text.EmojiCompatInitializer was tagged at AndroidManifest.xml:0 to remove other declarations but no other declaration present
+
+> Task :app:processDebugUnitTestManifest
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:generateDebugUnitTestConfig
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:compileDebugUnitTestKotlin
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/EthiopicSyllablesTest.kt:64:48 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/EthiopicSyllablesTest.kt:65:48 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/EthiopicSyllablesTest.kt:66:49 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/EthiopicSyllablesTest.kt:67:49 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackInstallerTest.kt:36:69 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackInstallerTest.kt:39:69 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackInstallerTest.kt:40:69 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:71:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:86:40 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:87:41 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:94:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:101:40 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:102:38 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:108:43 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:110:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:111:40 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:119:40 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:121:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:126:68 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:135:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:150:41 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:152:41 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:158:40 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:175:56 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:175:76 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:182:48 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:203:17 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:203:49 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:203:63 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:203:77 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:203:91 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:210:17 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:210:49 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:210:63 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:210:77 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackManagerTest.kt:210:91 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackRegistryLazyLoadTest.kt:28:62 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/com/blackberry/nuanceshim/languagepack/LanguagePackRegistryLazyLoadTest.kt:28:76 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/PackageIdentityTest.kt:145:37 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'File?'.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/PackageIdentityTest.kt:250:25 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'File?'.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/device/touch/shizuku/ShizukuTouchProbeArgsTest.kt:95:25 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'File?'.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/engine/DictionaryLoaderTest.kt:72:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/engine/DictionaryLoaderTest.kt:487:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/engine/DictionaryLoaderTest.kt:520:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/engine/FallbackDictionaryTest.kt:132:43 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/LetterLayoutAssetsParseTest.kt:81:41 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/LetterLayoutChoiceTest.kt:168:58 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverChoiceTest.kt:156:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:179:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:212:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:225:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:243:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:264:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:285:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:290:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:294:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:296:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:314:18 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:316:18 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:319:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:370:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:376:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:389:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:404:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:420:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:474:31 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/layout/PhysicalKeyResolverTest.kt:487:18 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:29:28 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:29:42 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:34:28 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:35:28 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:35:42 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:48:20 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:48:34 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:48:48 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:52:20 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:52:40 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:60:20 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:60:34 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:69:40 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:69:54 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:72:20 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:72:34 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:73:52 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:73:78 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/AdditionalLocalesParsingTest.kt:73:92 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/KeyboardLanguagesTest.kt:42:74 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/KeyboardLanguagesTest.kt:42:88 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:15:68 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:16:68 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:17:68 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:18:68 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:19:68 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:24:71 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsInputMethodNameTest.kt:25:64 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:16:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:17:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:18:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:19:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:20:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:21:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:26:53 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:27:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:28:54 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:29:51 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:35:56 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:36:56 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:37:63 'constructor(p0: String!, p1: String!, p2: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:38:56 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:39:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/LocaleUtilsLanguageCodeTest.kt:44:61 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/SubtypeEnablerTest.kt:29:76 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/SubtypeEnablerTest.kt:35:84 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/SubtypeEnablerTest.kt:41:73 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/locale/SubtypeEnablerTest.kt:48:70 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/settings/screens/VoiceScreensBehaviourTest.kt:479:42 'fun addResolveInfoForIntent(p0: Intent!, p1: ResolveInfo!): Unit' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:67:41 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:68:41 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:78:49 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:79:49 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:80:52 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:81:51 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:82:51 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:97:26 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:109:42 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:110:53 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:111:47 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:112:45 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:113:41 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:114:42 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:117:42 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerLayoutNameTest.kt:118:40 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerSessionLanguagesTest.kt:18:22 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerSessionLanguagesTest.kt:19:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerSessionLanguagesTest.kt:20:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerSessionLanguagesTest.kt:21:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/spellcheck/SpellCheckerSessionLanguagesTest.kt:22:22 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SideloadedSubtypesTest.kt:98:40 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SideloadedSubtypesTest.kt:146:62 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:157:25 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:158:74 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:312:25 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:313:74 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:395:20 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:395:34 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:395:48 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:402:20 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:402:34 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:402:48 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:486:40 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:492:72 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/subtypeswitcher/SubtypeFactoryExtraValueGoldenTest.kt:503:97 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:12:58 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:14:58 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:19:58 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:25:84 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:26:74 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:27:73 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/AccentCaseTest.kt:28:75 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/textinput/CursorDragTextCacheTest.kt:69:9 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'Any?'.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/update/ApkInstallerTest.kt:165:14 'fun addResolveInfoForIntent(p0: Intent!, p1: ResolveInfo!): Unit' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/core/update/UpdateJobSchedulingTest.kt:76:52 'val networkType: Int' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/DrawnKeyboardsTest.kt:141:34 'val locale: String' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/KeyDisabledIconTest.kt:27:22 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'Array<(out) CapturedType(*)!>?'.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/KeyDisabledIconTest.kt:29:16 Java type mismatch: inferred type is 'Any?', but 'Any' was expected.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/fcc/FccControllerTest.kt:142:58 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceInputGateTest.kt:105:14 'fun addResolveInfoForIntent(p0: Intent!, p1: ResolveInfo!): Unit' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceLanguageTagsTest.kt:90:34 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceLanguageTagsTest.kt:90:54 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceLanguageTagsTest.kt:90:68 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceLanguageTagsTest.kt:90:88 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/inputboard/voice/VoiceRecognitionSessionTest.kt:456:42 'fun addResolveInfoForIntent(p0: Intent!, p1: ResolveInfo!): Unit' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/internal/KeyboardTextSetDuplicateNamesTest.kt:58:48 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/internal/KeypadEngineTouchTest.kt:55:16 Java type mismatch: inferred type is 'Any?', but 'Any' was expected.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/keyboard/internal/PointerTrackerCallbackStreamTest.kt:142:16 Java type mismatch: inferred type is 'Any?', but 'Any' was expected.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/personaldictionary/storage/DefaultWSLoaderTest.kt:57:46 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/personaldictionary/storage/DefaultWSLoaderTest.kt:57:78 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/personaldictionary/tokenizer/BlackBerryTokenizerTest.kt:34:149 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///Z:/BBK-upstream-audit/app/src/test/java/dev/bbkb/ime/personaldictionary/tokenizer/BlackBerryTokenizerTest.kt:35:167 'constructor(p0: String!): Locale' is deprecated. Deprecated in Java.
+
+> Task :app:compileDebugUnitTestJavaWithJavac
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+
+CustomPackRegistryMergeTest > aCustomEntryCannotShadowAShippedPack FAILED
+    java.io.FileNotFoundException at CustomPackRegistryStoreTest.kt:213
+
+CustomPackRegistryMergeTest > aSideLoadedVariantIsDistinctFromItsBaseLanguage FAILED
+    java.io.FileNotFoundException at CustomPackRegistryStoreTest.kt:204
+
+CustomPackRegistryMergeTest > aSideLoadedLocaleBecomesSupported FAILED
+    java.io.FileNotFoundException at CustomPackRegistryStoreTest.kt:190
+
+LanguagePackManagerTest > stockManifestResolvesThePreinstalledEnglishPacks FAILED
+    java.lang.AssertionError at LanguagePackManagerTest.kt:81
+
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :app:testDebugUnitTest
+
+LanguagePackRegistryLazyLoadTest > anExplicitReloadStillReplacesTheCatalogue FAILED
+    java.lang.AssertionError at LanguagePackRegistryLazyLoadTest.kt:100
+
+LanguagePackRegistryLazyLoadTest > theStockManifestStillResolvesAfterALazyLoad FAILED
+    java.lang.AssertionError at LanguagePackRegistryLazyLoadTest.kt:87
+
+22 tests completed, 6 failed
+
+> Task :app:testDebugUnitTest FAILED
+
+[Incubating] Problems report is available at: file:///Z:/BBK-upstream-audit/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///Z:/BBK-upstream-audit/app/build/reports/tests/testDebugUnitTest/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.6.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4m 27s
+40 actionable tasks: 12 executed, 28 up-to-date

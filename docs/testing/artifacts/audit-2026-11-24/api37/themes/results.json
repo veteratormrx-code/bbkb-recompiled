@@ -1,0 +1,44 @@
+[
+  {
+    "theme": "classic",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "classic-row-on.png"
+  },
+  {
+    "theme": "bb10",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "bb10-row-on.png"
+  },
+  {
+    "theme": "modern",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "modern-row-on.png"
+  },
+  {
+    "theme": "material",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "material-row-on.png"
+  },
+  {
+    "theme": "oled",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "oled-row-on.png"
+  },
+  {
+    "theme": "oled_seamless",
+    "number_row": true,
+    "ime_shown": true,
+    "evidence": "oled_seamless-row-on.png"
+  },
+  {
+    "theme": "oled_seamless",
+    "number_row": false,
+    "ime_shown": true,
+    "evidence": "oled_seamless-row-off.png"
+  }
+]

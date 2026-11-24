@@ -1,0 +1,21 @@
+--------- beginning of crash
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: FATAL EXCEPTION: main
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: Process: dev.bbkb.ime.harness, PID: 5643
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: java.lang.RuntimeException: Unable to instantiate instrumentation ComponentInfo{dev.bbkb.ime.harness.test/androidx.test.runner.AndroidJUnitRunner}: java.lang.ClassNotFoundException: Didn't find class "androidx.test.runner.AndroidJUnitRunner" on path: DexPathList[[zip file "/data/app/~~uP8d0rKyI-n3o133i5MSLA==/dev.bbkb.ime.harness.test-2xh_VJTiBB5b0K9JV3XSZg==/base.apk", zip file "/data/app/~~okOtX1ePjg0k8R9r8WPUuQ==/dev.bbkb.ime.harness-7gcI0QhnpQxlOYJQVZMiMQ==/base.apk"],nativeLibraryDirectories=[/system/lib64, /system_ext/lib64]]
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread.initInstrumentation(ActivityThread.java:7747)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread.handleBindApplication(ActivityThread.java:7428)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread.-$$Nest$mhandleBindApplication(Unknown Source:0)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2416)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.os.Looper.loopOnce(Looper.java:232)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:317)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:8705)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.test.runner.AndroidJUnitRunner" on path: DexPathList[[zip file "/data/app/~~uP8d0rKyI-n3o133i5MSLA==/dev.bbkb.ime.harness.test-2xh_VJTiBB5b0K9JV3XSZg==/base.apk", zip file "/data/app/~~okOtX1ePjg0k8R9r8WPUuQ==/dev.bbkb.ime.harness-7gcI0QhnpQxlOYJQVZMiMQ==/base.apk"],nativeLibraryDirectories=[/system/lib64, /system_ext/lib64]]
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	at android.app.ActivityThread.initInstrumentation(ActivityThread.java:7743)
+11-24 11:58:24.373  5643  5643 E AndroidRuntime: 	... 10 more

@@ -1,0 +1,6 @@
+{
+  "apk": "app/build/outputs/apk/release/app-release-unsigned.apk",
+  "bytes": 109974048,
+  "sha256": "465ccb8e1366c988a15838564f24d89e9c1717e3676171f417c6efb750a3a30b",
+  "signed": false
+}

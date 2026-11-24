@@ -1,0 +1,18 @@
+{
+  "clang-default": {
+    "rows": 661,
+    "expected_rows": 661,
+    "exact_rows": 22,
+    "same_candidate_order": 656,
+    "first_expected": "qwerty_pkb_even.xml corpus_v2.txt #0: hello=0x1.d34658p+0 bello=0x1.e6b466p+0 belo=0x1.e6b466p+0 hero=0x1.19e7b4p+1 jello=0x1.216a18p+1 help=0x1.236c34p+1 hep=0x1.2cbd58p+1 hereto=0x1.380874p+1",
+    "first_actual": "qwerty_pkb_even.xml corpus_v2.txt #0: hello=0x1.d34658p+0 bello=0x1.e6b466p+0 belo=0x1.e6b466p+0 hero=0x1.19e7b4p+1 jello=0x1.216a18p+1 help=0x1.236c36p+1 hep=0x1.2cbd58p+1 hereto=0x1.380874p+1"
+  },
+  "clang-fma": {
+    "rows": 661,
+    "expected_rows": 661,
+    "exact_rows": 318,
+    "same_candidate_order": 660,
+    "first_expected": "qwerty_pkb_even.xml corpus_v2.txt #0: hello=0x1.d34658p+0 bello=0x1.e6b466p+0 belo=0x1.e6b466p+0 hero=0x1.19e7b4p+1 jello=0x1.216a18p+1 help=0x1.236c34p+1 hep=0x1.2cbd58p+1 hereto=0x1.380874p+1",
+    "first_actual": "qwerty_pkb_even.xml corpus_v2.txt #0: hello=0x1.d34658p+0 bello=0x1.e6b466p+0 belo=0x1.e6b466p+0 hero=0x1.19e7b4p+1 jello=0x1.216a18p+1 help=0x1.236c34p+1 hep=0x1.2cbd58p+1 hereto=0x1.380874p+1"
+  }
+}

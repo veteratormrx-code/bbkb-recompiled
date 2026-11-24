@@ -1,0 +1,1 @@
+/data/local/tmp/bbkb-audit.png: 1 file pulled, 0 skipped. 17.2 MB/s (149680 bytes in 0.008s)

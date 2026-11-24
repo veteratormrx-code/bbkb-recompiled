@@ -1,5 +1,29 @@
 # Матрица паритета
 
+## Текущий сравнительный прогон
+
+Наличие функции указано по исходникам или ресурсам. PASS относится к конкретному тесту, указанному в последнем столбце.
+
+| Функция | Upstream | 4PDA | Форк | Подтверждение |
+| --- | --- | --- | --- | --- |
+| Базовый английский ввод | IMPLEMENTED | IMPLEMENTED | IMPLEMENTED | На Android 17 у всех PASS для `bb`, `bbb` и Backspace. |
+| Нативный движок arm64 | IMPLEMENTED | IMPLEMENTED | IMPLEMENTED | Все три установлены и принимают ввод на x86_64 AVD с ARM-трансляцией. Для форка есть журналы XT9. |
+| Русские словари RUL1 | NOT IMPLEMENTED | IMPLEMENTED | IMPLEMENTED | PASS структуры и побайтного сравнения модификаций. Качество автозамены по корпусу NOT RUN. |
+| Фразовые индексы RU/EN | PARTIALLY IMPLEMENTED через XT9 | IMPLEMENTED | IMPLEMENTED | Генерация индексов форка из эталонных TSV воспроизводится. JUnit backoff PASS, сквозное качество NOT RUN. |
+| Цифровой ряд и OLED | Отдельные стили upstream | По ресурсам не установлено | IMPLEMENTED | JVM палитры PASS. Сняты обе OLED-темы и включённый/выключенный ряд. |
+| HTML `input type=number` | NOT RUN | NOT RUN | IMPLEMENTED | На Android 17 форк ввёл `-12.5` на экранной цифровой раскладке. |
+| История буфера | IMPLEMENTED | IMPLEMENTED | IMPLEMENTED | Форк PASS по 71 JVM-сценарию. Сквозной `commitContent` и реальный полный предел диска требуют проверки. |
+| Эмодзи | Emojibase 16 | Каталог Emoji 18 и Noto | Emojibase с дополнением 17/18 | PASS четырёх JVM-сценариев форка. Отрисовка и редактор проверяются отдельно. |
+| Панель редактирования | PARTIALLY IMPLEMENTED, FCC | IMPLEMENTED по ресурсу и коду | IMPLEMENTED | Форк PASS для выделения всего, вырезания, вставки и сохранения текста при переходе к предыдущему слову. |
+| Перевод и рукопись ML Kit | NOT IMPLEMENTED | IMPLEMENTED по ресурсам | PARTIALLY IMPLEMENTED | Форк PASS для офлайн RU/EN и вставки результата. Выбор языка ограничен RU/EN. Полная проверка моделей и рукописи NOT RUN. |
+| Голос и inline-автозаполнение | IMPLEMENTED | IMPLEMENTED по ресурсам | IMPLEMENTED по коду | Сквозная проверка NOT RUN. |
+| Переходы панелей без наложений | NOT RUN | NOT RUN | PARTIALLY IMPLEMENTED | Матрица быстрых переходов и запоздавших результатов требует проверки. |
+| Миграция пользовательских данных | NOT RUN | NOT RUN | PARTIALLY VERIFIED | Четыре настройки сохранились при замене совместимо подписанного debug APK на Android 15 с тем же versionCode. |
+
+[Результаты](qa/test-results.md) [Покрытие задания](qa/master-test-plan.md)
+
+## Предыдущий прогон
+
 Статусы не смешиваются: код сам по себе не означает EMULATOR PASS.
 
 | Функция | Статус | Доказательство |

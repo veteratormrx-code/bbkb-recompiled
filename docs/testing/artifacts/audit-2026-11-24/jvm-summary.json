@@ -1,0 +1,140 @@
+{
+  "tests": 3989,
+  "failures": 20,
+  "errors": 0,
+  "skipped": 25,
+  "failed_tests": [
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.CustomPackRegistryMergeTest",
+      "test": "aCustomEntryCannotShadowAShippedPack",
+      "message": "java.io.FileNotFoundException: ldb\\manifest.json"
+    },
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.CustomPackRegistryMergeTest",
+      "test": "aSideLoadedVariantIsDistinctFromItsBaseLanguage",
+      "message": "java.io.FileNotFoundException: ldb\\manifest.json"
+    },
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.CustomPackRegistryMergeTest",
+      "test": "aSideLoadedLocaleBecomesSupported",
+      "message": "java.io.FileNotFoundException: ldb\\manifest.json"
+    },
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.LanguagePackManagerTest",
+      "test": "stockManifestResolvesThePreinstalledEnglishPacks",
+      "message": "java.lang.AssertionError"
+    },
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.LanguagePackRegistryLazyLoadTest",
+      "test": "anExplicitReloadStillReplacesTheCatalogue",
+      "message": "java.lang.AssertionError"
+    },
+    {
+      "class": "com.blackberry.nuanceshim.languagepack.LanguagePackRegistryLazyLoadTest",
+      "test": "theStockManifestStillResolvesAfterALazyLoad",
+      "message": "java.lang.AssertionError"
+    },
+    {
+      "class": "dev.bbkb.ime.core.layout.LetterLayoutRegistryTest",
+      "test": "savedLayoutsAreListedByNameAndReadBack",
+      "message": "java.lang.AssertionError"
+    },
+    {
+      "class": "dev.bbkb.ime.core.locale.TranslationCompletenessTest",
+      "test": "everyTargetLocaleTranslatesEveryBaseString",
+      "message": "java.lang.AssertionError: 73 locale folder(s) are missing translations for strings in values/strings.xml. Translate them, or (only as a last resort) list the folder in incompleteLocaleAllowlist with a reason:\n  values-af: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ar: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-az-rAZ: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-be-rBY: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-bg: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-bn-rBD: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-bn-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-bs: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ca: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-cs: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-cy: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-da: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-de: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-el: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-es: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-es-rUS: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-et-rEE: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-eu-rES: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-fa: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-fi: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-fr: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-fr-rCA: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ga: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-gl-rES: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-hi: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-hr: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-hu: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-hy-rAM: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-in: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-is-rIS: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-it: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-iw: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ja: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-jv: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ka-rGE: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-km-rKH: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-kn-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ko: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ky-rKG: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-lo-rLA: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-lt: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-lv: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-mk-rMK: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ml-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-mn-rMN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-mr-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ms: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ms-rMY: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-nb: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-nl: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-nl-rBE: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-pl: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-pt: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-pt-rPT: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ro: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ru: 10 untranslated, e.g. settings_uim_toggle_handwriting, settings_uim_toggle_text_edit, settings_uim_toggle_translate, text_edit_copy, text_edit_cut, text_edit_left\n  values-sk: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-sl: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-sq: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-sr: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-su: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-sv: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-ta-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-te-rIN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-th: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-tl: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-tr: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-uk: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-uz-rUZ: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-vi: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-zh-rCN: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-zh-rHK: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary\n  values-zh-rTW: 37 untranslated, e.g. settings_appearance_oled, settings_appearance_oled_seamless, settings_gestures_ckb_summary, settings_gestures_onscreen_summary, settings_gestures_shake_summary, settings_gestures_spacebar_summary"
+    },
+    {
+      "class": "dev.bbkb.ime.core.settings.backup.BackupBundleTest",
+      "test": "theDefaultFileNameCarriesTheDate",
+      "message": "org.junit.ComparisonFailure: expected:<...bkb-backup-2023-11-1[4].zip> but was:<...bkb-backup-2023-11-1[5].zip>"
+    },
+    {
+      "class": "dev.bbkb.ime.core.settings.screens.LanguagePacksVoiceChipTest",
+      "test": "search narrows the installed packs by name",
+      "message": "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms"
+    },
+    {
+      "class": "dev.bbkb.ime.core.settings.screens.LanguagePacksVoiceChipTest",
+      "test": "no chip before the recogniser has ever answered",
+      "message": "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms"
+    },
+    {
+      "class": "dev.bbkb.ime.core.settings.screens.LanguagePacksVoiceChipTest",
+      "test": "only the downloaded languages carry the chip",
+      "message": "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms"
+    },
+    {
+      "class": "dev.bbkb.ime.core.settings.screens.LanguagePacksVoiceChipTest",
+      "test": "no chip while voice input is off",
+      "message": "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms"
+    },
+    {
+      "class": "dev.bbkb.ime.core.update.ApkInstallerTest",
+      "test": "theInstallIntentIsAContentUriWithTheRightMimeAndFlags",
+      "message": "java.lang.IllegalArgumentException: Failed to find configured root that contains C:\\Users\\veter\\AppData\\Local\\Temp\\robolectric-ApkInstallerTest_theInstallIntentIsAContentUriWithTheRightMimeAndFlags382114622815354763\\dev.bbkb.ime.debug-dataDir\\cache\\downloads\\bbkb-5.0.0-beta.18-1430.apk"
+    },
+    {
+      "class": "dev.bbkb.ime.core.update.ApkInstallerTest",
+      "test": "startingTheInstallerLaunchesTheViewIntent",
+      "message": "java.lang.IllegalArgumentException: Failed to find configured root that contains C:\\Users\\veter\\AppData\\Local\\Temp\\robolectric-ApkInstallerTest_startingTheInstallerLaunchesTheViewIntent7146315940395482088\\dev.bbkb.ime.debug-dataDir\\cache\\downloads\\bbkb-5.0.0-beta.18-1430.apk"
+    },
+    {
+      "class": "dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguageTagsTest",
+      "test": "displayNameFallsBackToTheTag",
+      "message": "java.lang.AssertionError: expected:<true> but was:<false>"
+    },
+    {
+      "class": "dev.bbkb.ime.personaldictionary.PersonalDictionaryLoadTest",
+      "test": "aDeletedBuiltInShortcutStaysDeletedAfterALoad",
+      "message": "java.lang.AssertionError: bb is a built-in shortcut"
+    },
+    {
+      "class": "dev.bbkb.ime.personaldictionary.storage.DefaultWSLoaderTest",
+      "test": "deletedKeysAreLeftOut",
+      "message": "java.lang.AssertionError: expected:<it's a> but was:<null>"
+    },
+    {
+      "class": "dev.bbkb.ime.personaldictionary.storage.DefaultWSLoaderTest",
+      "test": "englishLoadsItsShortcutsAndTheBaseOnes",
+      "message": "java.lang.AssertionError: expected:<a lot> but was:<null>"
+    },
+    {
+      "class": "dev.bbkb.ime.personaldictionary.storage.DefaultWSLoaderTest",
+      "test": "everyShippedFileLoads",
+      "message": "java.lang.AssertionError: ca loaded nothing"
+    }
+  ],
+  "targeted_classes": {
+    "dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardHistoryManagerTest": {
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dev.bbkb.ime.keyboard.inputboard.emoji.EmojiRussianSearchTest": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dev.bbkb.ime.keyboard.OledPaletteTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dev.bbkb.ime.modernlexicon.BbdLexiconTest": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dev.bbkb.ime.modernlexicon.PhrasePredictionsTest": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  }
+}

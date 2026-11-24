@@ -1,0 +1,16 @@
+{
+  "ru": {
+    "shards": 29,
+    "bigram_contexts": 42455,
+    "trigram_contexts": 154612,
+    "unique_contexts": 197067,
+    "regenerated_matches": true
+  },
+  "en": {
+    "shards": 26,
+    "bigram_contexts": 28212,
+    "trigram_contexts": 235663,
+    "unique_contexts": 263875,
+    "regenerated_matches": true
+  }
+}

@@ -1,0 +1,75 @@
+11-24 12:01:46.431  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1433 - 1080, 2138) contentTop=1433 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:01:46.455  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:01:46.455  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1433 - 1080, 2138) contentTop=1433 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:01:46.480  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:01:46.480  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1433 - 1080, 2138) contentTop=1433 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:01:46.506  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:01:46.507  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1433 - 1080, 2138) contentTop=1433 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:01:47.777  9342  9456 I XT9KDB  : build ahead: keypad KDBs for 1 keyboard(s) ready in 1 ms
+11-24 12:02:51.068  9342  9401 I XT9KDB  : SetKdbNum sel=0x109 pid=9 sid=1 pkb=0 req_variant='keypad' variantApplied=0
+11-24 12:02:51.068  9342  9401 I XT9KDB  : SetKeyboardSize ctx=0x7976a8350dc0 w=1080 h=749
+11-24 12:02:51.091  9342  9401 I XT9KDB  : SetKdbNum sel=0x109 pid=9 sid=1 pkb=0 req_variant='keypad' variantApplied=0
+11-24 12:02:51.091  9342  9401 I XT9KDB  : SetKeyboardSize ctx=0x7976a8350dc0 w=1080 h=749
+11-24 12:02:51.105  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:02:51.106  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:02:51.143  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:02:51.143  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:02:51.164  9342  9401 I XT9KDB  : SetKdbNum sel=0x109 pid=9 sid=1 pkb=0 req_variant='keypad' variantApplied=0
+11-24 12:02:51.164  9342  9401 I XT9KDB  : SetKeyboardSize ctx=0x7976a8350dc0 w=1080 h=749
+11-24 12:02:51.444  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:02:51.444  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:02:51.723  9342  9401 I XT9KDB  : SetKdbNum sel=0x109 pid=9 sid=1 pkb=0 req_variant='keypad' variantApplied=0
+11-24 12:02:51.723  9342  9401 I XT9KDB  : SetKeyboardSize ctx=0x7976a8350dc0 w=1080 h=749
+11-24 12:02:52.707  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:02:52.708  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:04:40.651  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:04:40.651  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:04:40.658  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:04:40.658  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:07:44.527  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:07:44.527  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:07:44.542  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:07:44.543  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:08:39.815  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:08:39.815  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:08:56.841  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:08:56.841  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.041  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.041  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.058  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.058  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.629  9342  9401 I XT9KDB  : SetKdbNum sel=0x109 pid=9 sid=1 pkb=0 req_variant='keypad' variantApplied=0
+11-24 12:10:09.631  9342  9401 I XT9KDB  : SetKeyboardSize ctx=0x7976a8350dc0 w=1080 h=749
+11-24 12:10:09.640  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.640  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.681  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.682  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.711  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.711  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.723  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:09.724  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:09.986  9342  9401 I XT9WORDS: build: count=0 inline='he'
+11-24 12:10:10.040  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:10.040  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:10.309  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:10.309  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:10.323  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:10.324  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:10.989  9342  9401 I XT9WORDS: build: count=1 inline='helo'
+11-24 12:10:10.989  9342  9401 I XT9WORDS:   [0] word='helo' spell='' corr=false auto=false
+11-24 12:10:10.991  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:10.991  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.007  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.007  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.025  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.025  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.074  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.074  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.092  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.092  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.107  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.107  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.126  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.126  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true
+11-24 12:10:11.157  9342  9342 W BBKBdiag: onComputeInsets: isPkb=true mainKbView.vis=0 mainKbView.isShown=true mainKbShowing=false auxBarShown=true auxBarH=105 rootH=2264 rootW=1080
+11-24 12:10:11.157  9342  9342 W BBKBdiag: onComputeInsets: SET region=Rect(0, 1284 - 1080, 2138) contentTop=1284 mainKbShowing=false auxBarShown=true isPkb=true

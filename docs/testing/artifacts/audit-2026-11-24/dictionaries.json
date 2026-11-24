@@ -1,0 +1,67 @@
+{
+  "packs": {
+    "ru-common.bbd": {
+      "blocks": 3520,
+      "rows": 48689,
+      "unique": 48689,
+      "duplicate_rows": 0,
+      "zero_frequency_rows": 0,
+      "uncompressed_bytes": 985362,
+      "min_word_length": 2,
+      "max_word_length": 21,
+      "sha256": "12474a14862f0b1c9bcc8c987cac2baf1730469ab92def884903cf9bc91fc5d6",
+      "matches_reference_apk": true
+    },
+    "ru-conversational.bbd": {
+      "blocks": 73,
+      "rows": 700,
+      "unique": 700,
+      "duplicate_rows": 0,
+      "zero_frequency_rows": 700,
+      "uncompressed_bytes": 12623,
+      "min_word_length": 3,
+      "max_word_length": 14,
+      "sha256": "fdae3408e1a686b0fcfa1808c5bccdf576222bbcdfd37d2f927ecf5680bfa3b5",
+      "matches_reference_apk": true
+    },
+    "ru-opencorpora.bbd": {
+      "blocks": 4816,
+      "rows": 1327062,
+      "unique": 1327062,
+      "duplicate_rows": 0,
+      "zero_frequency_rows": 1327062,
+      "uncompressed_bytes": 36223341,
+      "min_word_length": 2,
+      "max_word_length": 40,
+      "sha256": "73b500a84daf2c946c5c9371eb4c24dffcc5bd6a8adecb06640d7fd6596f70f2",
+      "matches_reference_apk": true
+    },
+    "ru-spelling.bbd": {
+      "blocks": 12755,
+      "rows": 2367127,
+      "unique": 2367127,
+      "duplicate_rows": 0,
+      "zero_frequency_rows": 2367127,
+      "uncompressed_bytes": 57144135,
+      "min_word_length": 2,
+      "max_word_length": 64,
+      "sha256": "a9a0eb9c4f105a49f7f90915f257a51f40f55e2d85bbcd22998c10652b14a456",
+      "matches_reference_apk": true
+    },
+    "ru-unimorph.bbd": {
+      "blocks": 964,
+      "rows": 12712,
+      "unique": 12712,
+      "duplicate_rows": 0,
+      "zero_frequency_rows": 12712,
+      "uncompressed_bytes": 299936,
+      "min_word_length": 3,
+      "max_word_length": 33,
+      "sha256": "4c13db64f7700d3e1266e84ffed89e4bc739c56f30507cef001c5b0043f4ac1d",
+      "matches_reference_apk": true
+    }
+  },
+  "unique": 3708431,
+  "unique_normalized": 3606701,
+  "duplicates_across_packs": 47859
+}

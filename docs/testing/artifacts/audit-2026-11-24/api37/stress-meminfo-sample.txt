@@ -1,0 +1,74 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 2203558 Realtime: 2203558
+
+** MEMINFO in pid 13270 [dev.bbkb.ime.debug] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    25623    25596        0       10    28368    39508    32736     3339
+  Dalvik Heap     7645     7560        0       29    13528    10751     8064     2687
+ Dalvik Other    10057     3716        0        1    16772                           
+        Stack     1372     1372        0        0     1376                           
+    Other dev       12        0       12        0      444                           
+     .so mmap     8840     2956     2404        5    55596                           
+    .jar mmap     2232        0      124        0    50444                           
+    .apk mmap     7510       36     7188        0     9928                           
+    .ttf mmap      371        0      204        0     1024                           
+    .dex mmap    45561    45552        0        0    46488                           
+    .oat mmap       25        0        0        0     1912                           
+    .art mmap     8106     7884        0        4    23668                           
+   Other mmap     3949       28      324        0     8832                           
+        Memfd    18699    16844        0        0    21216                           
+      Unknown     6067     6052        0        5     6944                           
+        TOTAL   146123   117596    10256       54   286540    50259    40800     6026
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    15444                          37196
+         Native Heap:    25596                          28368
+                Code:    58636                         178244
+               Stack:     1372                           1376
+            Graphics:        0                              0
+       Private Other:    26804
+              System:    18271
+             Unknown:                                   41356
+ 
+           TOTAL PSS:   146123            TOTAL RSS:   286540       TOTAL SWAP PSS:       54
+ 
+ Objects
+               Views:      142         ViewRootImpl:        1
+         AppContexts:        5           Activities:        0
+              Assets:       22        AssetManagers:        0
+       Local Binders:       81        Proxy Binders:       55
+       Parcel memory:       17         Parcel count:       50
+    Death Recipients:        0             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+    Other (malloced):      850                             79
+ Other (nonmalloced):      157                             97
+   Bitmap (malloced):        4                              0
+Bitmap (nonmalloced):        4                            114
+ 
+ Mapped Bitmaps
+                         Count                       Size(KB)
+                        ------                         ------
+              Mapped:        0                              0
+              Unique:        0                              0
+ 
+ SQL
+         MEMORY_USED:      258
+  PAGECACHE_OVERFLOW:       71          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4       96            123     7    37     9  /data/user/0/dev.bbkb.ime.debug/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4       96             32     2    15     3  /data/user/0/dev.bbkb.ime.debug/no_backup/androidx.work.workdb (2)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+              9            56            12  /data/user/0/dev.bbkb.ime.debug/no_backup/androidx.work.workdb
+ 
