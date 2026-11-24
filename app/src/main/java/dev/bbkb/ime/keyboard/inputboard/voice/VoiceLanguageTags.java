@@ -217,10 +217,19 @@ public final class VoiceLanguageTags {
 
     /** "English (United States)" for {@code en-US}; the tag itself when the platform has no name. */
     public static String displayName(String tag) {
+        return displayName(tag, Locale.getDefault());
+    }
+
+    /**
+     * The name of {@code tag} in {@code displayLocale}. An explicit locale keeps the call
+     * deterministic on hosts whose default is not the UI language.
+     */
+    public static String displayName(String tag, Locale displayLocale) {
         if (tag == null || tag.isEmpty()) {
             return "";
         }
-        final String name = Locale.forLanguageTag(tag).getDisplayName();
+        final Locale locale = displayLocale == null ? Locale.getDefault() : displayLocale;
+        final String name = Locale.forLanguageTag(tag).getDisplayName(locale);
         return name == null || name.isEmpty() ? tag : name;
     }
 }

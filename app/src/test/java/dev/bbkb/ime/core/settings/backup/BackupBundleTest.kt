@@ -355,15 +355,14 @@ class BackupBundleTest {
 
     @Test
     fun theDefaultFileNameCarriesTheDate() {
-        val originalZone = TimeZone.getDefault()
-        try {
-            TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-            assertEquals("bbkb-backup-2023-11-14.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
-            TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"))
-            assertEquals("bbkb-backup-2023-11-15.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
-        } finally {
-            TimeZone.setDefault(originalZone)
-        }
+        assertEquals(
+            "bbkb-backup-2023-11-14.zip",
+            BackupBundle.defaultFileName(1_700_000_000_000L, TimeZone.getTimeZone("UTC"))
+        )
+        assertEquals(
+            "bbkb-backup-2023-11-15.zip",
+            BackupBundle.defaultFileName(1_700_000_000_000L, TimeZone.getTimeZone("Europe/Moscow"))
+        )
     }
 
     @Test

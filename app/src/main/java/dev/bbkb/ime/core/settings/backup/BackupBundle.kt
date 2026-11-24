@@ -150,8 +150,13 @@ object BackupBundle {
     class NotABackupException(message: String) : Exception(message)
 
     /** `bbkb-backup-<yyyy-MM-dd>.zip`, the save dialog's suggested name. */
-    fun defaultFileName(nowMillis: Long = System.currentTimeMillis()): String =
-        "bbkb-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(nowMillis)) + ".zip"
+    fun defaultFileName(
+        nowMillis: Long = System.currentTimeMillis(),
+        timeZone: TimeZone = TimeZone.getDefault(),
+    ): String =
+        "bbkb-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+            this.timeZone = timeZone
+        }.format(Date(nowMillis)) + ".zip"
 
     /** Writes [contents] to [out] as a bundle and closes [out]; null parts are left out. */
     @Throws(IOException::class)

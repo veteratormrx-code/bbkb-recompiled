@@ -2,10 +2,12 @@ package dev.bbkb.ime.core.update
 
 import android.content.Context
 import android.content.Intent
+import android.content.ContentResolver
 import android.net.Uri
 import android.provider.Settings
 import androidx.core.content.FileProvider
 import dev.bbkb.ime.core.distribution.AppBuild
+import dev.bbkb.ime.core.distribution.DistributionConfig
 import dev.bbkb.ime.core.distribution.Downloader
 import dev.bbkb.ime.core.shared.Logger
 import java.io.File
@@ -83,10 +85,43 @@ class ApkInstaller @JvmOverloads constructor(
 
     /** `ACTION_VIEW` on a [FileProvider] URI with the read grant and NEW_TASK (both required). */
     fun installIntentFor(apk: File): Intent {
-        val uri = FileProvider.getUriForFile(context, authority(), apk)
+        val uri = fileProviderUri(apk)
         return Intent(Intent.ACTION_VIEW)
             .setDataAndType(uri, MIME_APK)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    /**
+     * The `content://` URI for [apk], normally straight from [FileProvider]. androidx.core 1.18
+     * compares a canonical path with `"<root>/"`, which never matches on a Windows host because
+     * the separator there is `\`; Android always uses `/`, so this only affects JVM tests. In that
+     * case rebuild the very URI the provider expects for its `downloads` root, and only for a file
+     * that really is inside it.
+     */
+    private fun fileProviderUri(apk: File): Uri {
+        return try {
+            FileProvider.getUriForFile(context, authority(), apk)
+        } catch (failed: IllegalArgumentException) {
+            downloadsContentUri(apk) ?: throw failed
+        }
+    }
+
+    private fun downloadsContentUri(apk: File): Uri? {
+        val root = DistributionConfig.downloadDir(context).canonicalFile
+        val file = apk.canonicalFile
+        val rootPath = root.path.trimEnd(File.separatorChar, '/')
+        val prefix = rootPath + File.separator
+        if (!file.path.startsWith(prefix)) return null
+        val segments = file.path.substring(prefix.length)
+            .split(File.separatorChar, '/')
+            .filter { it.isNotEmpty() }
+        if (segments.isEmpty()) return null
+        val builder = Uri.Builder()
+            .scheme(ContentResolver.SCHEME_CONTENT)
+            .authority(authority())
+            .appendPath(DOWNLOADS_ROOT)
+        for (segment in segments) builder.appendPath(segment)
+        return builder.build()
     }
 
     /** False when the file is gone or no installer can start; the caller then offers the download again. */
@@ -115,6 +150,9 @@ class ApkInstaller @JvmOverloads constructor(
 
         /** Prefix of every file this class downloads, so it can recognise its own leftovers. */
         const val NAME_PREFIX: String = "bbkb-"
+
+        /** Root name declared by the `<cache-path name="downloads">` entry in `file_paths.xml`. */
+        const val DOWNLOADS_ROOT: String = "downloads"
 
         /** Grace period before an abandoned download in `cacheDir/downloads/` is pruned. */
         const val STALE_AGE_MS: Long = 14L * 24L * 60L * 60L * 1000L

@@ -5,7 +5,6 @@ import android.util.JsonReader;
 
 import dev.bbkb.ime.core.shared.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ManifestParser {
     public static LanguagePackRegistry parseManifest(Context context) throws IOException {
-        String str = "ldb" + File.separator + "manifest.json";
+        String str = "ldb/manifest.json";
         LanguagePackRegistry registry = new LanguagePackRegistry();
         try (JsonReader jsonReader = new JsonReader(
                 new InputStreamReader(context.getAssets().open(str), StandardCharsets.UTF_8))) {

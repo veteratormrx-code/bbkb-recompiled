@@ -6,7 +6,6 @@ import dev.bbkb.ime.personaldictionary.PersonalDictionaryConstants
 import dev.bbkb.ime.personaldictionary.model.WordSubstitution
 import org.json.JSONArray
 import org.json.JSONException
-import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -88,7 +87,7 @@ object DefaultWSLoader {
         deletedKeys: Set<String>
     ) {
         val localeStr = locale.toString()
-        val path = baseDir + File.separator + localeStr
+        val path = baseDir + "/" + localeStr
         LogUtil.d(TAG, "Loading file:$path")
         putWSFromFileIntoMap(context, map, path, localeStr, deletedKeys)
     }
@@ -100,13 +99,13 @@ object DefaultWSLoader {
         locale: Locale,
         deletedKeys: Set<String>
     ) {
-        val path = baseDir + File.separator + getFullLocaleStringWithoutVariant(locale)
+        val path = baseDir + "/" + getFullLocaleStringWithoutVariant(locale)
         try {
             LogUtil.d(TAG, "Loading file:$path")
             putWSFromFileIntoMap(context, map, path, locale.toString(), deletedKeys)
         } catch (e: IOException) {
             val language = locale.language
-            val langPath = baseDir + File.separator + language
+            val langPath = baseDir + "/" + language
             LogUtil.d(TAG, "File for $locale cannot be loaded. Trying: $langPath")
             try {
                 putWSFromFileIntoMap(context, map, langPath, locale.toString(), deletedKeys)
@@ -124,7 +123,7 @@ object DefaultWSLoader {
         localeStr: String,
         deletedKeys: Set<String>
     ) {
-        val filePath = dirPath + File.separator + PersonalDictionaryConstants.DEFAULT_MACROS_FILENAME
+        val filePath = dirPath + "/" + PersonalDictionaryConstants.DEFAULT_MACROS_FILENAME
         // Outside the try: a missing file must throw so callers fall back to the language-only file.
         val jsonContent = FileUtils.readAndroidAssetToString(context, filePath)
         try {

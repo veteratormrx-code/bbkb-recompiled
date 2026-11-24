@@ -98,7 +98,7 @@ class VoiceLanguageTagsTest {
         assertEquals("", VoiceLanguageTags.displayName(null))
         assertEquals("", VoiceLanguageTags.displayName(""))
         // The JVM names this one; the exact wording is the platform's, so only check it is a name.
-        val english = VoiceLanguageTags.displayName("en-US")
+        val english = VoiceLanguageTags.displayName("en-US", Locale.ENGLISH)
         assertEquals(true, english.startsWith("English"))
     }
 }

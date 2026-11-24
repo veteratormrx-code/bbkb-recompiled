@@ -20,9 +20,23 @@ fi
 [ -f "$BLOB" ] || { echo "SKIP: blob not found at $BLOB"; exit 0; }
 
 nm_d()      { llvm-nm -D --defined-only "$1" 2>/dev/null || nm -D --defined-only "$1"; }
-objdump_R() { llvm-objdump -R "$1" 2>/dev/null || objdump -R "$1"; }
 
-imports=$(objdump_R "$KB" | grep -E "JUMP_SLOT|GLOB_DAT" | awk '{print $3}' | sort -u)
+# Symbol names this object resolves through the PLT / GOT.
+# On an x86_64 host objdump happily "decodes" the aarch64 libkb.so, exits 0 and prints no
+# relocations at all, so a zero exit status proves nothing: fall back to readelf (architecture
+# independent) whenever objdump yields no rows.
+reloc_imports() {
+  local f="$1" rows
+  rows=$(objdump -R "$f" 2>/dev/null | awk '$2 ~ /JUMP_SLOT/ || $2 ~ /GLOB_DAT/ {print $3}')
+  if [ -z "$rows" ]; then
+    rows=$(readelf -rW "$f" 2>/dev/null \
+           | awk '$3 ~ /JUMP_SLOT/ || $3 ~ /GLOB_DAT/ {print $5}' | sed 's/@.*//')
+  fi
+  printf '%s\n' "$rows" | awk 'NF' | sort -u
+}
+
+imports=$(reloc_imports "$KB") || { echo "FAIL: cannot read the relocations of $KB"; exit 1; }
+[ -n "$imports" ] || { echo "FAIL: $KB imports nothing; the relocation reader found no PLT/GOT symbols"; exit 1; }
 kbdef=$(nm_d "$KB"   | awk '{print $3}' | sort -u)
 blobdef=$(nm_d "$BLOB" | awk '{print $3}' | sort -u)
 

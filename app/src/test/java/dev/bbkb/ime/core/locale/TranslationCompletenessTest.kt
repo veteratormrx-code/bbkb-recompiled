@@ -36,8 +36,28 @@ class TranslationCompletenessTest {
      */
     private val languagesWithNoResourceFolder = emptySet<String>()
 
-    /** Locale folders knowingly incomplete; name one here with a reason rather than weakening the test. */
-    private val incompleteLocaleAllowlist = emptySet<String>()
+    /**
+     * Locale folders knowingly incomplete; name one here with a reason rather than weakening the test.
+     * The 4PDA feature set (OLED themes, number row, ML Kit, text-edit bar, privacy) was added with
+     * complete English and Russian strings only; the locales below fall back to English for those 37
+     * strings until they are translated. See docs/qa/known-limitations.md.
+     */
+    private val incompleteLocaleAllowlist = setOf(
+        "values-af", "values-ar", "values-az-rAZ", "values-be-rBY", "values-bg",
+        "values-bn-rBD", "values-bn-rIN", "values-bs", "values-ca", "values-cs",
+        "values-cy", "values-da", "values-de", "values-el", "values-es", "values-es-rUS",
+        "values-et-rEE", "values-eu-rES", "values-fa", "values-fi", "values-fr",
+        "values-fr-rCA", "values-ga", "values-gl-rES", "values-hi", "values-hr",
+        "values-hu", "values-hy-rAM", "values-in", "values-is-rIS", "values-it",
+        "values-iw", "values-ja", "values-jv", "values-ka-rGE", "values-km-rKH",
+        "values-kn-rIN", "values-ko", "values-ky-rKG", "values-lo-rLA", "values-lt",
+        "values-lv", "values-mk-rMK", "values-ml-rIN", "values-mn-rMN", "values-mr-rIN",
+        "values-ms", "values-ms-rMY", "values-nb", "values-nl", "values-nl-rBE",
+        "values-pl", "values-pt", "values-pt-rPT", "values-ro", "values-sk", "values-sl",
+        "values-sq", "values-sr", "values-su", "values-sv", "values-ta-rIN",
+        "values-te-rIN", "values-th", "values-tl", "values-tr", "values-uk",
+        "values-uz-rUZ", "values-vi", "values-zh-rCN", "values-zh-rHK", "values-zh-rTW",
+    )
 
     /** Every `<string name=...>` and `<plurals name=...>` in the folder not marked `translatable="false"`. */
     private fun stringNames(dir: File, translatableOnly: Boolean): Set<String> {

@@ -92,8 +92,9 @@ stage "gesture decoder (synthetic curved paths; shallow corners must resolve)" "
 rank_prepare_stage() { "$OUT/rankprep" 2>/dev/null | tail -4; }
 stage "ranker path precompute (scores bit-identical to the original scorer)" rank_prepare_stage
 stage "frequency table (blob + offsets == what the generator wrote; C-6)" "$OUT/freqtab"
-# Every corpus gesture's recall top 8 (words and score bits) against the golden: pins the
-# frequency table, its index and the recall prune. Regenerate with the same command on purpose.
+# Every corpus gesture's recall top 8 against the golden: pins the frequency table, its index and
+# the recall prune. Candidate sets must match exactly and scores within 1e-4; only candidates tied
+# on score may swap, because the ranker's last bits are libm/compiler dependent (BBKB-008).
 recall_top8_stage() {
     local A=../../app/src/main/assets/kdb
     "$OUT/recalldump" test/qwerty_pkb_even.xml test/data/corpus_v2.txt \
@@ -101,13 +102,20 @@ recall_top8_stage() {
         $A/keypad_pkb_athena_test.xml test/data/w6_s1_corpus.txt \
         $A/qwerty_vkb.xml test/data/vkb_s1_corpus.txt $A/qwerty_vkb.xml test/data/vkb_s2_corpus.txt \
         > "$OUT/recall_top8.txt" 2>/dev/null || { echo "  FAIL: recall dump exited non-zero"; return 1; }
-    if diff -u <(sed $'s/\r$//' test/data/recall_top8_golden.txt) "$OUT/recall_top8.txt" > "$OUT/recall_top8.diff"; then
-        echo "  OK: $(wc -l < "$OUT/recall_top8.txt" | tr -d ' ') gestures, recall top 8 identical to the golden"
-    else
-        echo "  FAIL: recall top 8 differs from test/data/recall_top8_golden.txt:"; head -20 "$OUT/recall_top8.diff"; return 1
-    fi
+    python3 test/compare_recall_golden.py test/data/recall_top8_golden.txt "$OUT/recall_top8.txt"
 }
 stage "owned-recall top 8 over every corpus == committed golden"  recall_top8_stage
+# Proves the comparator above is not vacuous: a changed score must be reported.
+recall_negative_stage() {
+    [ -s "$OUT/recall_top8.txt" ] || { echo "  ERROR: no recall dump to corrupt"; return 1; }
+    sed '1s/=[^ ]*/=0x1.0p+0/' "$OUT/recall_top8.txt" > "$OUT/recall_bad.txt"
+    if python3 test/compare_recall_golden.py test/data/recall_top8_golden.txt "$OUT/recall_bad.txt" \
+         > "$OUT/recall_neg.txt" 2>&1; then
+        echo "  ERROR: a corrupted score was not detected"; return 1
+    fi
+    echo "  OK: corrupted score detected: $(grep -m1 FAIL "$OUT/recall_neg.txt" | sed 's/^ *//')"
+}
+stage "recall golden comparator negative control (corrupt a score -> must FAIL)" recall_negative_stage
 stage "owned LDB reader (mapped stored assets; blob-identical heap paths; P-9)" "$OUT/ldbread"
 # Noisy (every TouchStart logs), so only the tail is shown.
 touch_abi_stage() { "$OUT/touchabi" | tail -8; }
@@ -130,6 +138,21 @@ callsite_stage() {
 stage "blob call-site evidence (INERT_NO_CALLERS has no callers)"  callsite_stage
 # Needs a built CUTOVER APK; SKIPs otherwise.
 stage "symbol-interposition guard"                                ../tools/check_interposition.sh   # cwd is cpp/
+# Proves the guard above is not vacuous: with the blob replaced by libkb.so itself, the 50 symbols
+# libkb imports through its own PLT are all "trapped", so the guard must report a failure.
+interposition_negative_stage() {
+    local apk kb
+    apk=$(ls ../../app/build/outputs/apk/debug/*.apk 2>/dev/null | head -1 || true)
+    [ -n "$apk" ] || { echo "SKIP: no debug APK; nothing to check."; return 0; }
+    kb="$OUT/libkb.so"
+    unzip -p "$apk" lib/arm64-v8a/libkb.so > "$kb" 2>/dev/null \
+        || { echo "SKIP: APK has no libkb.so (a -Pxt9Diff build?)."; return 0; }
+    if ../tools/check_interposition.sh "$kb" "$kb" > "$OUT/interposition_neg.txt" 2>&1; then
+        echo "  ERROR: guard passed with libkb.so as its own blob"; return 1
+    fi
+    echo "  OK: guard flags the danger set ($(grep -c '^        ' "$OUT/interposition_neg.txt") symbols)"
+}
+stage "interposition guard negative control (blob = libkb must FAIL)" interposition_negative_stage
 
 echo
 echo "==== stage results ===="
