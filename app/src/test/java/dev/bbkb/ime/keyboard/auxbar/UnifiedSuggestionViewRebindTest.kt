@@ -90,4 +90,12 @@ class UnifiedSuggestionViewRebindTest {
         assertFalse(UnifiedSuggestionView.rendersSame(words("a"), words("a", "b")))
         assertTrue(UnifiedSuggestionView.rendersSame(words("a", emoji = "😀"), words("a", emoji = "😀")))
     }
+
+    @Test
+    fun emojiFollowsTheWordList() {
+        assertTrue(UnifiedSuggestionView.emojiSlotShown(true, true, true))
+        assertFalse(UnifiedSuggestionView.emojiSlotShown(true, true, false))
+        assertFalse(UnifiedSuggestionView.emojiSlotShown(true, false, true))
+        assertFalse(UnifiedSuggestionView.emojiSlotShown(false, true, true))
+    }
 }

@@ -106,14 +106,12 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             CompactToolbar.fill(toolbarRow, getContext(), this::openTool);
             toolbarRow.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-            if (emojiSlot != null) {
-                emojiSlot.setVisibility(View.GONE);
-            }
         } else {
             toolbarRow.setVisibility(View.GONE);
             boolean words = CompactToolbar.stripWords(getContext());
             recyclerView.setVisibility(words ? View.VISIBLE : View.GONE);
         }
+        updateEmojiSlot();
         dev.bbkb.ime.core.BlackBerryIME ime = findIme();
         if (ime != null && !showTools) {
             ime.setFlickSuggestionsSuppressed(!CompactToolbar.flickWords(getContext()));
@@ -512,12 +510,24 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         return true;
     }
 
-    /** Shows the emoji slot while there is an emoji and the strip is in its Latin mode. */
+    /**
+     * The emoji slot follows the word list: an emoji in Latin mode, and only while that list is
+     * on screen. An open tool row hides the list, so the emoji hides with it and returns when
+     * the row closes.
+     */
+    static boolean emojiSlotShown(boolean hasEmoji, boolean latinMode, boolean wordListVisible) {
+        return hasEmoji && latinMode && wordListVisible;
+    }
+
+    /** Shows the emoji slot from {@link #emojiSlotShown}. */
     private void updateEmojiSlot() {
         if (emojiSlot == null) {
             return;
         }
-        boolean show = emojiSuggestion != null && currentMode == SuggestionMode.LATIN;
+        boolean show = emojiSlotShown(
+                emojiSuggestion != null,
+                currentMode == SuggestionMode.LATIN,
+                recyclerView != null && recyclerView.getVisibility() == VISIBLE);
         emojiSlot.setText(show ? emojiSuggestion.word : "");
         int visibility = show ? VISIBLE : GONE;
         if (emojiSlot.getVisibility() != visibility) {
