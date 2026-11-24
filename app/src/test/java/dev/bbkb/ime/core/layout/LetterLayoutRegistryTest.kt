@@ -84,7 +84,8 @@ class LetterLayoutRegistryTest {
         assertEquals(listOf("de"), back.binding.languages)
         assertEquals('w'.code, back.key(KeyEvent.KEYCODE_Q, -1)!!.keySpec)
         assertEquals(LetterLayout.Origin.USER, back.origin)
-        assertTrue(registry.fileFor("b-layout").path.endsWith("files/layouts/letter/b-layout.xml"))
+        val expectedPath = java.nio.file.Path.of("files", "layouts", "letter", "b-layout.xml")
+        assertTrue(registry.fileFor("b-layout").toPath().endsWith(expectedPath))
         assertTrue("written as the XML document", registry.fileFor("b-layout").readText().startsWith("<?xml"))
         assertEquals("only the two documents, no temp file", setOf("a-layout.xml", "b-layout.xml"),
             registry.directory.listFiles()!!.map { it.name }.toSet())

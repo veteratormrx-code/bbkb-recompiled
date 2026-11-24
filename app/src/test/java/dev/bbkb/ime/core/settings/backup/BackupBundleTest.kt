@@ -19,6 +19,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.util.TimeZone
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -354,7 +355,15 @@ class BackupBundleTest {
 
     @Test
     fun theDefaultFileNameCarriesTheDate() {
-        assertEquals("bbkb-backup-2023-11-14.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
+        val originalZone = TimeZone.getDefault()
+        try {
+            TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+            assertEquals("bbkb-backup-2023-11-14.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
+            TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"))
+            assertEquals("bbkb-backup-2023-11-15.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
+        } finally {
+            TimeZone.setDefault(originalZone)
+        }
     }
 
     @Test
