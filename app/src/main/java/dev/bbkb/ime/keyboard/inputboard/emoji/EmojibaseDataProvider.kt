@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Emoji data from the Emojibase dataset (Unicode 16.0), read from a compact asset
- * ([EmojibaseCompactFormat]): categories 0-8, skin-tone variants from the `skins` array, search.
+ * Emoji data from Emojibase plus the Unicode 17/18 additions, read from compact assets.
  */
 class EmojibaseDataProvider(private val context: Context) {
 
@@ -135,17 +134,43 @@ class EmojibaseDataProvider(private val context: Context) {
 
     /** Loads and categorizes the compact asset ([EmojibaseCompactFormat]). */
     fun loadEmojiData() {
-
         try {
-            val compact = context.assets.open(EmojibaseCompactFormat.ASSET).bufferedReader(Charsets.UTF_8).use {
-                EmojibaseCompactFormat.read(it)
-            }
+            val compact = readDataset()
             applyDataset(compact.entries) { emojis -> glyphFlags(emojis, compact.identity) }
         } catch (e: Exception) {
             // A missing or malformed asset: the board still opens, with no emoji and no search; say why.
             Logger.warn(TAG, "emojibase data failed to load: $e")
         }
     }
+
+    internal fun readDataset(): EmojibaseCompactFormat.Parsed {
+        val base = readCompact(EmojibaseCompactFormat.ASSET)
+        val additions = try {
+            readCompact("bbmodern/emoji-unicode-18.tsv")
+        } catch (e: Exception) {
+            Logger.warn(TAG, "Unicode emoji supplement failed to load: $e")
+            return base
+        }
+        val entries = base.entries.toMutableList()
+        val indices = base.entries.withIndex().associate { (index, entry) ->
+            entry.emoji.replace("\uFE0F", "") to index
+        }
+        for (entry in additions.entries) {
+            val index = indices[entry.emoji.replace("\uFE0F", "")]
+            if (index == null) {
+                entries.add(entry)
+            } else if (entry.skins != null) {
+                val previous = entries[index]
+                entries[index] = previous.copy(
+                    skins = (previous.skins.orEmpty() + entry.skins).distinctBy { it.emoji.replace("\uFE0F", "") },
+                )
+            }
+        }
+        return EmojibaseCompactFormat.Parsed(entries, "${base.identity}|${additions.identity}")
+    }
+
+    private fun readCompact(asset: String): EmojibaseCompactFormat.Parsed =
+        context.assets.open(asset).bufferedReader(Charsets.UTF_8).use(EmojibaseCompactFormat::read)
 
     /**
      * Builds the category and skin-tone indexes. [drawable] (tests pass their own) is asked once, about
@@ -214,7 +239,7 @@ class EmojibaseDataProvider(private val context: Context) {
         val desc = emoji.description.lowercase()
 
         // Skin tone modifiers 1F3FB..1F3FF.
-        if (hexcode.startsWith("1F3F") && hexcode.length == 5) {
+        if (hexcode.length == 5 && hexcode >= "1F3FB" && hexcode <= "1F3FF") {
             return false
         }
 
@@ -226,15 +251,10 @@ class EmojibaseDataProvider(private val context: Context) {
             }
         }
 
-        // ZWJ + arrow sequences (head shaking/nodding: 2194, 2195).
-        if (hexcode.contains("2194") || hexcode.contains("2195")) {
-            return false
-        }
-
-        if (desc.contains("facing right") ||
+        if (hexcode.contains("200D") && (desc.contains("facing right") ||
             desc.contains("facing left") ||
             desc.contains("rightward") ||
-            desc.contains("leftward")) {
+            desc.contains("leftward"))) {
             return false
         }
 
@@ -242,8 +262,7 @@ class EmojibaseDataProvider(private val context: Context) {
             return false
         }
 
-        if (desc.endsWith("skin tone") ||
-            (desc.length < 15 && (desc.contains("hair") || desc == "bald"))) {
+        if (desc.endsWith("skin tone") || desc == "bald") {
             return false
         }
 

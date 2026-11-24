@@ -12,8 +12,7 @@ import org.robolectric.annotation.Config
 
 /**
  * Russian rows in `bbmodern/emoji-search.tsv` are search aliases. Emojibase stores U+FE0F on
- * fully-qualified emoji (thumbs up, neutral face); the TSV does not. Emoji 18 names in the TSV
- * do not invent keys the dataset lacks.
+ * fully-qualified emoji (thumbs up, neutral face); the TSV does not.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -22,10 +21,9 @@ class EmojiRussianSearchTest {
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     private val provider: EmojibaseDataProvider by lazy {
-        val entries = context.assets.open(EmojibaseCompactFormat.ASSET).bufferedReader(Charsets.UTF_8).use {
-            EmojibaseCompactFormat.read(it).entries
+        EmojibaseDataProvider(context).apply {
+            applyDataset(readDataset().entries) { BooleanArray(it.size) { true } }
         }
-        EmojibaseDataProvider(context).apply { applyDataset(entries) { BooleanArray(it.size) { true } } }
     }
 
     @Test
@@ -43,7 +41,17 @@ class EmojiRussianSearchTest {
     }
 
     @Test
-    fun anEmoji18NameIsNotInvented() {
-        assertTrue(provider.searchEmojis("трескается").isEmpty())
+    fun theSupplementAddsNewEmojiAndSkinTonesToTheCatalog() {
+        val crackingFace = String(Character.toChars(0x1FAEB))
+        val leftThumb = String(Character.toChars(0x1FAF9))
+        assertTrue(provider.searchEmojis("трескается").any { it.emoji == crackingFace })
+        assertTrue(provider.searchEmojis("cracking face").any { it.emoji == crackingFace })
+        assertEquals(5, provider.getSkinToneVariants(leftThumb).size)
+    }
+
+    @Test
+    fun plainFlagsAndBidirectionalArrowsRemainInTheCatalog() {
+        val catalog = provider.getAllEmojis().map { it.emoji.replace("\uFE0F", "") }.toSet()
+        assertTrue(setOf("🏳", "🏴", "↔", "↕").all { it in catalog })
     }
 }
