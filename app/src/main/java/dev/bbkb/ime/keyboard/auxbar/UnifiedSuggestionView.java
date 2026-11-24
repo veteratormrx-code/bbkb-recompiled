@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.view.inputmethod.InlineSuggestion;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -44,6 +45,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     private RecyclerView recyclerView;
     private ImageButton hamburgerBtn;
+    private LinearLayout toolbarRow;
+    private boolean toolbarExpanded;
     private ImageButton actionBtn;
     private FrameLayout overlayContainer;
     private View contentLayer;
@@ -82,6 +85,53 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private int moreSuggestionsModalTolerance;
     private int moreSuggestionsBottomGap;
     private static final int LATIN_MAX_SUGGESTIONS = 3;
+
+    private void toggleToolbar() {
+        toolbarExpanded = !toolbarExpanded;
+        CompactToolbar.setExpanded(getContext(), toolbarExpanded);
+        applyToolbar();
+    }
+
+    private void applyToolbar() {
+        if (toolbarExpanded) {
+            CompactToolbar.fill(toolbarRow, getContext(), this::openTool);
+            toolbarRow.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            if (emojiSlot != null) {
+                emojiSlot.setVisibility(View.GONE);
+            }
+        } else {
+            toolbarRow.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void openTool(int keyCode) {
+        if (keyCode == CompactToolbar.MORE) {
+            if (listener != null) {
+                listener.onHamburgerClicked();
+            }
+            return;
+        }
+        android.content.Context cursor = getContext();
+        while (cursor instanceof android.content.ContextWrapper) {
+            if (cursor instanceof dev.bbkb.ime.core.BlackBerryIME) {
+                dev.bbkb.ime.core.BlackBerryIME ime = (dev.bbkb.ime.core.BlackBerryIME) cursor;
+                ime.setFlickSuggestionsSuppressed(true);
+                if (ime.getKeyboardSwitcher() != null
+                        && ime.getKeyboardSwitcher().getUnifiedInputBoardManager() != null) {
+                    ime.getKeyboardSwitcher().getUnifiedInputBoardManager().requestBoard(keyCode);
+                }
+                if (!CompactToolbar.isPinned(getContext())) {
+                    toolbarExpanded = false;
+                    CompactToolbar.setExpanded(getContext(), false);
+                    applyToolbar();
+                }
+                return;
+            }
+            cursor = ((android.content.ContextWrapper) cursor).getBaseContext();
+        }
+    }
 
     public interface Listener {
         void onSuggestionClicked(SuggestedWords.SuggestedWordInfo wordInfo, InputSource inputSource);
@@ -150,6 +200,11 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
         // The word slots' width follows the recycler's in onMeasure, not a layout listener.
 
+        toolbarRow = new LinearLayout(context);
+        toolbarRow.setOrientation(LinearLayout.HORIZONTAL);
+        toolbarRow.setVisibility(View.GONE);
+        ((ViewGroup) contentLayer).addView(toolbarRow, 1);
+        hamburgerBtn.setContentDescription(context.getString(R.string.toolbar_toggle));
         hamburgerBtn.setOnClickListener(v -> {
             if (listener == null) {
                 return;
@@ -157,8 +212,15 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             if (currentMode == SuggestionMode.LANGUAGES) {
                 listener.onLanguageSettingsClicked();
             } else {
-                listener.onHamburgerClicked();
+                toggleToolbar();
             }
+        });
+        hamburgerBtn.setOnLongClickListener(v -> {
+            if (listener != null && currentMode != SuggestionMode.LANGUAGES) {
+                listener.onHamburgerClicked();
+                return true;
+            }
+            return false;
         });
 
         // CJK expand

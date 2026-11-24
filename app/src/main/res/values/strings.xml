@@ -312,6 +312,7 @@
     <string name="settings_uim_toggle_text_edit">Text editing</string>
     <string name="settings_uim_toggle_translate">Translate</string>
     <string name="settings_uim_toggle_handwriting">Handwriting</string>
+    <string name="toolbar_toggle">Show or hide tools</string>
     <string name="settings_number_row_title">Number row</string>
     <string name="settings_number_row_summary">Always show 1–0 above the letters. Long-press a digit for its symbol.</string>
     <string name="fcc_trackpad_hint">Drag to move the cursor</string>

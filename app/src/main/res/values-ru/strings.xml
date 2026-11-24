@@ -285,6 +285,7 @@
     <string name="settings_appearance_oled_seamless">OLED без разделителей</string>
     <string name="settings_mlkit_title">Перевод и рукописный ввод</string>
     <string name="settings_mlkit_summary">Модели Google ML Kit. Обычный набор остаётся офлайн.</string>
+    <string name="toolbar_toggle">Показать или скрыть инструменты</string>
     <string name="settings_number_row_title">Ряд цифр</string>
     <string name="settings_number_row_summary">Постоянный ряд 1–0 над буквами. Долгое нажатие открывает символ.</string>
     <string name="fcc_trackpad_hint">Проведите, чтобы переместить курсор</string>
