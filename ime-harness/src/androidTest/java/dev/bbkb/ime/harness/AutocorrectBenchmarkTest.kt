@@ -121,6 +121,21 @@ class AutocorrectBenchmarkTest {
         for (index in 0 until root.childCount) collect(root.getChild(index), out)
     }
 
+    /** A string from the installed keyboard, in the keyboard's locale. */
+    private fun imeText(name: String): String {
+        val ime = Settings.Secure.getString(
+            instrumentation.targetContext.contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD,
+        ) ?: return name
+        val pkg = ime.substringBefore('/')
+        val imeContext = try {
+            instrumentation.targetContext.createPackageContext(pkg, 0)
+        } catch (missing: android.content.pm.PackageManager.NameNotFoundException) {
+            return name
+        }
+        val id = imeContext.resources.getIdentifier(name, "string", pkg)
+        return if (id == 0) name else imeContext.getString(id)
+    }
+
     private fun imeNodes(): List<AccessibilityNodeInfo> {
         val collected = mutableListOf<AccessibilityNodeInfo>()
         collect(imeWindow?.root, collected)
@@ -1146,12 +1161,17 @@ class AutocorrectBenchmarkTest {
             languageSwitches++
         }
 
-        /** Opens a tool panel from the toolbar and returns to the letters. */
+        /** Opens a tool panel from the drawn menu and returns to the letters. */
         fun cyclePanel(): Boolean {
-            val labels = listOf("Emojis", "Clipboard", "Select, cut, or copy", "Keyboard mode")
+            val labels = listOf(
+                imeText("settings_uim_toggle_emoji"),
+                imeText("settings_uim_toggle_clipboard"),
+                imeText("settings_uim_toggle_text_edit"),
+            )
+            val letters = imeText("accessibility_keyboard_letters")
             val label = labels[panelCycles % labels.size]
             val node = imeNodes().firstOrNull {
-                (it.contentDescription?.toString() ?: "").equals(label, ignoreCase = true) && it.isClickable
+                (it.contentDescription?.toString() ?: "").equals(label, ignoreCase = true)
             } ?: return false
             val rect = Rect()
             node.getBoundsInScreen(rect)
@@ -1160,12 +1180,12 @@ class AutocorrectBenchmarkTest {
             SystemClock.sleep(400)
             // Close whatever opened; 'Keyboard mode' is the letters page on every build.
             val back = imeNodes().firstOrNull {
-                (it.contentDescription?.toString() ?: "").equals("Keyboard mode", ignoreCase = true) && it.isClickable
+                (it.contentDescription?.toString() ?: "").equals(letters, ignoreCase = true)
             }
             if (back != null) {
                 val backRect = Rect()
                 back.getBoundsInScreen(backRect)
-                if (backRect.width() > 0 && label != "Keyboard mode") {
+                if (backRect.width() > 0 && label != letters) {
                     tap(backRect.centerX(), backRect.centerY())
                     SystemClock.sleep(300)
                 }

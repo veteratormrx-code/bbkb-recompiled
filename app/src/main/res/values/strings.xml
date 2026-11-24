@@ -324,6 +324,9 @@
     <string name="settings_uim_toggle_translate">Translate</string>
     <string name="settings_uim_toggle_handwriting">Handwriting</string>
     <string name="toolbar_toggle">Show or hide tools</string>
+    <string name="accessibility_keyboard_letters">Keyboard</string>
+    <string name="accessibility_key_space">Space</string>
+    <string name="accessibility_key_unnamed">Key</string>
     <string name="settings_number_row_title">Number row</string>
     <string name="settings_number_row_height_title">Number row height</string>
     <string name="settings_number_row_height_compact">Compact</string>

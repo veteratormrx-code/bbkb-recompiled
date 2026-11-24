@@ -297,6 +297,9 @@
     <string name="mlkit_download_failed">Загрузка не завершилась</string>
     <string name="settings_common_ok">ОК</string>
     <string name="toolbar_toggle">Показать или скрыть инструменты</string>
+    <string name="accessibility_keyboard_letters">Клавиатура</string>
+    <string name="accessibility_key_space">Пробел</string>
+    <string name="accessibility_key_unnamed">Клавиша</string>
     <string name="settings_number_row_title">Ряд цифр</string>
     <string name="settings_number_row_summary">Постоянный ряд 1–0 над буквами. Долгое нажатие открывает символ.</string>
     <string name="settings_number_row_height_title">Высота ряда цифр</string>

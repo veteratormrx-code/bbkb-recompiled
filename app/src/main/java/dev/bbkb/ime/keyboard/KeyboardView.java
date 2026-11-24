@@ -22,8 +22,11 @@ import dev.bbkb.ime.core.settings.PrefsManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import androidx.core.view.ViewCompat;
 
 import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
@@ -157,6 +160,8 @@ public class KeyboardView extends View {
     /** {@link #drawHintLabelOrIcon} scratch. */
     private final Rect hintBounds = new Rect();
 
+    private KeyboardKeyAccessibility keyAccessibility;
+
     private final int hintIconSize;
 
     private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = new kotlin.jvm.functions.Function0<kotlin.Unit>() {
@@ -215,6 +220,9 @@ public class KeyboardView extends View {
         this.sharedPreferences = PrefsManager.INSTANCE.getPrefs(this.context);
 
         updateKeyboardBackground();
+        this.keyAccessibility = new KeyboardKeyAccessibility(this);
+        ViewCompat.setAccessibilityDelegate(this, this.keyAccessibility);
+        setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 
     public KeyVisualAttributes getKeyVisualAttribute() {
@@ -271,6 +279,15 @@ public class KeyboardView extends View {
             requestLayout();
         }
         rebuildPerKeyDrawState();
+        if (this.keyAccessibility != null) {
+            this.keyAccessibility.onKeyboardChanged();
+        }
+    }
+
+    @Override
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        return (this.keyAccessibility != null && this.keyAccessibility.dispatchHoverEvent(event))
+                || super.dispatchHoverEvent(event);
     }
 
     /**
