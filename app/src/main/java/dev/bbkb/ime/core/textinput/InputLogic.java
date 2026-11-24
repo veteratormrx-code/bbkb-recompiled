@@ -755,8 +755,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * ({@link DynamicLearningManager#learnTypedWord}). A pending swipe still needs predictions.
      */
     static boolean needsSuggestionLookups(SettingsValues sv) {
-        return sv.editorCapabilities.dictionarySearch
-                || sv.editorCapabilities.savedEmailSuggestions
+        return (sv.editorCapabilities != null
+                        && (sv.editorCapabilities.dictionarySearch || sv.editorCapabilities.savedEmailSuggestions))
                 || sv.isPredictionsEnabled
                 || sv.isAutoCorrectionEnabledPerUserSettings
                 || sv.editorCapabilities.shouldShowChineseSuggestions

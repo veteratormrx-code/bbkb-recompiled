@@ -19,6 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.json.JSONArray
 import org.json.JSONObject
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -1071,6 +1072,15 @@ class AutocorrectBenchmarkTest {
      *   am instrument -e class ...#stress -e stress true -e keys 10000 -e minutes 30 -e tag fork
      */
     @Test
+    fun textDriftDistinguishesEdits() {
+        assertEquals(TextDrift(0, 0, 0, 0), textDrift("hello", "hello"))
+        assertEquals(TextDrift(1, 0, 0, 0), textDrift("abc", "ac"))
+        assertEquals(TextDrift(0, 1, 0, 0), textDrift("ac", "abc"))
+        assertEquals(TextDrift(0, 0, 1, 0), textDrift("abc", "axc"))
+        assertEquals(TextDrift(0, 0, 0, 1), textDrift("abc", "bac"))
+    }
+
+    @Test
     fun stress() {
         instrumentation = InstrumentationRegistry.getInstrumentation()
         val config = config()
@@ -1115,6 +1125,8 @@ class AutocorrectBenchmarkTest {
         var typed = 0
         var lostCharacters = 0
         var duplicatedCharacters = 0
+        var substitutedCharacters = 0
+        var transposedCharacters = 0
         var panelCycles = 0
         var panelFailures = 0
         var keyboardCycles = 0
@@ -1185,9 +1197,11 @@ class AutocorrectBenchmarkTest {
                     }
                 }
                 typed += typedHere
-                val actual = editorText()
-                if (actual.length < expected.length) lostCharacters += expected.length - actual.length
-                if (actual.length > expected.length) duplicatedCharacters += actual.length - expected.length
+                val drift = textDrift(expected, editorText())
+                lostCharacters += drift.lost
+                duplicatedCharacters += drift.duplicated
+                substitutedCharacters += drift.substituted
+                transposedCharacters += drift.transposed
                 tap(layout.space.first, layout.space.second)
                 SystemClock.sleep(60)
 
@@ -1216,6 +1230,8 @@ class AutocorrectBenchmarkTest {
             .put("keysPerSecond", if (elapsedMs > 0) typed * 1000.0 / elapsedMs else 0.0)
             .put("lostCharacters", lostCharacters)
             .put("duplicatedCharacters", duplicatedCharacters)
+            .put("substitutedCharacters", substitutedCharacters)
+            .put("transposedCharacters", transposedCharacters)
             .put("panelCycles", panelCycles)
             .put("panelFailures", panelFailures)
             .put("keyboardCycles", keyboardCycles)
@@ -1236,4 +1252,62 @@ class AutocorrectBenchmarkTest {
         val index = (share * (ordered.size - 1)).toInt().coerceIn(0, ordered.size - 1)
         return ordered[index]
     }
+}
+
+/** Skip, extra character, replacement, and adjacent swap. Length alone cannot tell these apart. */
+internal data class TextDrift(
+    val lost: Int,
+    val duplicated: Int,
+    val substituted: Int,
+    val transposed: Int,
+)
+
+internal fun textDrift(expected: String, actual: String): TextDrift {
+    var i = 0
+    var j = 0
+    var lost = 0
+    var duplicated = 0
+    var substituted = 0
+    var transposed = 0
+    while (i < expected.length || j < actual.length) {
+        if (i < expected.length && j < actual.length && expected[i] == actual[j]) {
+            i++
+            j++
+            continue
+        }
+        if (i + 1 < expected.length && j + 1 < actual.length &&
+            expected[i] == actual[j + 1] && expected[i + 1] == actual[j]
+        ) {
+            transposed++
+            i += 2
+            j += 2
+            continue
+        }
+        val missingHere = i + 1 < expected.length && j < actual.length && expected[i + 1] == actual[j]
+        val extraHere = j + 1 < actual.length && i < expected.length && actual[j + 1] == expected[i]
+        when {
+            missingHere && !extraHere -> {
+                lost++
+                i++
+            }
+            extraHere && !missingHere -> {
+                duplicated++
+                j++
+            }
+            i < expected.length && j < actual.length -> {
+                substituted++
+                i++
+                j++
+            }
+            i < expected.length -> {
+                lost++
+                i++
+            }
+            else -> {
+                duplicated++
+                j++
+            }
+        }
+    }
+    return TextDrift(lost, duplicated, substituted, transposed)
 }

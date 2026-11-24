@@ -50,7 +50,7 @@ class SuggestionCoordinator {
      * @return {@code true} if the worker answered in time and its result was shown
      */
     boolean updateSuggestionsSync(SettingsValues settingsValues, int inputStyle) {
-        if (settingsValues.editorCapabilities.savedEmailSuggestions) {
+        if (settingsValues.editorCapabilities != null && settingsValues.editorCapabilities.savedEmailSuggestions) {
             showSavedEmails();
             return true;
         }
@@ -107,7 +107,7 @@ class SuggestionCoordinator {
      */
     void updateSuggestionsAsync(SettingsValues settingsValues, int inputStyle) {
         if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: shouldShow=" + settingsValues.shouldShowLxxButton + " composing=" + mInputLogic.mComposingTracker.isComposing() + " bigram=" + settingsValues.isBigramPredictionEnabled);
-        if (settingsValues.editorCapabilities.savedEmailSuggestions) {
+        if (settingsValues.editorCapabilities != null && settingsValues.editorCapabilities.savedEmailSuggestions) {
             showSavedEmails();
             return;
         }

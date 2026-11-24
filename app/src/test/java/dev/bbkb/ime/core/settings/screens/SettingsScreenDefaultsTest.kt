@@ -91,6 +91,7 @@ class SettingsScreenDefaultsTest {
     fun emojiPredictionsShowsTheRuntimeDefault() {
         render { PredictionsSuggestionsScreen({}) }
         val title = context.getString(R.string.settings_pred_emoji_title)
+        composeRule.onNodeWithText(title).performScrollTo()
         val titleBounds = composeRule.onNodeWithText(title).fetchSemanticsNode().boundsInRoot
         // The switch is the toggleable on the title's row.
         val switch = composeRule.onAllNodes(isToggleable(), useUnmergedTree = true)
