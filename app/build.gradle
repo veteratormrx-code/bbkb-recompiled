@@ -150,7 +150,7 @@ dependencies {
 
     implementation 'androidx.autofill:autofill:1.1.0'
     implementation 'com.google.mlkit:translate:17.0.3'
-    implementation 'com.google.mlkit:digital-ink-recognition:18.1.0'
+    implementation 'com.google.mlkit:digital-ink-recognition:19.0.0'
 
     def composeBom = platform('androidx.compose:compose-bom:2026.03.00')
     implementation composeBom

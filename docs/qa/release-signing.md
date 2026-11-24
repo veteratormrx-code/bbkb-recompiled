@@ -64,9 +64,21 @@ $apk = "app\build\outputs\apk\release\app-release.apk"
 | ABI | `arm64-v8a` (единственный, `abiFilters` в `app/build.gradle`) |
 
 `-P 16` проверяет выравнивание несжатых `.so` в APK. Для поддержки страниц 16 КиБ отдельно
-проверяются сегменты `LOAD` внутри ELF и запуск на подходящем устройстве. В этом APK
-`libdigitalink.so` имеет три `LOAD` с `p_align=0x1000`. У остальных шести библиотек значение
-не ниже `0x4000`. Поддержка страниц 16 КиБ остаётся открытой для Digital Ink. [Результаты проверки](../testing/artifacts/audit-2026-11-24/merge-validation/verified-release.json) [Требования Android](https://developer.android.com/guide/practices/page-sizes)
+проверяются сегменты `LOAD` внутри ELF и запуск на подходящем устройстве.
+
+Сборка после перехода на Digital Ink `19.0.0`:
+
+| Свойство | Значение |
+|---|---|
+| Файл | `dist/bbkb-mod-arm64-signed.apk` |
+| SHA-256 | `e0762d2fe8b714df916bf6302c69372330b5ec736a466d2c4e22f5616a4c7d7a` |
+| `libdigitalink.so` | три `LOAD`, у каждого `p_align=0x4000` |
+| `zipalign -c -P 16 4` | Verification successful |
+| Сертификат | локальный `C:\work\bbkey\signing\bbkb-release.jks`, SHA-256 `a4033228…a5299a` |
+
+Ключ `%USERPROFILE%\.bbkb\release.keystore` на машине сборки не найден, поэтому этот APK не
+обновит сборку с отпечатком `9f48ab89…4063`. Распознавание штрихов на устройстве со страницами
+16 КиБ не запускалось. [Требования Android](https://developer.android.com/guide/practices/page-sizes)
 
 ## Почему ключ создан заново
 

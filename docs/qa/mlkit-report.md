@@ -1,6 +1,6 @@
 # ML Kit
 
-Форк использует Translate 17.0.3 и Digital Ink 18.1.0. AVD Android 17 содержит Google Play и GMS. Тесты проводились в отдельном редакторе с искусственным текстом. [Translate](https://developers.google.com/ml-kit/language/translation?hl=ru) [Digital Ink](https://developers.google.com/ml-kit/vision/digital-ink-recognition/android?hl=ru)
+Форк использует Translate 17.0.3 и Digital Ink 19.0.0. AVD Android 17 содержит Google Play и GMS. Тесты проводились в отдельном редакторе с искусственным текстом. [Translate](https://developers.google.com/ml-kit/language/translation?hl=ru) [Digital Ink](https://developers.google.com/ml-kit/vision/digital-ink-recognition/android?hl=ru)
 
 | Сценарий | Результат |
 | --- | --- |

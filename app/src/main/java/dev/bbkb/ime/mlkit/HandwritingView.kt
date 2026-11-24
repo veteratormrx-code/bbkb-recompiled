@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.google.mlkit.vision.digitalink.Ink
+import com.google.mlkit.vision.digitalink.recognition.Ink
 
 /** True-black ink pad. Each stroke can be undone. Recognition reads [currentInk]. */
 class HandwritingView @JvmOverloads constructor(
