@@ -442,7 +442,10 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             this.mRichInputConnection.endBatchEdit();
             return c0920g2;
         }
-        if (this.mDictionaryLoader.isDictionaryReady()) {
+        if (EditorCapabilities.isDictionarySearchField(getCurrentEditorInfo()) || isEmailVariationField()) {
+            // A picked word replaces the active token and leaves the rest of the field alone.
+            strMo4204c = "";
+        } else if (this.mDictionaryLoader.isDictionaryReady()) {
             strMo4204c = this.mDictionaryLoader.getMainDictionary().getWordSeparator(this.mRichInputConnection.getTextContextBefore() + strM4471b);
         } else {
             strMo4204c = " ";
@@ -752,7 +755,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * ({@link DynamicLearningManager#learnTypedWord}). A pending swipe still needs predictions.
      */
     static boolean needsSuggestionLookups(SettingsValues sv) {
-        return sv.isPredictionsEnabled
+        return sv.editorCapabilities.dictionarySearch
+                || sv.editorCapabilities.savedEmailSuggestions
+                || sv.isPredictionsEnabled
                 || sv.isAutoCorrectionEnabledPerUserSettings
                 || sv.editorCapabilities.shouldShowChineseSuggestions
                 || sv.editorCapabilities.shouldShowJapaneseSuggestions

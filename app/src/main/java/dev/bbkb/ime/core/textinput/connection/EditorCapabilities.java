@@ -48,6 +48,12 @@ public final class EditorCapabilities {
     /** {@code TYPE_TEXT_FLAG_MULTI_LINE} is set: Enter inserts a newline instead of the IME action. */
     public final boolean isMultiLine;
 
+    /** A search or filter field whose dictionary words the user has left on. */
+    public final boolean dictionarySearch;
+
+    /** An email field that may offer the user's saved addresses. Dictionary words stay off. */
+    public final boolean savedEmailSuggestions;
+
     /**
      * {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING} (incognito): suggestions stay on, learning stops.
      * Learning sinks read {@code DynamicLearningManager} instead, set from the live EditorInfo in
@@ -66,6 +72,14 @@ public final class EditorCapabilities {
      * @param forceSuggestions    the "Force suggestions" setting: overrides a no-suggestions field (not passwords)
      */
     public EditorCapabilities(EditorInfo editorInfo, boolean allowsAppSpecifiedCompletions, String keyboardPackageName, Locale locale, boolean forceSuggestions) {
+        this(editorInfo, allowsAppSpecifiedCompletions, keyboardPackageName, locale, forceSuggestions, true, false);
+    }
+
+    /**
+     * @param searchSuggestionsEnabled the "Suggestions in search" setting. Off hides dictionary words; search still does not autocorrect or learn.
+     * @param savedEmailsEnabled       the "My email addresses" setting. Off by default.
+     */
+    public EditorCapabilities(EditorInfo editorInfo, boolean allowsAppSpecifiedCompletions, String keyboardPackageName, Locale locale, boolean forceSuggestions, boolean searchSuggestionsEnabled, boolean savedEmailsEnabled) {
         this.editorInfo = editorInfo;
         this.keyboardPackageName = keyboardPackageName;
         this.packageName = editorInfo != null ? editorInfo.packageName : null;
@@ -93,6 +107,8 @@ public final class EditorCapabilities {
             this.isMicrophoneAllowed = false;
             this.normalVariation = false;
             this.isMultiLine = false;
+            this.dictionarySearch = false;
+            this.savedEmailSuggestions = false;
             return;
         }
         int inputVariation = inputType & InputType.TYPE_MASK_VARIATION;
@@ -104,25 +120,34 @@ public final class EditorCapabilities {
         boolean forceAscii = (editorInfo.imeOptions & EditorInfo.IME_FLAG_FORCE_ASCII) != 0;
         // A text search or filter gets dictionary words. The typed token stays first; nothing is
         // replaced or learned. NO_SUGGESTIONS and app autocomplete still win.
-        boolean searchQuery = isDictionarySearchField(editorInfo);
+        boolean recognizedSearch = isDictionarySearchField(editorInfo);
+        boolean searchQuery = recognizedSearch && searchSuggestionsEnabled;
+        this.dictionarySearch = searchQuery;
         boolean suggestionsBlocked = this.isPassword
                 || InputTypeUtils.isEmailVariation(inputVariation)
                 || inputVariation == InputType.TYPE_TEXT_VARIATION_URI
                 || (inputVariation == InputType.TYPE_TEXT_VARIATION_FILTER && !searchQuery)
                 || hasNoSuggestionsFlag
                 || forceAscii;
-        // "Force suggestions" overrides a no-suggestions text field, never a password.
-        this.shouldShowSuggestions = searchQuery || (forceSuggestions && !this.isPassword) || !suggestionsBlocked;
+        // "Force suggestions" overrides a no-suggestions text field, never a password or a search the user turned off.
+        this.shouldShowSuggestions = searchQuery
+                || (!recognizedSearch && ((forceSuggestions && !this.isPassword) || !suggestionsBlocked));
+        this.savedEmailSuggestions = savedEmailsEnabled
+                && InputTypeUtils.isEmailVariation(inputVariation)
+                && !this.isPassword
+                && !hasNoSuggestionsFlag
+                && !hasAutoCompleteFlag
+                && !this.noPersonalizedLearning;
         boolean isPasswordField = this.isPassword;
         this.shouldSupportGestureInput = !isPasswordField;
         this.shouldShowChineseSuggestions = (isPasswordField || forceAscii || !LocaleUtils.isChinese(locale)) ? false : true;
         this.shouldShowJapaneseSuggestions = (this.isPassword || forceAscii || !LocaleUtils.isJapanese(locale)) ? false : true;
-        this.shouldInsertSpaces = !searchQuery && InputTypeUtils.isAutoSpaceFriendlyType(inputType);
+        this.shouldInsertSpaces = !recognizedSearch && InputTypeUtils.isAutoSpaceFriendlyType(inputType);
         
         this.isMicrophoneAllowed = !(this.isPassword || InputTypeUtils.isEmailVariation(inputVariation) || (inputVariation == InputType.TYPE_TEXT_VARIATION_URI) || isAppMicrophoneDisabled());
         // Autocorrect only when the field sets TYPE_TEXT_FLAG_AUTO_CORRECT or is multi-line
         // (stricter than stock IMEs, on purpose). Search inserts the chosen word only.
-        this.noAutoCorrect = searchQuery
+        this.noAutoCorrect = recognizedSearch
                 || (inputVariation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !hasAutoCorrectFlag)
                 || hasNoSuggestionsFlag
                 || !(hasAutoCorrectFlag || isMultiLine);

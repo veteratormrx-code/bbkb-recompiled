@@ -252,6 +252,8 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pred_inline_autofill_title, "autofill password address saved details", SettingsRoute.Suggestion.route, SUGGESTION, "pref_inline_autofill_enabled"),
         SearchableSetting(R.string.settings_pred_contacts_title, "contacts names suggestion", SettingsRoute.Suggestion.route, SUGGESTION, "pref_key_use_contacts_dict"),
         SearchableSetting(R.string.settings_pred_force_suggestions_title, "force suggestions strip", SettingsRoute.Suggestion.route, SUGGESTION, "pref_force_suggestions"),
+        SearchableSetting(R.string.settings_search_suggestions_title, "search filter suggestions dictionary", SettingsRoute.Suggestion.route, SUGGESTION, "pref_search_suggestions"),
+        SearchableSetting(R.string.settings_saved_emails_title, "saved email addresses", SettingsRoute.Suggestion.route, SUGGESTION, "pref_saved_emails_enabled"),
         SearchableSetting(R.string.settings_pred_flick_animation_title, "flick commit animation swipe up", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_flick_commit_animation"),
 
         // Suggestion & correction: Correction

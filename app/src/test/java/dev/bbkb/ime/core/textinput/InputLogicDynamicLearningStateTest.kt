@@ -172,5 +172,9 @@ class InputLogicDynamicLearningStateTest {
         assertFalse(bannedCaps.shouldShowSuggestions)
         assertFalse(InputLogic.isLearningAllowed(search))
         assertFalse(InputLogic.isLearningAllowed(filter))
+        val hidden = EditorCapabilities(search, false, "dev.bbkb.ime.debug", Locale.US, false, false, false)
+        assertFalse(hidden.shouldShowSuggestions)
+        assertTrue(hidden.noAutoCorrect)
+        assertFalse(hidden.dictionarySearch)
     }
 }

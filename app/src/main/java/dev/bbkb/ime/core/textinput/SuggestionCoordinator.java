@@ -6,6 +6,7 @@ import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.ime.UIUpdateHandler;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
 import dev.bbkb.ime.core.engine.PrimaryEngineFacts;
+import dev.bbkb.ime.core.suggestion.SavedEmails;
 import dev.bbkb.ime.core.suggestion.SuggestedWords;
 import dev.bbkb.ime.core.suggestion.SuggestionEngine;
 import dev.bbkb.ime.core.settings.util.SettingsValues;
@@ -49,6 +50,10 @@ class SuggestionCoordinator {
      * @return {@code true} if the worker answered in time and its result was shown
      */
     boolean updateSuggestionsSync(SettingsValues settingsValues, int inputStyle) {
+        if (settingsValues.editorCapabilities.savedEmailSuggestions) {
+            showSavedEmails();
+            return true;
+        }
         if (!settingsValues.shouldShowLxxButton) {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
@@ -102,6 +107,10 @@ class SuggestionCoordinator {
      */
     void updateSuggestionsAsync(SettingsValues settingsValues, int inputStyle) {
         if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: shouldShow=" + settingsValues.shouldShowLxxButton + " composing=" + mInputLogic.mComposingTracker.isComposing() + " bigram=" + settingsValues.isBigramPredictionEnabled);
+        if (settingsValues.editorCapabilities.savedEmailSuggestions) {
+            showSavedEmails();
+            return;
+        }
         if (!settingsValues.shouldShowLxxButton) {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
@@ -199,6 +208,12 @@ class SuggestionCoordinator {
                 + mInputLogic.mComposingTracker.getAutoCorrection() + "' score=" + mInputLogic.mComposingTracker.getAutoCorrectionScore());
             }
         }
+    }
+
+    /** Saved addresses only. The dictionary is not asked, and a short prefix clears the strip. */
+    private void showSavedEmails() {
+        mInputLogic.mSuggestionStripListener.showSuggestionStrip(
+                SavedEmails.suggestions(mInputLogic.mIme, mInputLogic.mComposingTracker.getComposingText()));
     }
 
     /** Records the request's edit count on {@code words}, never on the shared EMPTY instance. */

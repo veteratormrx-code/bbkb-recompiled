@@ -505,6 +505,14 @@
     <string name="settings_pred_flick_animation_title">Показывать анимацию подтверждения взмахом</string>
     <string name="settings_pred_force_suggestions_summary">Показывать подсказки в приложениях, которые просят их скрыть, кроме полей паролей</string>
     <string name="settings_pred_force_suggestions_title">Принудительные подсказки</string>
+    <string name="settings_search_suggestions_summary">Показывать словарные слова в поиске и фильтре. Набранный текст не исправляется и не запоминается</string>
+    <string name="settings_search_suggestions_title">Подсказки в поиске</string>
+    <string name="settings_saved_emails_summary">Предлагать адреса, которые вы сохраните здесь. Выключено, пока вы не включите</string>
+    <string name="settings_saved_emails_title">Мои email</string>
+    <string name="settings_saved_emails_hint">name@example.com</string>
+    <string name="settings_saved_emails_add">Добавить</string>
+    <string name="settings_saved_emails_empty">Нет сохранённых адресов</string>
+    <string name="settings_saved_emails_remove">Удалить</string>
     <string name="settings_pred_next_word_summary">Предлагать слова, которые, скорее всего, будут следующими</string>
     <string name="settings_pred_next_word_title">Подсказка следующего слова</string>
     <string name="settings_pred_on_key_summary">Показывать подсказки над клавишами экранной клавиатуры</string>

@@ -1468,7 +1468,9 @@ class BlackBerryIME : InputMethodService(),
                 isFullscreenMode(),
                 packageName,
                 localeM4259h,
-                SettingsManager.isForceSuggestionsEnabled(PrefsManager.getPrefs())
+                SettingsManager.isForceSuggestionsEnabled(PrefsManager.getPrefs()),
+                SettingsManager.isSearchSuggestionsEnabled(PrefsManager.getPrefs()),
+                dev.bbkb.ime.core.suggestion.SavedEmails.isEnabled(applicationContext)
             )
         )
         val settingsValues = settingsManager.getSettingsValues()

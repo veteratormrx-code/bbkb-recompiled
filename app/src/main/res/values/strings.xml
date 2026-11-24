@@ -579,6 +579,14 @@
     <string name="settings_pred_flick_animation_title">Show flick commit animation</string>
     <string name="settings_pred_force_suggestions_summary">Show suggestions in apps that ask to hide them, except in password fields</string>
     <string name="settings_pred_force_suggestions_title">Force suggestions</string>
+    <string name="settings_search_suggestions_summary">Show dictionary words in search and filter fields. The typed text is not corrected or learned</string>
+    <string name="settings_search_suggestions_title">Suggestions in search</string>
+    <string name="settings_saved_emails_summary">Suggest addresses you save here. Off until you turn it on</string>
+    <string name="settings_saved_emails_title">My email addresses</string>
+    <string name="settings_saved_emails_hint">name@example.com</string>
+    <string name="settings_saved_emails_add">Add</string>
+    <string name="settings_saved_emails_empty">No saved addresses</string>
+    <string name="settings_saved_emails_remove">Remove</string>
     <string name="settings_pred_next_word_summary">Suggest words likely to come next</string>
     <string name="settings_pred_next_word_title">Next word suggestions</string>
     <string name="settings_pred_on_key_summary">Show suggestions above the keys of the on-screen keyboard</string>

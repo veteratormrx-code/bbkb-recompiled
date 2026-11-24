@@ -723,6 +723,8 @@ public final class SettingsValues {
     private boolean shouldShowLxxButton(Context context) {
         return (this.editorCapabilities.shouldShowSuggestions
                         && (this.isAutoCorrectionEnabledPerUserSettings || this.isPredictionsEnabled || this.isDynamicLearningEnabled))
+                || this.editorCapabilities.dictionarySearch
+                || this.editorCapabilities.savedEmailSuggestions
                 || (isGestureInputEnabledForDevice(context) && this.editorCapabilities.shouldSupportGestureInput)
                 || this.editorCapabilities.shouldShowJapaneseSuggestions
                 || this.editorCapabilities.shouldShowChineseSuggestions;

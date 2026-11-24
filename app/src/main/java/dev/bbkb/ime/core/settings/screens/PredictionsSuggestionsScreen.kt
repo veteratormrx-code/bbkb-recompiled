@@ -1,8 +1,10 @@
 package dev.bbkb.ime.core.settings.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -12,11 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.core.suggestion.SavedEmails
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
@@ -62,6 +69,16 @@ fun PredictionsSuggestionsScreen(
     var forceSuggestions by remember {
         mutableStateOf(prefs.getBoolean("pref_force_suggestions", false))
     }
+    var searchSuggestions by remember {
+        mutableStateOf(prefs.getBoolean("pref_search_suggestions", true))
+    }
+    var savedEmails by remember {
+        mutableStateOf(SavedEmails.isEnabled(context))
+    }
+    var savedAddresses by remember {
+        mutableStateOf(SavedEmails.addresses(context))
+    }
+    var emailDraft by remember { mutableStateOf("") }
     
     // Turning "Suggest from contacts" on asks for the contacts permission; a grant turns it on.
     val contacts = rememberContactsPermission { granted ->
@@ -128,6 +145,72 @@ fun PredictionsSuggestionsScreen(
                         prefs.edit().putBoolean("pref_force_suggestions", newValue).apply()
                     }
                 )
+
+                SwitchPreference(
+                    title = context.getString(R.string.settings_search_suggestions_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_prediction),
+                    summary = context.getString(R.string.settings_search_suggestions_summary),
+                    checked = searchSuggestions,
+                    modifier = Modifier.settingsSearchAnchor("pref_search_suggestions"),
+                    onCheckedChange = { newValue ->
+                        searchSuggestions = newValue
+                        prefs.edit().putBoolean("pref_search_suggestions", newValue).apply()
+                    }
+                )
+            }
+
+            PreferenceCategory(title = context.getString(R.string.settings_saved_emails_title))
+            PreferenceGroup {
+                SwitchPreference(
+                    title = context.getString(R.string.settings_saved_emails_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_prediction),
+                    summary = context.getString(R.string.settings_saved_emails_summary),
+                    checked = savedEmails,
+                    modifier = Modifier.settingsSearchAnchor("pref_saved_emails_enabled"),
+                    onCheckedChange = { newValue ->
+                        savedEmails = newValue
+                        SavedEmails.setEnabled(context, newValue)
+                    }
+                )
+                if (savedEmails) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedTextField(
+                            value = emailDraft,
+                            onValueChange = { emailDraft = it },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true,
+                            label = { Text(context.getString(R.string.settings_saved_emails_hint)) },
+                        )
+                        TextButton(onClick = {
+                            if (SavedEmails.add(context, emailDraft)) {
+                                emailDraft = ""
+                                savedAddresses = SavedEmails.addresses(context)
+                            }
+                        }) {
+                            Text(context.getString(R.string.settings_saved_emails_add))
+                        }
+                    }
+                    if (savedAddresses.isEmpty()) {
+                        Text(
+                            text = context.getString(R.string.settings_saved_emails_empty),
+                            modifier = Modifier.padding(horizontal = spacing.medium),
+                        )
+                    }
+                    savedAddresses.forEach { address ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = address, modifier = Modifier.weight(1f).padding(horizontal = spacing.medium))
+                            TextButton(onClick = {
+                                SavedEmails.remove(context, address)
+                                savedAddresses = SavedEmails.addresses(context)
+                            }) {
+                                Text(context.getString(R.string.settings_saved_emails_remove))
+                            }
+                        }
+                    }
+                }
             }
 
             PreferenceCategory(title = context.getString(R.string.settings_category_sources))

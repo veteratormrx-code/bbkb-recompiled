@@ -742,6 +742,11 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_force_suggestions", false);
     }
 
+    /** Dictionary words in search and filter fields. On until the user turns it off. */
+    public static boolean isSearchSuggestionsEnabled(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("pref_search_suggestions", true);
+    }
+
     public static boolean isVoiceInputUseInputLanguage(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("voice_input_use_input_language", true);
     }

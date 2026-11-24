@@ -130,7 +130,7 @@ class CommitController {
             final String casedWord = word;
             EngineOps.post("casingAddWord", sdk -> sdk.addWord(casedWord));
         }
-        if (request.learn) {
+        if (request.learn && !dev.bbkb.ime.core.suggestion.SavedEmails.contains(mInputLogic.mIme, word)) {
             // Always end the word in the engine, or the next request returns completions of
             // the committed word instead of next-word predictions.
             if (matched != null || isBatchInput) {
