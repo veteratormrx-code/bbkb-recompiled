@@ -78,7 +78,11 @@ internal class KeyEditorViewModel(
     /** The palette contents for one tab, blanks removed. */
     fun symbolsFor(tab: Int): List<String> {
         val raw = if (tab == CUSTOM_TAB) customSymbols else categories.getOrNull(tab).orEmpty()
-        return raw.filter { it.isNotEmpty() && it != EMPTY_SLOT }
+        // A resource string can arrive null. isNotEmpty() would kill the process, and with it the keyboard.
+        return raw.mapNotNull { symbol ->
+            val text = symbol as String?
+            if (text.isNullOrEmpty() || text == EMPTY_SLOT) null else text
+        }
     }
 
     fun selectTab(index: Int) {

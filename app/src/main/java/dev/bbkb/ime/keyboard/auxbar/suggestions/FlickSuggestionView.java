@@ -533,11 +533,12 @@ public final class FlickSuggestionView extends RelativeLayout {
             }
 
             // Must stay separate from the check above, not nested in it.
-            if (i13 == i) {
-                if (i2 >= 0 && i2 != i) {
-                    keyM6604b = keyboard.getKeyByCode(32);
-                    i3 = 32;
-                }
+            if (i13 == i || (i < 0 && i13 == 0)) {
+                // The word already typed belongs above the space bar. Without this it is hung on
+                // the first key whose label matches any character, so "Привет111" lands on 1:
+                // the letter keys are lowercase and only the digit matches.
+                keyM6604b = keyboard.getKeyByCode(32);
+                i3 = 32;
                 z2 = false;
                 z3 = true;
             }
@@ -564,7 +565,7 @@ public final class FlickSuggestionView extends RelativeLayout {
                     }
                     
                     if (i17 != 32) {
-                        keyM6607c = keyboard.getActionKeyForCode(i17);
+                        keyM6607c = actionKeyForLetter(keyboard, i17);
                         if (keyM6607c != null) {
                             int iM6232c = keyM6607c.getCode();
                             
@@ -696,6 +697,19 @@ public final class FlickSuggestionView extends RelativeLayout {
                 Logger.debug(TAG, "period emoji shown: " + strMo4284a);
             }
         }
+    }
+
+    /** Letter keys are labeled in one case. A capital in the suggestion still belongs on that key, not on a digit that happens to occur later in the word. */
+    private static Key actionKeyForLetter(Keyboard keyboard, int codePoint) {
+        Key key = keyboard.getActionKeyForCode(codePoint);
+        if (key != null || !Character.isLetter(codePoint)) {
+            return key;
+        }
+        key = keyboard.getActionKeyForCode(Character.toLowerCase(codePoint));
+        if (key != null) {
+            return key;
+        }
+        return keyboard.getActionKeyForCode(Character.toUpperCase(codePoint));
     }
 
     /** The period key: code 46, or the key whose label is a dot. */

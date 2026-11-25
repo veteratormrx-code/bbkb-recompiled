@@ -216,7 +216,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         // The board matches the alphabet, including the number row. The pager takes whatever is
         // left above the categories, and the emoji rows stretch to fill that pager.
         int board = BoardHeightPolicy.contentHeight(this.keyboardSwitcher, this.layoutParams.keyboardHeight);
-        int chrome = shownHeight(this.tabRow) + shownHeight(this.searchFieldRow);
+        int chrome = shownHeight(this.tabRow) + shownHeight(this.searchFieldRow)
+                + shownHeight(this.pageIndicatorView);
         int pager = board - chrome;
         if (this.pagerContainer != null && pager > 0
                 && this.pagerContainer.getLayoutParams().height != pager) {

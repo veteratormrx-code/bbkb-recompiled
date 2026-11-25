@@ -356,11 +356,8 @@ public final class SuggestionEngine {
             + " isKind2=" + suggestedWordInfoVar.isKind(2)
             + " acMode=" + this.mAutoCorrectMode + " acThresh=" + this.mAutoCorrectThreshold);
         }
-        // A completion still has to clear the length gate. A correction (kind 2) used to commit
-        // at any distance, which turned Gradle into Grade and дедлайн into делай. A completion,
-        // a correction, and an engine shortcut (kind 3) now also have to be one obvious slip.
-        // LatinIME never auto-corrects to a shortcut on score alone. A saved macro is kind 7
-        // and still commits through the substitution path.
+        // Space commits the suggestion: a long-enough completion, a correction, or an engine
+        // shortcut. A saved macro is kind 7 and still commits through the substitution path.
         if (!suggestedWordInfoVar.isKind(1)) {
             meetsThreshold = false;
         } else if (this.mAutoCorrectMode == 0) {
@@ -372,8 +369,7 @@ public final class SuggestionEngine {
         boolean obviousSlip = preservedCase != null;
         boolean isUrl = android.util.Patterns.WEB_URL.matcher(suggestedWordInfoVar.word).matches();
         boolean isEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(suggestedWordInfoVar.word).matches();
-        boolean canAutoCorrect = obviousSlip
-                && (meetsThreshold || suggestedWordInfoVar.isKind(2) || suggestedWordInfoVar.isKind(3))
+        boolean canAutoCorrect = (meetsThreshold || suggestedWordInfoVar.isKind(2) || suggestedWordInfoVar.isKind(3))
                 && !isUrl && !isEmail;
         if (BuildConfig.DEBUG) {
             android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: completionGate="

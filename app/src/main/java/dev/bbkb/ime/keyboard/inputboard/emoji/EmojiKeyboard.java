@@ -212,11 +212,13 @@ public final class EmojiKeyboard extends Keyboard {
      * would leave an empty band above the categories.
      */
     public void fitHeight(int targetHeight) {
-        int rows = this.columnCount == 0 ? 0 : this.maxKeyCount / this.columnCount;
-        if (rows <= 0 || targetHeight <= 0) {
+        if (this.columnCount <= 0 || this.maxKeyCount <= 0 || targetHeight <= 0) {
             return;
         }
-        int fitted = (targetHeight - this.mVerticalGap / 2) / rows;
+        // Integer division drops a partial last row, and that row is then drawn past the pager.
+        int rows = (this.maxKeyCount + this.columnCount - 1) / this.columnCount;
+        int inset = this.mVerticalGap / 2;
+        int fitted = (targetHeight - inset) / rows;
         if (fitted <= 0 || Math.abs(fitted - this.keyHeight) <= 1) {
             return;
         }

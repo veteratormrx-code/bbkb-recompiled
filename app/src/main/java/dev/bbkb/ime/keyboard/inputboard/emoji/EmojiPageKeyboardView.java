@@ -427,20 +427,11 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         if (!(keyboard instanceof EmojiKeyboard)) {
             return;
         }
-        int height = 0;
-        android.view.ViewParent parent = getParent();
-        while (parent instanceof View && height <= 0) {
-            View view = (View) parent;
-            height = view.getHeight();
-            if (height <= 0 && view.getLayoutParams() != null) {
-                height = view.getLayoutParams().height;
-            }
-            parent = view.getParent();
-        }
-        if (height <= 0) {
+        int inner = pagerInnerHeight();
+        if (inner <= 0) {
             return;
         }
-        ((EmojiKeyboard) keyboard).fitHeight(height - getPaddingTop() - getPaddingBottom());
+        ((EmojiKeyboard) keyboard).fitHeight(inner);
         requestLayout();
     }
 
