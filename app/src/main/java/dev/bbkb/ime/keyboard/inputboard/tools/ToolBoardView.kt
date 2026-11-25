@@ -1,7 +1,6 @@
 package dev.bbkb.ime.keyboard.inputboard.tools
 
 import android.content.Context
-import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -15,11 +14,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils
+import dev.bbkb.ime.keyboard.KeyboardColorManager
 import dev.bbkb.ime.keyboard.inputboard.clipboard.TextEditingBar
 import dev.bbkb.ime.mlkit.HandwritingView
 import dev.bbkb.ime.mlkit.MlKitModels
 
-/** In-keyboard panel for text editing, translation, and handwriting. Background stays #000000. */
+/** In-keyboard panel for text editing, translation, and handwriting. Colors follow the keyboard theme. */
 class ToolBoardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -45,13 +45,12 @@ class ToolBoardView @JvmOverloads constructor(
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.BLACK)
         setPadding(dp(8), dp(6), dp(8), dp(6))
+        paintChrome()
         prepareLine(status, 4)
         prepareLine(sourceLine, 2)
         prepareLine(resultLine, 2)
         candidates.orientation = HORIZONTAL
-        candidates.setBackgroundColor(Color.BLACK)
         ink.minimumHeight = dp(88)
     }
 
@@ -62,13 +61,13 @@ class ToolBoardView @JvmOverloads constructor(
 
     private fun show(next: Mode) {
         mode = next
+        paintChrome()
         detach(status)
         detach(sourceLine)
         detach(resultLine)
         detach(ink)
         detach(candidates)
         removeAllViews()
-        setBackgroundColor(Color.BLACK)
         addView(status)
         when (next) {
             Mode.EDIT -> showEdit()
@@ -129,7 +128,7 @@ class ToolBoardView @JvmOverloads constructor(
 
     private fun showInk() {
         status.text = gmsBlockMessage() ?: "Рукописный ввод: $inkLanguage"
-        addView(ink, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
+        addView(ink, LayoutParams(LayoutParams.MATCH_PARENT, dp(148)))
         addView(candidateScroller())
         row(
             inkChip("ru") to { chooseInkLanguage("ru") },
@@ -374,7 +373,7 @@ class ToolBoardView @JvmOverloads constructor(
     private fun candidateScroller(): View {
         detach(candidates)
         return HorizontalScrollView(context).apply {
-            setBackgroundColor(Color.BLACK)
+            setBackgroundColor(KeyboardColorManager.backgroundColor)
             isHorizontalScrollBarEnabled = false
             addView(
                 candidates,
@@ -387,30 +386,27 @@ class ToolBoardView @JvmOverloads constructor(
     }
 
     private fun row(vararg actions: Pair<String, () -> Unit>) {
-        val line = LinearLayout(context).apply {
-            orientation = HORIZONTAL
-            setBackgroundColor(Color.BLACK)
+        actions.toList().chunked(4).forEach { chunk ->
+            val line = LinearLayout(context).apply {
+                orientation = HORIZONTAL
+                setBackgroundColor(KeyboardColorManager.backgroundColor)
+            }
+            chunk.forEach { (label, action) ->
+                line.addView(button(label, action), LinearLayout.LayoutParams(0, dp(44), 1f).apply {
+                    marginEnd = dp(6)
+                })
+            }
+            addView(line, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                topMargin = dp(6)
+            })
         }
-        actions.forEach { (label, action) -> line.addView(button(label, action)) }
-        val scroller = HorizontalScrollView(context).apply {
-            setBackgroundColor(Color.BLACK)
-            isHorizontalScrollBarEnabled = false
-            addView(
-                line,
-                FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                ),
-            )
-        }
-        addView(scroller, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
     }
 
     private fun button(label: String, action: () -> Unit): Button {
         return Button(context).apply {
             text = label
-            setTextColor(Color.WHITE)
-            setBackgroundColor(0xFF222222.toInt())
+            setTextColor(KeyboardColorManager.textColor)
+            setBackgroundColor(KeyboardColorManager.keyColor)
             isAllCaps = false
             transformationMethod = null
             isSingleLine = true
@@ -430,12 +426,22 @@ class ToolBoardView @JvmOverloads constructor(
     }
 
     private fun prepareLine(view: TextView, lines: Int) {
-        view.setTextColor(Color.WHITE)
-        view.setBackgroundColor(Color.BLACK)
+        view.setTextColor(KeyboardColorManager.textColor)
+        view.setBackgroundColor(KeyboardColorManager.backgroundColor)
         view.textSize = 13f
         view.maxLines = lines
         view.ellipsize = TextUtils.TruncateAt.END
         view.includeFontPadding = false
+    }
+
+    private fun paintChrome() {
+        val background = KeyboardColorManager.backgroundColor
+        setBackgroundColor(background)
+        candidates.setBackgroundColor(background)
+        ink.setColors(KeyboardColorManager.keyColor, KeyboardColorManager.textColor)
+        prepareLine(status, 4)
+        prepareLine(sourceLine, 2)
+        prepareLine(resultLine, 2)
     }
 
     private fun detach(view: View) {

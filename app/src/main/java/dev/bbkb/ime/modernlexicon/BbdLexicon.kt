@@ -60,18 +60,19 @@ class BbdLexicon(private val bytes: ByteArray) {
         }
         val hits = LinkedHashMap<String, Lexeme>()
         for (key in keys) {
-            var exactMatches = 0
             scanBucket(key) { index, lexeme ->
                 val wordKey = normalize(lexeme.word)
                 val isExact = wordKey.startsWith(norm)
-                if (isExact) exactMatches++
-                if (isExact || (index < FUZZY_WINDOW && editDistance(norm, wordKey) <= 2)) {
+                val distance = if (isExact) 0 else editDistance(norm, wordKey)
+                // Distance 1 is the mod's correction (a doubled letter, a missing letter).
+                // Distance 2 stays inside the short window so a long bucket cannot flood the strip.
+                if (isExact || distance <= 1 || (distance == 2 && index < FUZZY_WINDOW)) {
                     val previous = hits[lexeme.word]
                     if (previous == null || lexeme.frequency > previous.frequency) {
                         hits[lexeme.word] = lexeme
                     }
                 }
-                index + 1 < FUZZY_WINDOW || (key == head && exactMatches < limit)
+                index + 1 < CLOSE_SCAN
             }
         }
         return hits.values.sortedWith(compareBy<Lexeme> { editDistance(norm, normalize(it.word)) }
@@ -96,19 +97,27 @@ class BbdLexicon(private val bytes: ByteArray) {
         }
     }
 
+    /**
+     * One adjacent transposition counts as a single slip. сегодян → сегодня is я/н swapped;
+     * plain Levenshtein calls that two edits and then prefers the shorter fragment сегодн.
+     */
     private fun editDistance(a: String, b: String): Int {
         if (kotlin.math.abs(a.length - b.length) > 2) return 3
-        val prev = IntArray(b.length + 1) { it }
-        val cur = IntArray(b.length + 1)
-        for (i in 1..a.length) {
-            cur[0] = i
-            for (j in 1..b.length) {
+        val n = a.length
+        val m = b.length
+        val dp = Array(n + 1) { IntArray(m + 1) }
+        for (i in 0..n) dp[i][0] = i
+        for (j in 0..m) dp[0][j] = j
+        for (i in 1..n) {
+            for (j in 1..m) {
                 val cost = if (a[i - 1] == b[j - 1]) 0 else 1
-                cur[j] = minOf(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost)
+                dp[i][j] = minOf(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
+                if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1]) {
+                    dp[i][j] = minOf(dp[i][j], dp[i - 2][j - 2] + 1)
+                }
             }
-            for (k in prev.indices) prev[k] = cur[k]
         }
-        return prev[b.length]
+        return dp[n][m].coerceAtMost(3)
     }
 
     data class Lexeme(val word: String, val frequency: Int)
@@ -117,7 +126,15 @@ class BbdLexicon(private val bytes: ByteArray) {
 
     companion object {
         const val MAGIC = 0x52554C31
+        /** A second edit is only trusted near the start of the bucket. */
         private const val FUZZY_WINDOW = 80
+        /**
+         * One-edit hits are kept from the whole common pack. Those packs are alphabetical, so
+         * привет sits at line 81 and завтра at line 100 — both past the old window of 80, which
+         * is why the strip offered приедет and завета instead. The spelling pack runs to tens of
+         * thousands of lines; past this cap a one-edit word is too rare to be worth the scan.
+         */
+        private const val CLOSE_SCAN = 1200
 
         @JvmStatic
         fun normalize(word: String): String = word.lowercase().replace('ё', 'е')

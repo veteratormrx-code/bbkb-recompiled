@@ -12,17 +12,38 @@ object PhrasePredictions {
     data class Choice(val word: String, val count: Int)
 
     private val tables = AtomicReference<Map<String, List<Choice>>?>()
+    private val starters = AtomicReference<Map<String, List<String>>?>()
     private val wordPattern = Regex("[\\p{L}\\p{M}]+(?:['’‐-][\\p{L}\\p{M}]+)*")
     private val sentenceSeparators = charArrayOf('.', '!', '?', '…', '\n', '\r')
 
     @JvmStatic
     fun nextWords(context: Context, contextBefore: String?, locale: Locale?): List<String> {
+        ensureLoaded(context)
         val tokens = tokenize(contextBefore, locale)
-        if (tokens.isEmpty()) return emptyList()
-        val map = tables.get() ?: load(context).let { loaded ->
-            if (tables.compareAndSet(null, loaded)) loaded else checkNotNull(tables.get())
-        }
-        return rank(tokens, map)
+        if (tokens.isEmpty()) return starterWords(locale, contextBefore)
+        return rank(tokens, checkNotNull(tables.get()))
+    }
+
+    /** Most common continuations, used when the field has no previous word yet. */
+    private fun starterWords(locale: Locale?, contextBefore: String?): List<String> {
+        val lang = if (locale?.language == "ru") "ru" else "en"
+        val words = starters.get()?.get(lang).orEmpty()
+        if (!startsSentence(contextBefore)) return words
+        val cmp = locale ?: Locale.ROOT
+        return words.map { word -> word.replaceFirstChar { it.titlecase(cmp) } }
+    }
+
+    private fun startsSentence(contextBefore: String?): Boolean {
+        if (contextBefore.isNullOrBlank()) return true
+        val end = contextBefore.trimEnd().lastOrNull() ?: return true
+        return end in sentenceSeparators
+    }
+
+    private fun ensureLoaded(context: Context) {
+        if (tables.get() != null) return
+        val loaded = load(context)
+        tables.compareAndSet(null, loaded.phrases)
+        starters.compareAndSet(null, loaded.starters)
     }
 
     internal fun rank(tokens: List<String>, map: Map<String, List<Choice>>): List<String> {
@@ -45,9 +66,17 @@ object PhrasePredictions {
         return wordPattern.findAll(normalized).map { it.value }.toList().takeLast(2)
     }
 
-    private fun load(context: Context): Map<String, List<Choice>> {
+    internal fun topWords(counts: Map<String, Int>, limit: Int = 8): List<String> {
+        return counts.entries.sortedByDescending { it.value }.take(limit).map { it.key }
+    }
+
+    private data class Loaded(val phrases: Map<String, List<Choice>>, val starters: Map<String, List<String>>)
+
+    private fun load(context: Context): Loaded {
         val out = HashMap<String, List<Choice>>()
-        for (name in listOf("bbmodern/phrases-ru.idx", "bbmodern/phrases-en.idx")) {
+        val starters = HashMap<String, List<String>>()
+        for ((name, lang) in listOf("bbmodern/phrases-ru.idx" to "ru", "bbmodern/phrases-en.idx" to "en")) {
+            val counts = HashMap<String, Int>()
             try {
                 context.assets.open(name).bufferedReader().useLines { lines ->
                     lines.forEach { line ->
@@ -61,13 +90,16 @@ object PhrasePredictions {
                             val count = piece.substring(colon + 1).toIntOrNull() ?: return@mapNotNull null
                             if (word.isEmpty()) null else Choice(word, count)
                         }
-                        if (choices.isNotEmpty()) out[key] = choices
+                        if (choices.isEmpty()) return@forEach
+                        out[key] = choices
+                        for (choice in choices) counts.merge(choice.word, choice.count, Int::plus)
                     }
                 }
             } catch (ignored: Exception) {
                 // Optional asset.
             }
+            starters[lang] = topWords(counts)
         }
-        return out
+        return Loaded(out, starters)
     }
 }

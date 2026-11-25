@@ -526,10 +526,11 @@ public final class FlickSuggestionView extends RelativeLayout {
             boolean z2 = false;
             boolean z3 = z6;
             int i3 = -1;
-            if (i13 != i2) {
-                if (length2 > 1 && i12 < 5) {
-                    z2 = true;
-                }
+            // The word space will commit (index i2) used to stay on the spacebar only, so the
+            // keys showed the next inflections (приедет) while the correction (привет) was easy
+            // to miss. It is placed on a key as well; the spacebar text is unchanged.
+            if (length2 > 1 && i12 < 5) {
+                z2 = true;
             }
 
             // Must stay separate from the check above, not nested in it.

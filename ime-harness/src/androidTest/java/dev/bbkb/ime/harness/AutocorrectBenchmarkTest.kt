@@ -491,8 +491,10 @@ class AutocorrectBenchmarkTest {
         if (shiftPoint == null) {
             // A build may place shift outside the row-3 margin the constants predict (the 4PDA mod
             // insets its function keys). Sweep the bottom-left corner before giving up.
+            // The left edge of the measured letter row, not a Latin 'z': a Cyrillic grid has no z,
+            // and looking one up aborted the 4PDA run before shift could be marked unavailable.
             val cornerXs = generateSequence(bounds.left + (24 * scale).toInt()) { it + (pitch / 2).toInt() }
-                .takeWhile { it < letters.getValue('z').first }
+                .takeWhile { it < bottomSpan.first }
                 .toList()
             val cornerYs = (rowY[2] - (80 * scale).toInt()..rowY[2] + (80 * scale).toInt()
                 step (40 * scale).toInt().coerceAtLeast(20)).toList()

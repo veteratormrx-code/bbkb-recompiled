@@ -314,6 +314,10 @@ public final class SuggestionEngine {
             }
             return false;
         }
+        // LatinIME: a mostly-capitals word was typed carefully (an abbreviation). Leave it.
+        if (AutoCorrectConfidence.isMostlyCaps(typedWord)) {
+            return false;
+        }
         SuggestedWords.SuggestedWordInfo suggestedWordInfoVar = suggestions.get(1);
         if (BuildConfig.DEBUG) {
         android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: typed='" + typedWord + "' len=" + length
@@ -321,12 +325,11 @@ public final class SuggestionEngine {
             + " isKind2=" + suggestedWordInfoVar.isKind(2)
             + " acMode=" + this.mAutoCorrectMode + " acThresh=" + this.mAutoCorrectThreshold);
         }
-        // AC = (completion ? lengthGate : false) || correction || shortcut, then !url && !email.
-        // Corrections apply at any length; the gate is for completions only. A valid typed word
-        // is guarded twice: the bridge duplicates it into sugg[1] when the engine's default index
-        // is 0 (typedEqualsCorrection), and TypedWordGuard refuses letter-changing corrections,
-        // since a learned-model boost can move the default off a valid word. Space corrects
-        // misspellings, never a dictionary word.
+        // A completion still has to clear the length gate. A correction (kind 2) used to commit
+        // at any distance, which turned Gradle into Grade and дедлайн into делай. A completion,
+        // a correction, and an engine shortcut (kind 3) now also have to be one obvious slip.
+        // LatinIME never auto-corrects to a shortcut on score alone. A saved macro is kind 7
+        // and still commits through the substitution path.
         if (!suggestedWordInfoVar.isKind(1)) {
             meetsThreshold = false;
         } else if (this.mAutoCorrectMode == 0) {
@@ -334,9 +337,12 @@ public final class SuggestionEngine {
         } else {
             meetsThreshold = length > 3 || this.mAutoCorrectThreshold == 3;
         }
+        String preservedCase = AutoCorrectConfidence.preservingCase(typedWord, suggestedWordInfoVar.word, locale);
+        boolean obviousSlip = preservedCase != null;
         boolean isUrl = android.util.Patterns.WEB_URL.matcher(suggestedWordInfoVar.word).matches();
         boolean isEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(suggestedWordInfoVar.word).matches();
-        boolean canAutoCorrect = (meetsThreshold || suggestedWordInfoVar.isKind(2) || suggestedWordInfoVar.isKind(3))
+        boolean canAutoCorrect = obviousSlip
+                && (meetsThreshold || suggestedWordInfoVar.isKind(2) || suggestedWordInfoVar.isKind(3))
                 && !isUrl && !isEmail;
         if (BuildConfig.DEBUG) {
             android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: completionGate="
@@ -349,13 +355,21 @@ public final class SuggestionEngine {
         if (typedLooksLikeUrl || typedLooksLikeEmail || typedEqualsCorrection) {
             return false;
         }
+        String replacement = obviousSlip ? preservedCase : suggestedWordInfoVar.word;
         if (canAutoCorrect && typedWordIsValid
-                && !TypedWordGuard.allowsCorrection(typedWord, suggestedWordInfoVar.word, locale)) {
+                && !TypedWordGuard.allowsCorrection(typedWord, replacement, locale)) {
             if (BuildConfig.DEBUG) {
                 android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: typed='" + typedWord
-                    + "' is a dictionary word; '" + suggestedWordInfoVar.word + "' would change it -> keep typed");
+                    + "' is a dictionary word; '" + replacement + "' would change it -> keep typed");
             }
             return false;
+        }
+        // Commit the user's letters with the one slip repaired, not the dictionary's capital.
+        if (canAutoCorrect && obviousSlip && !preservedCase.equals(suggestedWordInfoVar.word)) {
+            suggestions.set(1, new SuggestedWords.SuggestedWordInfo(preservedCase, suggestedWordInfoVar.score,
+                    suggestedWordInfoVar.kindAndFlags, suggestedWordInfoVar.sourceDictionary,
+                    suggestedWordInfoVar.indexInDictionary, suggestedWordInfoVar.indexInSuggestions,
+                    suggestedWordInfoVar.nuanceWordInfo));
         }
         return canAutoCorrect;
     }

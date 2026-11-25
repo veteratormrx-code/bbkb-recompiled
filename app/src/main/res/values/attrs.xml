@@ -306,6 +306,8 @@
     </attr>
     <attr name="iconTranslateKey" format="reference">
     </attr>
+    <attr name="iconTextEditKey" format="reference">
+    </attr>
     <attr name="iconVoiceInputKey" format="reference">
     </attr>
     <attr name="iconVoiceInputKeyDisabled" format="reference">
@@ -760,6 +762,7 @@
         <attr name="iconSettingsKey" />
         <attr name="iconHandwritingKey" />
         <attr name="iconTranslateKey" />
+        <attr name="iconTextEditKey" />
         <attr name="iconVoiceInputKey" />
         <attr name="iconVoiceActiveKey" />
         <attr name="iconVoiceInputKeyDisabled" />

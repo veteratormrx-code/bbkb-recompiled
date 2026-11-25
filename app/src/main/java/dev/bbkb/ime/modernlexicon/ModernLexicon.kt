@@ -47,72 +47,102 @@ object ModernLexicon {
                     hits[lexeme.word] = maxOf(hits[lexeme.word] ?: 0, score)
                 }
             }
-            if (hits.isEmpty()) return
-            val existing = suggestions.map { it.word.lowercase(locale ?: Locale.ROOT) }.toMutableSet()
-            val ranked = hits.entries.sortedByDescending { rank(typed, it.key, it.value) }
-            var inserted = 0
-            for ((word, frequency) in ranked) {
-                if (inserted >= 6) break
-                val key = word.lowercase(locale ?: Locale.ROOT)
-                if (!existing.add(key)) continue
-                val distance = editDistance(BbdLexicon.normalize(typed), BbdLexicon.normalize(word))
-                val kind = if (distance == 0 || BbdLexicon.normalize(word).startsWith(BbdLexicon.normalize(typed))) 1 else 2
-                val score = rank(typed, word, frequency)
-                suggestions.add(
-                    SuggestedWords.SuggestedWordInfo(
-                        word,
-                        score,
-                        kind,
-                        Dictionary.DICTIONARY_HARDCODED,
-                        -1,
-                        suggestions.size,
-                        null,
-                    )
-                )
-                inserted++
+            val typedNorm = BbdLexicon.normalize(typed)
+            val frequencies = HashMap<String, Int>()
+            for ((word, frequency) in hits) {
+                val key = BbdLexicon.normalize(word)
+                frequencies[key] = maxOf(frequencies[key] ?: 0, frequency)
             }
+            // The typed string itself is a dictionary word: leave XT9's completion order alone.
+            val typedKnown = frequencies.containsKey(typedNorm)
+            if (hits.isNotEmpty()) {
+                val existing = suggestions.map { it.word.lowercase(locale ?: Locale.ROOT) }.toMutableSet()
+                val ranked = hits.entries.sortedWith(
+                    compareBy<Map.Entry<String, Int>> { damerau(typedNorm, BbdLexicon.normalize(it.key)) }
+                        .thenByDescending { it.value }
+                )
+                var inserted = 0
+                for ((word, frequency) in ranked) {
+                    if (inserted >= 8) break
+                    val key = word.lowercase(locale ?: Locale.ROOT)
+                    if (!existing.add(key)) continue
+                    val distance = damerau(typedNorm, BbdLexicon.normalize(word))
+                    if (distance > 2 || distance == 0) continue
+                    suggestions.add(
+                        SuggestedWords.SuggestedWordInfo(
+                            word,
+                            frequency,
+                            2,
+                            Dictionary.DICTIONARY_HARDCODED,
+                            -1,
+                            suggestions.size,
+                            null,
+                        )
+                    )
+                    inserted++
+                }
+            }
+            // The mod shows the closest dictionary word first. XT9 often leads with an
+            // inflected neighbor (приввет → приедет) while привет sits later or only in the pack.
+            if (!typedKnown) promoteClosest(typed, suggestions, frequencies)
         } catch (ignored: Exception) {
             // A damaged pack must not take down the suggestion thread. "bb" and other short keys included.
         }
     }
 
-    private fun rank(typed: String, word: String, frequency: Int): Int {
-        val a = BbdLexicon.normalize(typed)
-        val b = BbdLexicon.normalize(word)
-        var score = frequency.coerceAtMost(1_000_000)
-        if (b.startsWith(a)) score += 50_000 + (20 - (b.length - a.length).coerceAtLeast(0)) * 100
-        val distance = editDistance(a, b)
-        score -= distance * 8_000
-        if (distance == 1 && adjacentTypo(a, b)) score += 4_000
-        return score
+    /**
+     * Closest real words first, lexicon hits before an equally close engine form, then frequency.
+     * A longer completion of the typo (здраствуйте) loses to the common word one edit away
+     * (здравствуйте) when that word is in the pack.
+     */
+    internal fun promoteClosest(
+        typed: String,
+        suggestions: ArrayList<SuggestedWords.SuggestedWordInfo>,
+        frequencies: Map<String, Int> = emptyMap(),
+    ) {
+        if (suggestions.size < 2) return
+        val typedNorm = BbdLexicon.normalize(typed)
+        val typedEntry = suggestions.firstOrNull {
+            BbdLexicon.normalize(it.word) == typedNorm && it.getKind() == 0
+        } ?: suggestions.firstOrNull { BbdLexicon.normalize(it.word) == typedNorm }
+        val rest = suggestions.filter { it !== typedEntry }
+        // прив → привет is a completion. приввет → приедет is not, and that is the list we reorder.
+        val leader = rest.firstOrNull() ?: return
+        val leaderNorm = BbdLexicon.normalize(leader.word)
+        if (leaderNorm.startsWith(typedNorm) && leaderNorm.length > typedNorm.length) return
+        val close = rest.filter { damerau(typedNorm, BbdLexicon.normalize(it.word)) <= 2 }
+            .sortedWith(
+                compareBy<SuggestedWords.SuggestedWordInfo> { damerau(typedNorm, BbdLexicon.normalize(it.word)) }
+                    .thenByDescending { frequencies[BbdLexicon.normalize(it.word)] ?: 0 }
+                    .thenByDescending { if (it.sourceDictionary === Dictionary.DICTIONARY_HARDCODED) 1 else 0 }
+                    .thenByDescending { it.score }
+                    .thenBy { it.word.length }
+            )
+        val far = rest.filter { damerau(typedNorm, BbdLexicon.normalize(it.word)) > 2 }
+        suggestions.clear()
+        if (typedEntry != null) suggestions.add(typedEntry)
+        suggestions.addAll(close)
+        suggestions.addAll(far)
     }
 
-    private fun adjacentTypo(a: String, b: String): Boolean {
-        if (a.length != b.length) return false
-        var diffs = 0
-        for (i in a.indices) {
-            if (a[i] == b[i]) continue
-            diffs++
-            if (diffs > 1) return false
-            val near = neighbors[a[i]] ?: return false
-            if (b[i] !in near) return false
-        }
-        return diffs == 1
-    }
-
-    private fun editDistance(a: String, b: String): Int {
+    /** Insert, delete, substitution, or one adjacent transposition. Longer jumps count as 3. */
+    private fun damerau(a: String, b: String): Int {
         if (kotlin.math.abs(a.length - b.length) > 2) return 3
-        val prev = IntArray(b.length + 1) { it }
-        val cur = IntArray(b.length + 1)
-        for (i in 1..a.length) {
-            cur[0] = i
-            for (j in 1..b.length) {
+        val n = a.length
+        val m = b.length
+        val dp = Array(n + 1) { IntArray(m + 1) }
+        for (i in 0..n) dp[i][0] = i
+        for (j in 0..m) dp[0][j] = j
+        for (i in 1..n) {
+            for (j in 1..m) {
                 val cost = if (a[i - 1] == b[j - 1]) 0 else 1
-                cur[j] = minOf(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost)
+                dp[i][j] = minOf(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
+                if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1]) {
+                    dp[i][j] = minOf(dp[i][j], dp[i - 2][j - 2] + 1)
+                }
             }
-            prev.indices.forEach { prev[it] = cur[it] }
         }
-        return prev[b.length]
+        return dp[n][m].coerceAtMost(3)
     }
 
     private fun load(context: Context, asset: String): BbdLexicon? {

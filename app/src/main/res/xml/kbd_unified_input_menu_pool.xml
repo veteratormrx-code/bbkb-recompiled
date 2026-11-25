@@ -26,9 +26,9 @@
             latin:keyIconDisabled="!icon/number_pad_key_disabled"
             latin:keySpec="!icon/number_pad_key|!code/key_number_pad"/>
         <Key
-            latin:keyIconActive="!icon/settings_key"
-            latin:keyIconDisabled="!icon/settings_key"
-            latin:keySpec="!icon/settings_key|!code/key_text_edit"/>
+            latin:keyIconActive="!icon/text_edit_key"
+            latin:keyIconDisabled="!icon/text_edit_key"
+            latin:keySpec="!icon/text_edit_key|!code/key_text_edit"/>
         <Key
             latin:keyIconActive="!icon/translate_key"
             latin:keyIconDisabled="!icon/translate_key"

@@ -24,4 +24,12 @@ class PhrasePredictionsTest {
         assertEquals(listOf("в", "елке"), PhrasePredictions.tokenize("Где? В ёлке ", Locale.forLanguageTag("ru")))
         assertEquals(emptyList<String>(), PhrasePredictions.tokenize("The end. ", Locale.ENGLISH))
     }
+
+    @Test
+    fun anEmptyFieldUsesTheMostCommonContinuations() {
+        assertEquals(
+            listOf("я", "и", "в"),
+            PhrasePredictions.topWords(mapOf("в" to 3, "я" to 9, "и" to 5, "дом" to 1), 3),
+        )
+    }
 }

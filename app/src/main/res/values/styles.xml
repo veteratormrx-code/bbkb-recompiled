@@ -82,6 +82,7 @@
         <item name="iconTabKey">@drawable/ic_key_tab</item>
         <item name="iconHandwritingKey">@drawable/ic_auxbar_handwriting</item>
         <item name="iconTranslateKey">@drawable/ic_auxbar_translate</item>
+        <item name="iconTextEditKey">@drawable/ic_key_text_edit</item>
         <item name="iconVoiceActiveKey">@drawable/ic_auxbar_voice_enabled</item>
         <item name="iconVoiceInputKey">@drawable/ic_auxbar_voice_enabled</item>
         <item name="iconVoiceInputKeyDisabled">@drawable/ic_auxbar_voice_disabled</item>

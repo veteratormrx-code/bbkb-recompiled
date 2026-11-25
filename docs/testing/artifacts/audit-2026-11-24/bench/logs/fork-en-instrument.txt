@@ -1,7 +1,7 @@
 ﻿
 dev.bbkb.ime.harness.AutocorrectBenchmarkTest:.
 
-Time: 217.936
+Time: 599,223
 
 OK (1 test)
 

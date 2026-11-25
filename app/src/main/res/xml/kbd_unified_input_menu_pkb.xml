@@ -16,9 +16,7 @@
         <Key
             latin:keyIconActive="!icon/show_keyboard_active_key"
             latin:keyIconDisabled="!icon/show_keyboard_key"
-            latin:keySpec="!icon/show_keyboard_key|!code/key_switch_alpha_symbol"
-            latin:secondaryFunctionDisplayStyle="topRightCorner"
-            latin:secondaryKeySpec="!icon/show_keyboard_settings_key|!code/key_show_keyboard_settings"/>
+            latin:keySpec="!icon/show_keyboard_key|!code/key_switch_alpha_symbol"/>
         <Key
             latin:keyIconActive="!icon/fcc_active_key"
             latin:keyIconDisabled="!icon/fcc_key_disabled"
