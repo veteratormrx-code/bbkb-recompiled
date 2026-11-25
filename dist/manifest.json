@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-11-16T04:16:39Z",
+  "generated": "2026-11-25T22:12:56Z",
   "app": {
     "release": {
-      "versionCode": 1442,
-      "versionName": "5.0.0-beta.29",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.29/bbkb-5.0.0-beta.29-release.apk",
-      "sha256": "899f48d0a866be0b17a0d74ad365b9dd909f35bbcd6f5878e05568795302d217",
-      "size": 70211148,
+      "versionCode": 1450,
+      "versionName": "5.1.0",
+      "url": "https://github.com/veteratormrx-code/bbkb-recompiled/releases/download/v5.1.0/bbkb-5.1.0-release.apk",
+      "sha256": "b906eb1a76b4de0d33de8f4a1c19215e7997ccdb5fdfae9741e9c80d0e30ec3d",
+      "size": 112409773,
       "minSdk": 26,
-      "notes": "Assignable swipe gestures for on-screen keyboard; voice language downloads; UX improvements; miscellaneous bug fixes"
+      "notes": "\u041e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0441\u0431\u043e\u0440\u043a\u0430 5.1.0: \u043f\u0430\u043d\u0435\u043b\u0438 \u043f\u043e \u0432\u044b\u0441\u043e\u0442\u0435 \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u044b, \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043d\u044b\u0439 \u0441\u043b\u043e\u0439 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432, \u044d\u043c\u043e\u0434\u0437\u0438 \u0431\u0435\u0437 \u043f\u0443\u0441\u0442\u043e\u0439 \u043f\u043e\u043b\u043e\u0441\u044b, \u043f\u0435\u0440\u0435\u0432\u043e\u0434 \u0431\u0435\u0437 \u043f\u043e\u0442\u0435\u0440\u0438 \u0441\u043c\u044b\u0441\u043b\u0430 \u043f\u0440\u0438 \u043e\u0431\u043c\u0435\u043d\u0435."
     }
   },
   "packs": {
