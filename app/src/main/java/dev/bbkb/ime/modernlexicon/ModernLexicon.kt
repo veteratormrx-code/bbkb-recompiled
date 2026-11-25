@@ -2,6 +2,7 @@ package dev.bbkb.ime.modernlexicon
 
 import android.content.Context
 import dev.bbkb.ime.core.engine.Dictionary
+import dev.bbkb.ime.core.suggestion.AutoCorrectConfidence
 import dev.bbkb.ime.core.suggestion.SuggestedWords
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
@@ -11,14 +12,17 @@ import java.util.concurrent.ConcurrentHashMap
  * Runs on the suggestion thread. Password and no-learn fields must not call [merge].
  */
 object ModernLexicon {
+    private const val COMMON_PACK = "bbmodern/ru-common.bbd"
     private val cache = ConcurrentHashMap<String, BbdLexicon>()
     private val packs = listOf(
-        "bbmodern/ru-common.bbd",
+        COMMON_PACK,
         "bbmodern/ru-spelling.bbd",
         "bbmodern/ru-opencorpora.bbd",
         "bbmodern/ru-unimorph.bbd",
         "bbmodern/ru-conversational.bbd",
     )
+    private data class ExactEdits(val typed: String, val matches: List<BbdLexicon.Lexeme>)
+    @Volatile private var latestExactEdits: ExactEdits? = null
 
     private val neighbors = mapOf(
         'й' to "цу", 'ц' to "йук", 'у' to "цке", 'к' to "уен", 'е' to "кн",
@@ -40,6 +44,9 @@ object ModernLexicon {
         if (!typed.any { it in 'А'..'я' || it == 'ё' || it == 'Ё' }) return
         try {
             val hits = LinkedHashMap<String, Int>()
+            for (lexeme in commonEdits(context, typed)) {
+                hits[lexeme.word] = lexeme.frequency
+            }
             for (pack in packs) {
                 val lexicon = load(context, pack) ?: continue
                 for (lexeme in lexicon.lookupWithPrefixTypos(typed, 12, neighbors)) {
@@ -90,6 +97,38 @@ object ModernLexicon {
         }
     }
 
+    private fun commonEdits(context: Context, typed: String): List<BbdLexicon.Lexeme> {
+        val normalized = BbdLexicon.normalize(typed)
+        latestExactEdits?.let { if (it.typed == normalized) return it.matches }
+        val lexicon = load(context, COMMON_PACK) ?: return emptyList()
+        return try {
+            lexicon.lookupExactEdits(normalized).also { latestExactEdits = ExactEdits(normalized, it) }
+        } catch (_: java.io.IOException) {
+            emptyList()
+        }
+    }
+
+    @JvmStatic
+    fun hasAmbiguousCorrection(context: Context, typed: String, winner: String, locale: Locale): Boolean =
+        hasCloseAlternative(typed, winner, locale, commonEdits(context, typed))
+
+    internal fun hasCloseAlternative(
+        typed: String,
+        winner: String,
+        locale: Locale,
+        matches: List<BbdLexicon.Lexeme>,
+    ): Boolean {
+        val winnerKey = BbdLexicon.normalize(winner)
+        val winningFrequency = matches.asSequence()
+            .filter { BbdLexicon.normalize(it.word) == winnerKey }
+            .maxOfOrNull { it.frequency } ?: 0
+        // Require a twofold lead over another common word which the space-key rule could commit.
+        return matches.any {
+            BbdLexicon.normalize(it.word) != winnerKey && it.frequency.toLong() * 2 > winningFrequency &&
+                AutoCorrectConfidence.preservingCase(typed, it.word, locale) != null
+        }
+    }
+
     /**
      * Closest real words first, lexicon hits before an equally close engine form, then frequency.
      * A longer completion of the typo (здраствуйте) loses to the common word one edit away
@@ -110,19 +149,20 @@ object ModernLexicon {
         val leader = rest.firstOrNull() ?: return
         val leaderNorm = BbdLexicon.normalize(leader.word)
         if (leaderNorm.startsWith(typedNorm) && leaderNorm.length > typedNorm.length) return
-        val close = rest.filter { damerau(typedNorm, BbdLexicon.normalize(it.word)) <= 2 }
+        val (close, far) = rest.map { it to damerau(typedNorm, BbdLexicon.normalize(it.word)) }
+            .partition { it.second <= 2 }
+        val orderedClose = close
             .sortedWith(
-                compareBy<SuggestedWords.SuggestedWordInfo> { damerau(typedNorm, BbdLexicon.normalize(it.word)) }
-                    .thenByDescending { frequencies[BbdLexicon.normalize(it.word)] ?: 0 }
-                    .thenByDescending { if (it.sourceDictionary === Dictionary.DICTIONARY_HARDCODED) 1 else 0 }
-                    .thenByDescending { it.score }
-                    .thenBy { it.word.length }
+                compareBy<Pair<SuggestedWords.SuggestedWordInfo, Int>> { it.second }
+                    .thenByDescending { frequencies[BbdLexicon.normalize(it.first.word)] ?: 0 }
+                    .thenByDescending { if (it.first.sourceDictionary === Dictionary.DICTIONARY_HARDCODED) 1 else 0 }
+                    .thenByDescending { it.first.score }
+                    .thenBy { it.first.word.length }
             )
-        val far = rest.filter { damerau(typedNorm, BbdLexicon.normalize(it.word)) > 2 }
         suggestions.clear()
         if (typedEntry != null) suggestions.add(typedEntry)
-        suggestions.addAll(close)
-        suggestions.addAll(far)
+        for ((word) in orderedClose) suggestions.add(word)
+        for ((word) in far) suggestions.add(word)
     }
 
     /** Insert, delete, substitution, or one adjacent transposition. Longer jumps count as 3. */

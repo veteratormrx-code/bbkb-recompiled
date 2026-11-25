@@ -1,0 +1,86 @@
+{
+  "emulator": {
+    "api": 37,
+    "width": 1080,
+    "height": 2400
+  },
+  "editor": "ime-harness prose",
+  "input": "screen taps; ordinary space after each typo",
+  "mod": {
+    "ime": "com.blackberry.keyboard/com.blackberry.inputmethod.core.BlackBerryIME",
+    "apkSha256": "29e41f05fcdf1c9800732b19577b31c87fc4ed4adf74eb4c6653ffdbed3a8342"
+  },
+  "fork": {
+    "ime": "dev.bbkb.ime.debug/dev.bbkb.ime.core.BlackBerryIME",
+    "apkSha256": "5a54a6db9c99c93294464b53a5c236f8dcbd6d6399353c40b1b508d913c91a92"
+  },
+  "results": [
+    {
+      "typed": "рпивет",
+      "target": "привет",
+      "modAfterSpace": "рпивет ",
+      "forkAfterSpace": "привет "
+    },
+    {
+      "typed": "приввет",
+      "target": "привет",
+      "modAfterSpace": "приввет ",
+      "forkAfterSpace": "привет "
+    },
+    {
+      "typed": "ривет",
+      "target": "привет",
+      "modAfterSpace": "ривет ",
+      "forkAfterSpace": "ривет "
+    },
+    {
+      "typed": "вопррос",
+      "target": "вопрос",
+      "modAfterSpace": "вопррос ",
+      "forkAfterSpace": "вопрос "
+    },
+    {
+      "typed": "урк",
+      "target": "урок",
+      "modAfterSpace": "урк ",
+      "forkAfterSpace": "урк "
+    },
+    {
+      "typed": "окшка",
+      "target": "кошка",
+      "modAfterSpace": "окшка ",
+      "forkAfterSpace": "кошка "
+    },
+    {
+      "typed": "собка",
+      "target": "собака",
+      "modAfterSpace": "собка ",
+      "forkAfterSpace": "собка "
+    },
+    {
+      "typed": "задча",
+      "target": "задача",
+      "modAfterSpace": "задча ",
+      "forkAfterSpace": "задача "
+    },
+    {
+      "typed": "привет",
+      "target": "привет",
+      "modAfterSpace": "привет ",
+      "forkAfterSpace": "привет "
+    }
+  ],
+  "manualSelection": {
+    "typed": "ривет",
+    "expected": "привет",
+    "actual": "привет ",
+    "gesture": "swipe up from the Т key"
+  },
+  "screenshots": [
+    "mod-swap.png",
+    "fork-swap.png",
+    "fork-ambiguous.png",
+    "fork-manual-before.png",
+    "fork-manual-after.png"
+  ]
+}

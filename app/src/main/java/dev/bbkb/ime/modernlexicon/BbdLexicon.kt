@@ -42,6 +42,41 @@ class BbdLexicon(private val bytes: ByteArray) {
         return hits
     }
 
+    /** Exact one-edit candidates from the compact frequency pack, including edits to the bucket key. */
+    internal fun lookupExactEdits(typed: String): List<Lexeme> {
+        val word = normalize(typed)
+        if (word.length !in 3..MAX_COMMON_WORD_LENGTH || word.any { it !in RUSSIAN_ALPHABET }) {
+            return emptyList()
+        }
+        val candidatesByBucket = HashMap<String, MutableSet<String>>()
+        fun add(candidate: String) {
+            if (candidate != word) {
+                val key = candidate.take(3)
+                if (key in sections) candidatesByBucket.getOrPut(key) { HashSet() }.add(candidate)
+            }
+        }
+        for (i in word.indices) {
+            add(word.removeRange(i, i + 1))
+            if (i + 1 < word.length && word[i] != word[i + 1]) {
+                add(word.substring(0, i) + word[i + 1] + word[i] + word.substring(i + 2))
+            }
+        }
+        for (i in 0..word.length) {
+            val before = word.substring(0, i)
+            val after = word.substring(i)
+            for (letter in RUSSIAN_ALPHABET) add(before + letter + after)
+        }
+
+        val hits = ArrayList<Lexeme>()
+        for ((key, candidates) in candidatesByBucket) {
+            scanBucket(key) { _, lexeme ->
+                if (normalize(lexeme.word) in candidates) hits.add(lexeme)
+                true
+            }
+        }
+        return hits
+    }
+
     /**
      * Also reads buckets whose 3-letter key is one neighbor-key substitution away, so a typo in
      * the first three letters can still surface the intended word. Exact prefix hits stay first.
@@ -63,7 +98,12 @@ class BbdLexicon(private val bytes: ByteArray) {
             scanBucket(key) { index, lexeme ->
                 val wordKey = normalize(lexeme.word)
                 val isExact = wordKey.startsWith(norm)
-                val distance = if (isExact) 0 else editDistance(norm, wordKey)
+                val distance = when {
+                    isExact -> 0
+                    index < FUZZY_WINDOW -> editDistance(norm, wordKey)
+                    isSingleEdit(norm, wordKey) -> 1
+                    else -> 3
+                }
                 // Distance 1 is the mod's correction (a doubled letter, a missing letter).
                 // Distance 2 stays inside the short window so a long bucket cannot flood the strip.
                 if (isExact || distance <= 1 || (distance == 2 && index < FUZZY_WINDOW)) {
@@ -97,6 +137,22 @@ class BbdLexicon(private val bytes: ByteArray) {
         }
     }
 
+    /** Beyond the fuzzy window only distance 1 matters. Check it without allocating a matrix. */
+    private fun isSingleEdit(a: String, b: String): Boolean {
+        if (kotlin.math.abs(a.length - b.length) > 1) return false
+        val shorter = if (a.length <= b.length) a else b
+        val longer = if (a.length <= b.length) b else a
+        var i = 0
+        while (i < shorter.length && shorter[i] == longer[i]) i++
+        if (shorter.length < longer.length) {
+            return shorter.regionMatches(i, longer, i + 1, shorter.length - i)
+        }
+        if (i == shorter.length) return false
+        return shorter.regionMatches(i + 1, longer, i + 1, shorter.length - i - 1) ||
+            (i + 1 < shorter.length && shorter[i] == longer[i + 1] && shorter[i + 1] == longer[i] &&
+                shorter.regionMatches(i + 2, longer, i + 2, shorter.length - i - 2))
+    }
+
     /**
      * One adjacent transposition counts as a single slip. сегодян → сегодня is я/н swapped;
      * plain Levenshtein calls that two edits and then prefers the shorter fragment сегодн.
@@ -126,6 +182,8 @@ class BbdLexicon(private val bytes: ByteArray) {
 
     companion object {
         const val MAGIC = 0x52554C31
+        private const val RUSSIAN_ALPHABET = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
+        private const val MAX_COMMON_WORD_LENGTH = 21
         /** A second edit is only trusted near the start of the bucket. */
         private const val FUZZY_WINDOW = 80
         /**

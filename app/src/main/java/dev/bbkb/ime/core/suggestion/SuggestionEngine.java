@@ -154,7 +154,7 @@ public final class SuggestionEngine {
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
         boolean isPrediction = !composingTracker.isComposing;
-        boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
+        boolean hasGoodCorrection = shouldAutoCorrect(context, composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
 
         boolean cond_acEnabled = autoCorrectEnabled;
         boolean cond_hasGood = hasGoodCorrection;
@@ -294,7 +294,7 @@ public final class SuggestionEngine {
      * @param typedWordIsValid the dictionary knows the typed word; then only a same-word
      *                         correction ({@link TypedWordGuard}) is allowed
      */
-    private boolean shouldAutoCorrect(ComposingSnapshot composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+    private boolean shouldAutoCorrect(Context context, ComposingSnapshot composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
             boolean typedWordIsValid, Locale locale) {
         boolean meetsThreshold;
         if (suggestions.size() <= 1 || this.mBlockAutoCorrect) {
@@ -362,6 +362,10 @@ public final class SuggestionEngine {
                 android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: typed='" + typedWord
                     + "' is a dictionary word; '" + replacement + "' would change it -> keep typed");
             }
+            return false;
+        }
+        if (canAutoCorrect && locale != null && "ru".equals(locale.getLanguage())
+                && dev.bbkb.ime.modernlexicon.ModernLexicon.hasAmbiguousCorrection(context, typedWord, replacement, locale)) {
             return false;
         }
         // Commit the user's letters with the one slip repaired, not the dictionary's capital.
