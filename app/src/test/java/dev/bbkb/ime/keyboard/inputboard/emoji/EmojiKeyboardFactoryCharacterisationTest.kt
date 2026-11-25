@@ -61,9 +61,8 @@ class EmojiKeyboardFactoryCharacterisationTest {
     @Test
     fun categoryPagesChunkByFortyAndAreNotPadded() {
         val pages = factory.createEmojiKeyboards(EmojiCategory.SMILEYS_EMOTION)
-        assertEquals(2, pages.size)
-        assertEquals((0 until 40).map { "s$it" }, outputs(pages[0]))
-        assertEquals(listOf("s40"), outputs(pages[1]))
+        assertEquals(1, pages.size)
+        assertEquals((0 until 41).map { "s$it" }, outputs(pages[0]))
     }
 
     @Test
@@ -85,18 +84,17 @@ class EmojiKeyboardFactoryCharacterisationTest {
     fun anEmptyCategoryHasNoPages() {
         assertEquals(emptyList<EmojiKeyboard>(), factory.createEmojiKeyboards(EmojiCategory.PEOPLE_BODY))
         assertEquals(0, factory.getPageCount(EmojiCategory.PEOPLE_BODY))
-        assertEquals(2, factory.getPageCount(EmojiCategory.SMILEYS_EMOTION))
+        assertEquals(1, factory.getPageCount(EmojiCategory.SMILEYS_EMOTION))
         assertEquals(1, factory.getPageCount(EmojiCategory.ANIMALS_NATURE))
     }
 
     @Test
     fun searchResultPagesChunkByFortyAndArePadded() {
         val pages = factory.createSearchResultsKeyboards(smileys)
-        assertEquals(2, pages.size)
-        assertEquals((0 until 40).map { "s$it" }, outputs(pages[0]))
-        assertEquals(PAGE_KEYS, pages[1].keys.size)
-        assertEquals(listOf("s40"), emojiOutputs(pages[1]))
-        assertTrue(pages[1].keys.drop(1).all { it.code == -21 && it.keySpecOutputText == "" })
+        assertEquals(1, pages.size)
+        assertEquals((0 until 41).map { "s$it" }, emojiOutputs(pages[0]))
+        assertEquals(50, pages[0].keys.size)
+        assertTrue(pages[0].keys.drop(41).all { it.code == -21 && it.keySpecOutputText == "" })
         assertEquals(emptyList<EmojiKeyboard>(), factory.createSearchResultsKeyboards(emptyList()))
     }
 
@@ -104,11 +102,12 @@ class EmojiKeyboardFactoryCharacterisationTest {
     fun recentsIsOnePaddedPageOfAtMostForty() {
         val many = factory.createRecentsKeyboards((0 until 45).map { "r$it" })
         assertEquals(1, many.size)
-        assertEquals((0 until 40).map { "r$it" }, outputs(many[0]))
+        assertEquals((0 until 45).map { "r$it" }, emojiOutputs(many[0]))
+        assertEquals(50, many[0].keys.size)
 
         val one = factory.createRecentsKeyboards(listOf("r0"))
         assertEquals(1, one.size)
-        assertEquals(PAGE_KEYS, one[0].keys.size)
+        assertEquals(50, one[0].keys.size)
         assertEquals(listOf("r0"), emojiOutputs(one[0]))
 
         assertEquals(emptyList<EmojiKeyboard>(), factory.createRecentsKeyboards(emptyList()))

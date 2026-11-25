@@ -1150,7 +1150,12 @@ public final class ComposingTextTracker {
         if (commitType != CommitEventRecord.CommitType.DECIDED_WORD && commitType != CommitEventRecord.CommitType.MANUAL_PICK && commitType != CommitEventRecord.CommitType.BATCH_INPUT_WORD) {
             c0713o.disableRevert();
         }
+        String committed = charSequence == null ? null : charSequence.toString();
         clearAll();
+        // clearAll forgets the word. The space that ended it still wants that word's emoji.
+        if (!TextUtils.isEmpty(committed)) {
+            this.mLastCommittedWord = committed;
+        }
         return c0713o;
     }
 
@@ -1207,6 +1212,9 @@ public final class ComposingTextTracker {
                 c0713o.disableRevert();
             }
             clearAll();
+            if (!TextUtils.isEmpty(str)) {
+                this.mLastCommittedWord = str;
+            }
         }
         return c0713o;
     }

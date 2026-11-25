@@ -88,8 +88,8 @@ class EmojiBoardQueryTest {
         assertEquals("", queryText)
     }
 
-    /** Smileys (category 1) has two pages, so its tab draws two dots. */
-    private fun EmojiPalettesView.assertTabDotsRestored() = assertEquals(2, dotCount())
+    /** Smileys (category 1) is one page when the number row adds the fifth emoji row. */
+    private fun EmojiPalettesView.assertTabDotsRestored() = assertEquals(1, dotCount())
 
     private fun EmojiPalettesView.assertSearching(query: String) {
         assertTrue(isSearchFieldShowing)
@@ -128,10 +128,10 @@ class EmojiBoardQueryTest {
         v.assertSearching("sm")
         assertTrue(EmojiTestEnv.waitUntil { v.resultsShow("s0") })
         val pages = v.overlay().keyboards()
-        assertEquals(2, pages.size)
-        assertEquals((0 until 40).map { "s$it" }, emojiOutputs(pages[0]))
-        assertEquals("the tab behind the field is still Food", 4, v.pager().currentItem)
-        assertEquals("two pages of results draw two dots", 2, v.dotCount())
+        assertEquals(1, pages.size)
+        assertEquals((0 until 41).map { "s$it" }, emojiOutputs(pages[0]))
+        assertEquals("the tab behind the field is still Food", 3, v.pager().currentItem)
+        assertEquals("one page of results draws one dot", 1, v.dotCount())
     }
 
     @Test
@@ -158,7 +158,7 @@ class EmojiBoardQueryTest {
         assertTrue(EmojiTestEnv.waitUntil { v.overlay().isOverlayVisible })
         val page = v.overlay().keyboards().single()
         assertTrue(emojiOutputs(page).isEmpty())
-        assertEquals(40, page.keys.size)
+        assertEquals(50, page.keys.size)
         v.assertSearching("zz")
         assertEquals(1, v.dotCount())
     }

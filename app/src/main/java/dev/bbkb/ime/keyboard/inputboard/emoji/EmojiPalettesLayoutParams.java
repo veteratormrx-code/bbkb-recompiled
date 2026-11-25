@@ -1,11 +1,13 @@
 package dev.bbkb.ime.keyboard.inputboard.emoji;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
+import dev.bbkb.ime.keyboard.NumberRow;
 import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
 
 /** Emoji board dimensions (palettes, pager, tab strip, keys, gaps) from resources and screen metrics. */
@@ -32,13 +34,23 @@ final class EmojiPalettesLayoutParams {
     private final int keyboardTopPadding;
 
     public EmojiPalettesLayoutParams(Resources resources) throws Resources.NotFoundException {
+        this(resources, false);
+    }
+
+    /** With the number row on, the pager gains one emoji row so the board meets the taller keyboard. */
+    public EmojiPalettesLayoutParams(Context context) throws Resources.NotFoundException {
+        this(context.getResources(), NumberRow.isEnabled(context));
+    }
+
+    private EmojiPalettesLayoutParams(Resources resources, boolean extraEmojiRow) throws Resources.NotFoundException {
         int iM5592b = ResourceConfigManager.getKeyboardHeight(resources);
         int iM5585a = ResourceConfigManager.getScreenWidthPixels(resources);
         this.categoryTabHeight = (int) resources.getDimension(R.dimen.config_emoji_category_page_id_height);
         this.keyboardHeight = BoardHeightPolicy.fallbackHeight(resources);
         this.emojiPalettesHeight = (iM5592b - ResourceConfigManager.getSuggestionsStripHeight(resources)) - this.categoryTabHeight;
-        this.pagerHeight
- = this.emojiPalettesHeight;
+        this.pagerHeight = extraEmojiRow
+                ? this.emojiPalettesHeight + this.emojiPalettesHeight / 4
+                : this.emojiPalettesHeight;
         this.keyboardBottomPadding = (int) resources.getFraction(R.fraction.config_keyboard_bottom_padding_holo, iM5592b, iM5592b);
         this.keyboardTopPadding = (int) resources.getFraction(R.fraction.config_keyboard_top_padding_holo, iM5592b, iM5592b);
         this.horizontalGap = (int) resources.getFraction(R.fraction.config_key_horizontal_gap_holo, iM5585a, iM5585a);
@@ -63,7 +75,9 @@ final class EmojiPalettesLayoutParams {
 
     public void applyToIndicatorView(View view) {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+        // The dots sit on the bottom emoji row instead of opening a band above the categories.
         layoutParams.height = this.categoryTabHeight;
+        layoutParams.topMargin = -this.categoryTabHeight;
         view.setLayoutParams(layoutParams);
     }
 }

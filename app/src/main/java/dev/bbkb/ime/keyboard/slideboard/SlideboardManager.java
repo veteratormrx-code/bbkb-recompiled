@@ -190,7 +190,16 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         if (interfaceC1082d2 != null) {
             interfaceC1082d2.show();
         }
-        // The edge shadow keeps its intrinsic width; stretching it would tint the whole panel.
+        // Closed means off-screen. A visible panel left at x=0 sits under a shorter symbol
+        // keyboard, and the bottom tile ("Я на работе") takes taps in the empty band.
+        if (this.translationX == 0.0f) {
+            if (interfaceC1082d != null) {
+                interfaceC1082d.setXTranslation(-interfaceC1082d.getSlideBoardWidth());
+            }
+            if (interfaceC1082d2 != null) {
+                interfaceC1082d2.setXTranslation(this.screenWidth);
+            }
+        }
     }
 
     public boolean isShowing() {

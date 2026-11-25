@@ -5,6 +5,13 @@
     <Row latin:keyWidth="10%p">
         <include latin:keyboardLayout="@xml/rowkeys_symbols1"/>
     </Row>
+    <switch>
+        <case latin:numberRow="true">
+            <Row latin:keyWidth="10%p" latin:digitRow="true">
+                <include latin:keyboardLayout="@xml/rowkeys_symbols_extra"/>
+            </Row>
+        </case>
+    </switch>
     <Row
         latin:keyWidth="@fraction/config_key_width_9_column"
         latin:spacerWidth="@fraction/config_spacer_width_9_column">

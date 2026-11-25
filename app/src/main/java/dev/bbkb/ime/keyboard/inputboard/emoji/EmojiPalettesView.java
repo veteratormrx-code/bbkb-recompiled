@@ -26,6 +26,7 @@ import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.core.shared.GraphemeUtils;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.keyboard.Key;
+import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.KeyboardActionListenerInterface;
 import dev.bbkb.ime.keyboard.KeyboardBuilder;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
@@ -186,14 +187,13 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this.currentPagePosition = 0;
         this.keyboardActionListener = KeyboardActionListenerInterface.EMPTY;
         Resources resources = context.getResources();
-        this.layoutParams = new EmojiPalettesLayoutParams(resources);
-        // Emoji pages are pager-height, so this passes its own geometry; the themed context comes
-        // from the shared factory.
+        this.layoutParams = new EmojiPalettesLayoutParams(context);
+        // Key size stays the four-row grid. The pager itself is taller when the number row adds a fifth.
         KeyboardBuilder c0978hM6751b = BoardKeyboardFactory.builder(
                 context,
                 SubtypeManager.getInstance().getEmojiSubtype(),
                 ResourceConfigManager.getScreenWidthPixels(resources),
-                this.layoutParams.pagerHeight);
+                this.layoutParams.emojiPalettesHeight);
         TypedArray typedArrayObtainStyledAttributes2 = context.obtainStyledAttributes(attributeSet, R.styleable.EmojiPalettesView, defStyleAttr, R.style.EmojiPalettesView);
         this.categoryManager = new EmojiCategoryManager(PrefsManager.INSTANCE.getPrefs(context), context, c0978hM6751b, typedArrayObtainStyledAttributes2);
         this.categoryIndicatorEnabled = typedArrayObtainStyledAttributes2.getBoolean(R.styleable.EmojiPalettesView_categoryIndicatorEnabled, false);
@@ -213,12 +213,63 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
     @Override // android.widget.LinearLayout, android.view.View
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Unlike other boards, super runs first (the pager and tabs need their own measure pass)
-        // and there is no EXACTLY re-measure.
+        // The board matches the alphabet, including the number row. The pager takes whatever is
+        // left above the categories, and the emoji rows stretch to fill that pager.
+        int board = BoardHeightPolicy.contentHeight(this.keyboardSwitcher, this.layoutParams.keyboardHeight);
+        int chrome = shownHeight(this.tabRow) + shownHeight(this.searchFieldRow);
+        int pager = board - chrome;
+        if (this.pagerContainer != null && pager > 0
+                && this.pagerContainer.getLayoutParams().height != pager) {
+            this.pagerContainer.getLayoutParams().height = pager;
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
-                BoardHeightPolicy.measuredHeight(this, this.keyboardSwitcher, this.layoutParams.keyboardHeight));
+                board + getPaddingTop() + getPaddingBottom());
+        if (pager > 0 && pager != this.fittedPagerHeight) {
+            this.fittedPagerHeight = pager;
+            final int target = pager;
+            post(() -> {
+                if (fitEmojiPages(this.pagerContainer, target)) {
+                    requestLayout();
+                } else {
+                    this.fittedPagerHeight = 0;
+                }
+            });
+        }
+    }
+
+    private int fittedPagerHeight;
+
+    /** Pages are created after the first measure, so the stretch runs once the pager has children. */
+    private boolean fitEmojiPages(View view, int pagerHeight) {
+        if (view instanceof EmojiPageKeyboardView) {
+            Keyboard keyboard = ((EmojiPageKeyboardView) view).getKeyboard();
+            if (keyboard instanceof EmojiKeyboard) {
+                ((EmojiKeyboard) keyboard).fitHeight(pagerHeight);
+                ((EmojiPageKeyboardView) view).invalidateAllKeys();
+                return true;
+            }
+            return false;
+        }
+        if (!(view instanceof ViewGroup)) {
+            return false;
+        }
+        boolean found = false;
+        ViewGroup group = (ViewGroup) view;
+        for (int i = 0; i < group.getChildCount(); i++) {
+            found |= fitEmojiPages(group.getChildAt(i), pagerHeight);
+        }
+        return found;
+    }
+
+    /** A gone row takes no space. Wrap-content reports 0 until it has been measured. */
+    private static int shownHeight(View view) {
+        if (view == null || view.getVisibility() == GONE) {
+            return 0;
+        }
+        int height = view.getLayoutParams() == null ? 0 : view.getLayoutParams().height;
+        return height > 0 ? height : 0;
     }
 
     /**
@@ -267,6 +318,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             }
         }
         // Before the pager setup.
+        setClipChildren(false);
         this.pagerContainer = findViewById(R.id.emoji_pager_container);
         this.searchOverlay = findViewById(R.id.emoji_search_overlay);
 

@@ -138,7 +138,7 @@ class EmojiBoardRecyclingTest {
     @Test
     fun reopeningInflatesNothingAndBuildsNoPage() {
         val v = openOn(2)
-        assertEquals(3, v.pager().currentItem)
+        assertEquals(2, v.pager().currentItem)
         fresh(v)
         repeat(2) { close(v); open(v) } // let the free list fill
         fresh(v)
@@ -157,7 +157,7 @@ class EmojiBoardRecyclingTest {
         println("P-16 per open: page views inflated=${views.toDouble() / cycles} pages built=${pages.toDouble() / cycles} JVM bytes=$bytesPerOpen")
         assertEquals("page views inflated over $cycles opens", 0, views)
         assertEquals("pages built over $cycles opens", 0, pages)
-        assertEquals(3, v.pager().currentItem)
+        assertEquals(2, v.pager().currentItem)
         assertEquals(3, v.pageViews().size)
         assertNull("no long-press, no popup view", panel(v).peek())
         assertTrue(v.pageViews().all { read(it, "moreKeysLayoutView") == null })
@@ -167,13 +167,13 @@ class EmojiBoardRecyclingTest {
     fun swipingRebindsPageViewsInsteadOfInflating() {
         val v = openOn(2)
         fresh(v)
-        val path = listOf(4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 2, 3)
+        val path = listOf(3, 4, 5, 4, 3, 2, 1, 2, 3)
         var views = 0
         val before = allocated()
         for (item in path) {
             select(v, item)
             views += fresh(v).first
-            assertEquals("p${(item - 3) * 40}".takeIf { item in 3..7 }, outputs(v.pageAt(item)).first().takeIf { item in 3..7 })
+            assertEquals("p${(item - 2) * 50}".takeIf { item in 2..5 }, outputs(v.pageAt(item)).first().takeIf { item in 2..5 })
         }
         println("P-16 per swipe: page views inflated=${views.toDouble() / path.size} JVM bytes=${(allocated() - before) / path.size}")
         // One spare: the pager lays out the incoming page before it recycles the outgoing one.
@@ -185,13 +185,12 @@ class EmojiBoardRecyclingTest {
     @Test
     fun aTabJumpAndBackStillShowsTheRightPages() {
         val v = openOn(2)
-        select(v, 8)
-        assertEquals(listOf("a0", "a1", "a2"), outputs(v.pageAt(8)))
+        select(v, 6)
+        assertEquals(listOf("a0", "a1", "a2"), outputs(v.pageAt(6)))
         select(v, 1)
-        assertEquals((0 until 40).map { "s$it" }, outputs(v.pageAt(1)))
-        assertEquals(listOf("s40"), outputs(v.pageAt(2)))
-        select(v, 3)
-        assertEquals("p0", outputs(v.pageAt(3)).first())
+        assertEquals((0 until 41).map { "s$it" }, outputs(v.pageAt(1)))
+        select(v, 2)
+        assertEquals("p0", outputs(v.pageAt(2)).first())
         assertEquals(3, v.pageViews().size)
     }
 
@@ -214,45 +213,45 @@ class EmojiBoardRecyclingTest {
     @Test
     fun closingKeepsOnlyTheCategoriesAroundTheCurrentPage() {
         val v = openOn(2)
-        select(v, 8) // Animals: People (7) and Animals are around it
+        select(v, 6) // Animals: People and Animals are around it
         select(v, 1) // Smileys: Recents (0) and Smileys
         close(v)
         val categories = (read(manager(v), "keyboardCache") as Map<*, *>).keys.map { ((it as Long) ushr 32).toInt() }.toSet()
-        assertEquals(setOf(0, 1), categories)
+        assertEquals(setOf(0, 1, 2), categories)
     }
 
     @Test
     fun aToneRememberedWhileClosedShowsOnTheKeysAfterReopening() {
         val v = openOn(2)
-        assertEquals("p0", outputs(v.pageAt(3)).first())
-        val before = v.pageAt(3).keyboard
+        assertEquals("p0", outputs(v.pageAt(2)).first())
+        val before = v.pageAt(2).keyboard
         close(v)
         EmojiToneMemory.onEmojiPicked(prefs, "p0" + TONES[2])
         open(v)
-        assertEquals("p0" + TONES[2], outputs(v.pageAt(3)).first())
-        assertNotSame(before, v.pageAt(3).keyboard)
+        assertEquals("p0" + TONES[2], outputs(v.pageAt(2)).first())
+        assertNotSame(before, v.pageAt(2).keyboard)
     }
 
     @Test
     fun withoutAToneChangeReopeningKeepsTheSamePages() {
         val v = openOn(2)
-        val before = v.pageAt(3).keyboard
+        val before = v.pageAt(2).keyboard
         close(v)
         EmojiToneMemory.onEmojiPicked(prefs, "p1") // nothing remembered: no change
         open(v)
-        assertSame(before, v.pageAt(3).keyboard)
+        assertSame(before, v.pageAt(2).keyboard)
     }
 
     @Test
     fun aTonedPickOnTheBoardShowsOnTheKeysFromTheNextOpen() {
         val v = openOn(2)
-        val key = v.pageAt(3).keyboard!!.keys.first()
+        val key = v.pageAt(2).keyboard!!.keys.first()
         // A toned variant picked from the board (here: from a toned key) is remembered for its base.
         v.onEmojiKeyReleased(dev.bbkb.ime.keyboard.Key(key, dev.bbkb.ime.keyboard.internal.MoreKeySpec("p0" + TONES[4], 0, -4, "p0" + TONES[4]), arrayOf()))
-        assertEquals("unchanged while open", "p0", outputs(v.pageAt(3)).first())
+        assertEquals("unchanged while open", "p0", outputs(v.pageAt(2)).first())
         close(v)
         open(v)
-        assertEquals("p0" + TONES[4], outputs(v.pageAt(3)).first())
+        assertEquals("p0" + TONES[4], outputs(v.pageAt(2)).first())
     }
 
     /** Picks and the Recents page share one grid across a close and reopen. */

@@ -1,73 +1,65 @@
-# BBKB
+# BBKB 5.1.0
 
-BBKB is a maintained Android input method for physical-keyboard phones, grown out of a
-recompilation of the BlackBerry Keyboard. It runs daily on a BlackBerry KEY2 and is built for
-the Minimal Phone, the Unihertz Titan Pocket and the Light Phone III as well. It installs as
-`dev.bbkb.ime` (debug builds as `dev.bbkb.ime.debug`) and can live alongside the original
-`com.blackberry.keyboard`.
+Экранная и физическая клавиатура для ежедневного набора. Это отдельная сборка, не очередная бета
+форка `5.0.0-beta.29` и не модификация BlackBerry Keyboard с 4PDA.
 
-**Status:** `5.0.0-beta` · actively developed.
+В списке клавиатур она называется **BBKB**. Пакет релиза — `dev.bbkb.ime`, отладочный —
+`dev.bbkb.ime.debug`. Мод с 4PDA (`com.blackberry.keyboard`, `4.1904.3.16701-modern.4`) ставится
+рядом: настройки, словарь и история у них разные.
 
-## What is in the tree
+Сборка только `arm64-v8a`, Android 8 и новее.
 
-- **The IME** — `app/src/main/java/dev/bbkb/ime/`: the service (`core/`), the text pipeline
-  (`core/textinput/`), the capacitive-keyboard gesture engine (`core/gesture/arbiter/`), device
-  profiles and hardware-key handling (`core/device/`), Jetpack Compose settings with search
-  (`core/settings/`), the keyboard views, suggestion strip and unified input boards
-  (`keyboard/`), and the personal dictionary (`personaldictionary/`).
-- **The Nuance bridge** — `app/src/main/java/com/blackberry/nuanceshim/`: the JNI bridge to the
-  closed Nuance XT9 engine. This is the one package that keeps its original name: the engine
-  blob binds to these classes by name (see its `package-info.java`).
-- **The owned keyboard-database engine** — `xt9kdb-scaffold/cpp/`: a C reimplementation of
-  the engine's `ET9KDB_*` subsystem (key geometry, tap resolution, swipe capture and decoding),
-  with its offline self-tests in `cpp/test/`. `xt9kdb-scaffold/tools/` patches the blob so the
-  contract symbols resolve to it ("cutover"), which is the default build.
-- **Layouts and dictionaries** — `app/src/main/assets/kdb/` (XT9 keyboard layouts, with
-  per-device variant folders holding measured key geometry) and `app/src/main/assets/ldb/`
-  (the bundled language databases).
+## Что умеет
 
-## Requirements
+- Русский и английский набор, подсказки следующего слова и правка очевидной опечатки пробелом.
+- Эмодзи у слова остаётся и после пробела. Это включается в подсказках.
+- Цифровой ряд и высота клавиатуры настраиваются отдельно. Панели меню ввода подстраиваются под эту высоту.
+- Слой символов при включённом цифровом ряде заполняет свободный ряд, а не оставляет пустую полосу.
+- Сетка эмодзи занимает всю высоту клавиатуры. С цифровым рядом появляется пятый ряд.
+- Правка текста: курсор, стрелки, выделение, вырезать, копировать, вставить.
+- Перевод русского и английского на телефоне. «Поменять» меняет стороны местами и не гоняет фразу через модель по кругу, поэтому десять проходов туда-обратно не меняют смысл.
+- Рукописный ввод на высоте клавиатуры: поле, отмена, пробел, сброс, язык.
+- Буфер обмена, голос, темы, свои адреса в поле email.
 
-| | |
-|---|---|
-| JDK | 21 |
-| Gradle | 9.3.1 (wrapper) · AGP 9.1.1 |
-| Kotlin | 2.2.10 |
-| SDK | compileSdk/targetSdk 36 · minSdk 23 |
-| NDK/CMake | arm64-v8a only |
+Движок XT9 и раскладки физической клавиатуры на месте.
 
-The wrapper jar is not committed; `gradle wrapper --gradle-version 9.3.1` restores it.
-`gradle.properties` carries two load-bearing opt-outs (`android.builtInKotlin=false`,
-`android.newDsl=false`); read the comment there before touching them.
+## Установка
 
-## Build, test, install
+Релиз: [BBKB 5.1.0](https://github.com/veteratormrx-code/bbkb-recompiled/releases/tag/v5.1.0).
+
+Файл `bbkb-5.1.0-release.apk`. После установки: Настройки → Система → Клавиатура → Экранная клавиатура → BBKB.
+
+Обновление встанет поверх прежней сборки BBKB с тем же ключом подписи. Поверх мода с 4PDA оно не встаёт: это другое приложение.
+
+## Сборка
+
+Нужны JDK 21, Android SDK и NDK. Обёртка Gradle лежит в репозитории.
 
 ```bash
-./gradlew installDebug
+./gradlew :app:assembleRelease
 ```
 
-The pre-commit gate is the JVM tests plus the build, and the native self-tests:
+Подписанный файл: `app/build/outputs/apk/release/app-release.apk`.
+Ключ подписи в репозиторий не входит. Без `releaseStoreFile` в `~/.gradle/gradle.properties` релиз собирается, но остаётся без подписи.
+
+Отладочная установка на подключённый телефон:
 
 ```bash
-set -o pipefail; ./gradlew :app:testDebugUnitTest :app:assembleDebug
+./gradlew :app:installDebug
 ```
+
+Проверка перед коммитом:
 
 ```bash
-xt9kdb-scaffold/cpp/test/run_tests.sh
+./gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Never judge a Gradle pipe by its tail without `set -o pipefail`.
+## Исходный код
 
-Then enable the keyboard: Settings → System → Keyboard → On-screen keyboard → "BBKB". The
-"BBKB Helper" accessibility service is optional; it intercepts the Sym, emoji and mic keys on
-phones whose ROM swallows them (the Minimal Phone needs it, the KEY2 does not).
+Код вырос из пересборки BlackBerry Keyboard и форка [lhmb2025/bbkb-recompiled](https://github.com/lhmb2025/bbkb-recompiled).
+Эта линия живёт здесь: [veteratormrx-code/bbkb-recompiled](https://github.com/veteratormrx-code/bbkb-recompiled).
+Каталог обновлений читается из `dist/manifest.json` этого репозитория. Языковые пакеты по-прежнему берутся из релизов исходного форка.
 
-`-Pxt9Diff` builds the DIFF variant: the owned module runs as a passive self-check next to an
-unpatched blob, the A/B control when debugging recognition. Run
-`xt9kdb-scaffold/tools/cutover_deploy.sh restore` first, and `... patch` to come back.
+## Лицензия
 
-## License
-
-No license is granted at this time. The original BlackBerry Keyboard is proprietary software
-of BlackBerry Limited and the Nuance XT9 engine blob and language databases remain proprietary;
-this project is provided as-is for learning and personal use.
+Лицензия на этот код не выдаётся. Клавиатура BlackBerry и движок Nuance XT9 остаются собственностью их правообладателей. Сборка даётся как есть, для изучения и личного использования.

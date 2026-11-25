@@ -43,6 +43,8 @@ internal object EmojiTestEnv {
     fun prefs(): SharedPreferences = PrefsManager.getPrefs(app)
 
     fun install() {
+        // Page tests expect the four-row grid. The fifth row is only for the number-row keyboard.
+        prefs().edit().putBoolean(dev.bbkb.ime.keyboard.NumberRow.PREF, false).commit()
         field(SubtypeManager::class.java, "emojiSubtype").set(SubtypeManager.getInstance(), emojiSubtype())
         RichInputMethodManager.init(app)
         KeyboardBuilder.clearKeyboardCache()
@@ -66,6 +68,7 @@ internal object EmojiTestEnv {
         dynamicSearch: Boolean = false,
         replaceText: Boolean = false,
         emojiPredictions: Boolean = false,
+        emojiAfterSpace: Boolean = true,
         pkbEmojiSearch: Boolean = true,
     ): SettingsValues {
         val unsafeClass = Class.forName("sun.misc.Unsafe")
@@ -75,6 +78,7 @@ internal object EmojiTestEnv {
         field(SettingsValues::class.java, "isEmojiDynamicSearchEnabled").setBoolean(sv, dynamicSearch)
         field(SettingsValues::class.java, "isEmojiSearchReplaceText").setBoolean(sv, replaceText)
         field(SettingsValues::class.java, "isEmojiPredictionsEnabled").setBoolean(sv, emojiPredictions)
+        field(SettingsValues::class.java, "isEmojiAfterSpaceEnabled").setBoolean(sv, emojiAfterSpace)
         field(SettingsValues::class.java, "isPkbEmojiSearchEnabled").setBoolean(sv, pkbEmojiSearch)
         return sv
     }

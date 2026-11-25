@@ -63,7 +63,7 @@ object MlKitModels {
 
     @JvmStatic
     fun downloadInk(languageTag: String, onDone: (Boolean, String) -> Unit) {
-        val id = DigitalInkRecognitionModelIdentifier.fromLanguageTag(languageTag)
+        val id = inkModelId(languageTag)
         if (id == null) {
             onDone(false, "Unknown handwriting language $languageTag")
             return
@@ -76,18 +76,21 @@ object MlKitModels {
 
     @JvmStatic
     fun deleteInk(languageTag: String, onDone: (Boolean, String) -> Unit) {
-        val id = DigitalInkRecognitionModelIdentifier.fromLanguageTag(languageTag) ?: return
+        val id = inkModelId(languageTag) ?: return
         val model = DigitalInkRecognitionModel.builder(id).build()
         RemoteModelManager.getInstance().deleteDownloadedModel(model)
             .addOnSuccessListener { onDone(true, "Deleted handwriting $languageTag") }
             .addOnFailureListener { onDone(false, it.message ?: "Delete failed") }
     }
 
+    /** Recognition answers: the best words, or a failure message and no words. */
+    data class InkGuess(val ok: Boolean, val texts: List<String>, val message: String)
+
     @JvmStatic
-    fun recognizeInk(languageTag: String, ink: Ink, onDone: (Boolean, String) -> Unit) {
-        val id = DigitalInkRecognitionModelIdentifier.fromLanguageTag(languageTag)
+    fun recognizeInk(languageTag: String, ink: Ink, onDone: (InkGuess) -> Unit) {
+        val id = inkModelId(languageTag)
         if (id == null) {
-            onDone(false, "Unknown handwriting language")
+            onDone(InkGuess(false, emptyList(), "Unknown handwriting language"))
             return
         }
         val recognizer = DigitalInkRecognition.getClient(
@@ -95,10 +98,27 @@ object MlKitModels {
         )
         recognizer.recognize(ink)
             .addOnSuccessListener { result ->
-                val text = result.candidates.firstOrNull()?.text ?: ""
-                onDone(true, text)
+                val texts = result.candidates.map { it.text.trim() }.filter { it.isNotEmpty() }.distinct().take(5)
+                if (texts.isEmpty()) {
+                    onDone(InkGuess(false, emptyList(), ""))
+                } else {
+                    onDone(InkGuess(true, texts, ""))
+                }
             }
-            .addOnFailureListener { onDone(false, it.message ?: "Recognition failed") }
+            .addOnFailureListener { onDone(InkGuess(false, emptyList(), it.message ?: "Recognition failed")) }
+    }
+
+    /** "en" is not a handwriting model. Russian is "ru". */
+    private fun inkModelId(languageTag: String): DigitalInkRecognitionModelIdentifier? {
+        val tags = when (languageTag) {
+            "en" -> listOf("en", "en-US")
+            "ru" -> listOf("ru")
+            else -> listOf(languageTag)
+        }
+        for (tag in tags) {
+            DigitalInkRecognitionModelIdentifier.fromLanguageTag(tag)?.let { return it }
+        }
+        return null
     }
 
     @JvmStatic

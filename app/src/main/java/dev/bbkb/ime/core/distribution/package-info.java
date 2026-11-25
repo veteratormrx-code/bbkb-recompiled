@@ -2,14 +2,14 @@
  * Shared plumbing for OTA app updates and downloadable language packs: find what is published,
  * fetch a file, verify it. No UI, notifications, installer hand-off or pack installation here.
  *
- * <p>Hosting is GitHub Releases of {@code lhmb2025/bbkb-recompiled}; the catalogue is a static JSON
+ * <p>Hosting is GitHub Releases of {@code veteratormrx-code/bbkb-recompiled}; the catalogue is a static JSON
  * manifest with no signature. Integrity is HTTPS to a host named in the app plus a per-file SHA-256
  * that {@link dev.bbkb.ime.core.distribution.Downloader} verifies, so a redirect may never downgrade
  * to cleartext and a download with no expected hash must never be installed.
  *
  * <h2>Manifest (schema 1)</h2>
  *
- * <p>{@code https://raw.githubusercontent.com/lhmb2025/bbkb-recompiled/main/dist/manifest.json}
+ * <p>{@code https://raw.githubusercontent.com/veteratormrx-code/bbkb-recompiled/main/dist/manifest.json}
  *
  * <pre>{@code
  * {

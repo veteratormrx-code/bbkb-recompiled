@@ -40,7 +40,7 @@ class DistributionConfigTest {
     @Test
     fun theDefaultUrlIsThePublishedManifest() {
         assertEquals(
-            "https://raw.githubusercontent.com/lhmb2025/bbkb-recompiled/main/dist/manifest.json",
+            "https://raw.githubusercontent.com/veteratormrx-code/bbkb-recompiled/main/dist/manifest.json",
             DistributionConfig.DEFAULT_MANIFEST_URL
         )
         assertEquals(DistributionConfig.DEFAULT_MANIFEST_URL, DistributionConfig.manifestUrl(context))

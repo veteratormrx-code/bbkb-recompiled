@@ -54,6 +54,9 @@ fun PredictionsSuggestionsScreen(
             prefs.getBoolean("emoji_predictions", context.resources.getBoolean(R.bool.config_default_emoji_predictions))
         )
     }
+    var emojiAfterSpace by remember {
+        mutableStateOf(prefs.getBoolean("emoji_after_space", true))
+    }
     var nextWordPrediction by remember {
         mutableStateOf(prefs.getBoolean("next_word_prediction", true))
     }
@@ -238,6 +241,19 @@ fun PredictionsSuggestionsScreen(
                     onCheckedChange = { newValue ->
                         emojiPredictions = newValue
                         prefs.edit().putBoolean("emoji_predictions", newValue).apply()
+                    }
+                )
+
+                SwitchPreference(
+                    title = context.getString(R.string.settings_pred_emoji_after_space_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_emoji_suggestions),
+                    summary = context.getString(R.string.settings_pred_emoji_after_space_summary),
+                    enabled = showPredictions && emojiPredictions,
+                    checked = emojiAfterSpace,
+                    modifier = Modifier.settingsSearchAnchor("emoji_after_space"),
+                    onCheckedChange = { newValue ->
+                        emojiAfterSpace = newValue
+                        prefs.edit().putBoolean("emoji_after_space", newValue).apply()
                     }
                 )
             

@@ -41,13 +41,26 @@ public final class EmojibaseStripSuggestion {
      */
     public static void apply(Context context, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
             String composingText, Locale locale) {
-        dropEngineEmoji(suggestions);
+        apply(context, suggestions, composingText, null, locale);
+    }
+
+    /**
+     * Same as {@link #apply(Context, ArrayList, String, Locale)}, with {@code textBeforeCursor}
+     * for the word that a trailing space just committed. Composing is empty then; the emoji stays
+     * the one that word had while it was being typed.
+     */
+    public static void apply(Context context, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+            String composingText, String textBeforeCursor, Locale locale) {
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         if (settings == null || !settings.isEmojiPredictionsEnabled) {
+            dropEngineEmoji(suggestions);
             return;
         }
-        String hit = topHit(context, composingText, locale);
+        String hit = topHit(context, composingText, textBeforeCursor, locale);
         if (hit != null) {
+            // A dictionary emoji replaces the engine's. With no match the engine's own emoji
+            // stays: that is the hint drawn above the period, the same way a word sits on a letter.
+            dropEngineEmoji(suggestions);
             suggestions.add(emojiEntry(hit));
         }
     }
@@ -66,19 +79,101 @@ public final class EmojibaseStripSuggestion {
      * match above {@link EmojiSearchScoring#STRIP_MIN_RELEVANCE}.
      */
     public static String topHit(Context context, String composingText, Locale locale) {
-        if (composingText == null || composingText.trim().length() < MIN_WORD_LENGTH) {
-            return null;
-        }
+        return topHit(context, composingText, null, locale);
+    }
+
+    /**
+     * The toned emoji for the word being typed, or for the word a trailing space just finished
+     * when composing is empty. Null for a short word, Chinese/Japanese, or no match above
+     * {@link EmojiSearchScoring#STRIP_MIN_RELEVANCE}.
+     */
+    public static String topHit(Context context, String composingText, String textBeforeCursor, Locale locale) {
         if (locale != null && LocaleUtils.isChineseOrJapanese(locale)) {
             return null;
         }
+        String text = wordForEmoji(composingText, textBeforeCursor);
+        String hit = lookup(context, text);
+        if (hit != null) {
+            return hit;
+        }
+        // "the cat" and "я кот" are the last word. "smile 4" already matched as a phrase above.
+        String last = wordIgnoringSpaceBefore(text);
+        if (last.equals(text)) {
+            return null;
+        }
+        return lookup(context, last);
+    }
+
+    private static String lookup(Context context, String word) {
+        if (word.length() < MIN_WORD_LENGTH) {
+            return null;
+        }
         EmojibaseDataProvider provider = EmojibaseDataProvider.getSharedLoaded(context);
-        EmojiData hit = provider.topHit(composingText, EmojiSearchScoring.STRIP_MIN_RELEVANCE);
+        EmojiData hit = provider.topHit(word, EmojiSearchScoring.STRIP_MIN_RELEVANCE);
         if (hit == null) {
             return null;
         }
         String preferred = EmojiToneMemory.preferred(PrefsManager.INSTANCE.getPrefs(context), hit.getEmoji());
         return preferred != null ? preferred : hit.getEmoji();
+    }
+
+    /**
+     * Text the emoji is chosen from. Spaces at the edges are not part of it. Once a space
+     * commits the word, composing is empty and the text is what stands before the cursor.
+     * A new composing word, however short, replaces that finished word.
+     */
+    static String wordForEmoji(String composingText, String textBeforeCursor) {
+        String word = trimWordSpaces(composingText);
+        if (!word.isEmpty()) {
+            return word;
+        }
+        // The word was committed. Keeping its emoji is its own suggestion setting.
+        if (!keepsEmojiAfterSpace()) {
+            return "";
+        }
+        return trimWordSpaces(textBeforeCursor);
+    }
+
+    /** On unless Suggestions turns "Emoji after a space" off. A missing settings object stays on. */
+    private static boolean keepsEmojiAfterSpace() {
+        SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
+        return settings == null || settings.isEmojiAfterSpaceEnabled;
+    }
+
+    /** Drops spaces at the edges. Spaces inside the text stay, so "smile 4" is still one query. */
+    private static String trimWordSpaces(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        int start = 0;
+        int end = text.length();
+        while (start < end && isWordSpace(text.charAt(start))) {
+            start++;
+        }
+        while (end > start && isWordSpace(text.charAt(end - 1))) {
+            end--;
+        }
+        return text.substring(start, end);
+    }
+
+    /** The last word in {@code text}. Spaces around it are not part of the word. */
+    static String wordIgnoringSpaceBefore(String composingText) {
+        if (composingText == null) {
+            return "";
+        }
+        int end = composingText.length();
+        while (end > 0 && isWordSpace(composingText.charAt(end - 1))) {
+            end--;
+        }
+        int start = end;
+        while (start > 0 && !isWordSpace(composingText.charAt(start - 1))) {
+            start--;
+        }
+        return composingText.substring(start, end);
+    }
+
+    private static boolean isWordSpace(char c) {
+        return c == ' ' || c == '\u00A0' || c == '\u202F';
     }
 
     /** A kind-{@value #KIND_EMOJI} entry for {@code emoji}, with no engine word info behind it. */

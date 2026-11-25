@@ -97,6 +97,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     public void onStartInputView() {
         this.isDisengaging = false;
+        this.barChoice.clearMenuSuppressed();
         
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
         if (uibm != null) {
@@ -362,33 +363,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (this.isDisengaging) {
             return;
         }
-        
-        UnifiedInputBoardManager uimManager = this.keyboardSwitcher.getUnifiedInputBoardManager();
-
-        // uimManager is null until KeyboardSwitcher builds it, and the -23 key or hamburger tap
-        // can fire before input-view recreation; an NPE here kills the IME.
-        if (auxBarManager != null && uimManager != null) {
-            boolean auxBarShowing = auxBarManager.isShowing();
-            if (auxBarShowing && this.imeService.isUimEnabled()) {
-                // Show over the bar without taking it down first: the strip keeps its words.
-                uimManager.show(true);
-                if (uimManager.isShowing()) {
-                    this.barChoice.chooseMenu();
-                }
-                return;
-            }
-            if (uimManager.isShowing()) {
-                showSuggestionStripOrUim();
-                if (auxBarShowing) {
-                    return;
-                }
-                uimManager.hideView();
-                return;
-            }
-            if (this.imeService.isUimEnabled()) {
-                uimManager.showView();
-            }
-        }
+        // The period hold and the show-menu key both land here. On the on-screen keyboard the
+        // menu is already the default bar, so this has to hide it as well as show it.
+        toggleInputMenu();
     }
 
     @Override
@@ -421,6 +398,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     public boolean shouldShowUim() {
+        if (this.barChoice.isMenuSuppressed() && !SettingsValues.isInputMenuRequestedByKey()) {
+            return false;
+        }
         // The show-menu key or the hamburger raised the menu: it stays the bar until put away
         // (the arrow bar, accent bar and language chips hand back to it).
         if (SettingsValues.isInputMenuRequestedByKey()) {
@@ -447,7 +427,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
         if (uibm.isShowing()) {
             SettingsValues.setInputMenuRequestedByKey(false);
-            this.barChoice.chooseFieldBar();
+            this.barChoice.suppressMenu();
             if (fieldBar() == AuxBarChoice.FieldBar.STRIP) {
                 // Uncover the strip, whose words stayed current behind the menu: nothing to re-request.
                 uibm.hideAllComponents();

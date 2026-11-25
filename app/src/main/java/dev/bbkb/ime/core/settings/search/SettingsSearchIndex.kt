@@ -249,6 +249,7 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),
         SearchableSetting(R.string.settings_pred_on_key_title, "on key prediction", SettingsRoute.Suggestion.route, SUGGESTION, "on_key_predictions"),
         SearchableSetting(R.string.settings_pred_emoji_title, "emoji prediction suggestion", SettingsRoute.Suggestion.route, SUGGESTION, "emoji_predictions"),
+        SearchableSetting(R.string.settings_pred_emoji_after_space_title, "emoji after space keep suggestion finished word", SettingsRoute.Suggestion.route, SUGGESTION, "emoji_after_space"),
         SearchableSetting(R.string.settings_pred_next_word_title, "next word prediction", SettingsRoute.Suggestion.route, SUGGESTION, "next_word_prediction"),
         SearchableSetting(R.string.settings_pred_personalized_title, "personalized suggestions learned words", SettingsRoute.Suggestion.route, SUGGESTION, "pref_key_use_personalized_dicts"),
         SearchableSetting(R.string.settings_pred_inline_autofill_title, "autofill password address saved details", SettingsRoute.Suggestion.route, SUGGESTION, "pref_inline_autofill_enabled"),

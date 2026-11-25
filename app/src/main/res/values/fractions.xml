@@ -44,7 +44,7 @@
     <fraction name="config_default_vertical_cursor_tap_region_height_scale">50%</fraction>
     <fraction name="config_default_vertical_cursor_tap_region_width_scale">40%</fraction>
 
-    <fraction name="config_emoji_keyboard_key_letter_size">68%p</fraction>
+    <fraction name="config_emoji_keyboard_key_letter_size">86%p</fraction>
     <fraction name="config_emoji_keyboard_key_width">10%p</fraction>
     <fraction name="config_emoji_keyboard_row_height">25%p</fraction>
 

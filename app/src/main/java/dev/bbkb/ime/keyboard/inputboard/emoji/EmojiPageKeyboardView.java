@@ -404,6 +404,44 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.keyboardHandler.cancelAllLongPressTimers();
         super.setKeyboard(keyboard);
         this.keyboardActionListener.setKeyboard(keyboard, 0.0f, 0.0f);
+        fitToPager();
+    }
+
+    /** The pager container is sized to the space above the categories. */
+    private int pagerInnerHeight() {
+        android.view.ViewParent parent = getParent();
+        while (parent instanceof View) {
+            View view = (View) parent;
+            if (view.getId() == R.id.emoji_pager_container && view.getLayoutParams() != null
+                    && view.getLayoutParams().height > 0) {
+                return view.getLayoutParams().height - getPaddingTop() - getPaddingBottom();
+            }
+            parent = view.getParent();
+        }
+        return 0;
+    }
+
+    /** The page is often given its keyboard after the pager already has a height. */
+    private void fitToPager() {
+        Keyboard keyboard = getKeyboard();
+        if (!(keyboard instanceof EmojiKeyboard)) {
+            return;
+        }
+        int height = 0;
+        android.view.ViewParent parent = getParent();
+        while (parent instanceof View && height <= 0) {
+            View view = (View) parent;
+            height = view.getHeight();
+            if (height <= 0 && view.getLayoutParams() != null) {
+                height = view.getLayoutParams().height;
+            }
+            parent = view.getParent();
+        }
+        if (height <= 0) {
+            return;
+        }
+        ((EmojiKeyboard) keyboard).fitHeight(height - getPaddingTop() - getPaddingBottom());
+        requestLayout();
     }
 
     @Override // android.view.View
@@ -455,6 +493,20 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Height comes from the bottom-most key, not the keyboard's declared height.
         Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof EmojiKeyboard) {
+            int inner = pagerInnerHeight();
+            if (inner <= 0) {
+                int mode = MeasureSpec.getMode(heightMeasureSpec);
+                int size = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
+                int screen = getResources().getDisplayMetrics().heightPixels;
+                if (size > 0 && mode != MeasureSpec.UNSPECIFIED && size < screen / 2) {
+                    inner = size;
+                }
+            }
+            if (inner > 0) {
+                ((EmojiKeyboard) keyboard).fitHeight(inner);
+            }
+        }
         if (keyboard != null && keyboard instanceof EmojiKeyboard) {
             int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
 

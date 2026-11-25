@@ -67,22 +67,37 @@ object TextEditingBar {
     }
 
     @JvmStatic
-    fun perform(connection: InputConnection?, action: String) {
+    @JvmOverloads
+    fun perform(connection: InputConnection?, action: String, selecting: Boolean = false) {
         if (connection == null) return
+        val shift = if (selecting) KeyEvent.META_SHIFT_ON else 0
+        val word = KeyEvent.META_CTRL_ON or shift
         when (action) {
             "all" -> connection.performContextMenuAction(android.R.id.selectAll)
             "cut" -> connection.performContextMenuAction(android.R.id.cut)
             "copy" -> connection.performContextMenuAction(android.R.id.copy)
             "paste" -> connection.performContextMenuAction(android.R.id.paste)
-            "left" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT)
-            "right" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_RIGHT)
-            "word" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.META_CTRL_ON)
+            "left" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT, shift)
+            "right" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_RIGHT, shift)
+            "up" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_UP, shift)
+            "down" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_DOWN, shift)
+            "word" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_LEFT, word)
+            "wordRight" -> moveCursor(connection, KeyEvent.KEYCODE_DPAD_RIGHT, word)
+            "backspace" -> moveCursor(connection, KeyEvent.KEYCODE_DEL)
         }
     }
 
     private fun moveCursor(connection: InputConnection, code: Int, modifiers: Int = 0) {
         val start = SystemClock.uptimeMillis()
+        val shift = modifiers and KeyEvent.META_SHIFT_ON != 0
+        if (shift) {
+            connection.sendKeyEvent(KeyEvent(start, start, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0))
+        }
         connection.sendKeyEvent(KeyEvent(start, start, KeyEvent.ACTION_DOWN, code, 0, modifiers))
-        connection.sendKeyEvent(KeyEvent(start, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, code, 0, modifiers))
+        val end = SystemClock.uptimeMillis()
+        connection.sendKeyEvent(KeyEvent(start, end, KeyEvent.ACTION_UP, code, 0, modifiers))
+        if (shift) {
+            connection.sendKeyEvent(KeyEvent(end, end, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SHIFT_LEFT, 0))
+        }
     }
 }

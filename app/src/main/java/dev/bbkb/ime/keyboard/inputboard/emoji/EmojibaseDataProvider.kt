@@ -513,8 +513,9 @@ class EmojibaseDataProvider(private val context: Context) {
  */
 object EmojiSearchScoring {
     /**
-     * What a strip hit needs: an exact or prefix match on the description or a tag.
-     * An exact Russian alias scores 30, so a purely Russian query does not qualify alone.
+     * What a strip hit needs: an exact or prefix match on the description or a tag,
+     * or an exact alias. Russian words live in the alias list, so "кот" qualifies
+     * and is drawn above the period like any other suggestion.
      */
     const val STRIP_MIN_RELEVANCE = 40
 
@@ -529,7 +530,7 @@ object EmojiSearchScoring {
         else if (tags.any { it.startsWith(lowerQuery) }) score += 20
         else if (tags.any { it.contains(lowerQuery) }) score += 10
 
-        if (aliases.any { it == lowerQuery }) score += 30
+        if (aliases.any { it == lowerQuery }) score += 40
         else if (aliases.any { it.contains(lowerQuery) }) score += 5
         return score
     }

@@ -50,7 +50,7 @@ import dev.bbkb.ime.core.update.UpdateChecker
 import dev.bbkb.ime.core.update.UpdateStatus
 
 /** The public repository the app is published from (also where its update list lives). */
-private const val SOURCE_URL = "https://github.com/lhmb2025/bbkb-recompiled"
+private const val SOURCE_URL = "https://github.com/veteratormrx-code/bbkb-recompiled"
 /** The BBKB community server: problem reports, feature requests and help. */
 private const val DISCORD_URL = "https://discord.gg/HavRXQHKj7"
 

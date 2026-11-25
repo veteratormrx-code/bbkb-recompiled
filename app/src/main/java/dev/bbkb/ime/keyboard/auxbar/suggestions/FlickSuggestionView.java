@@ -526,11 +526,10 @@ public final class FlickSuggestionView extends RelativeLayout {
             boolean z2 = false;
             boolean z3 = z6;
             int i3 = -1;
-            // The word space will commit (index i2) used to stay on the spacebar only, so the
-            // keys showed the next inflections (приедет) while the correction (привет) was easy
-            // to miss. It is placed on a key as well; the spacebar text is unchanged.
-            if (length2 > 1 && i12 < 5) {
-                z2 = true;
+            if (i13 != i2) {
+                if (length2 > 1 && i12 < 5) {
+                    z2 = true;
+                }
             }
 
             // Must stay separate from the check above, not nested in it.
@@ -619,6 +618,10 @@ public final class FlickSuggestionView extends RelativeLayout {
                 }
             }
             
+            // The period is the emoji hint's key. A word placed here hides that hint.
+            if (i4 == 46) {
+                i4 = -1;
+            }
             if (i4 >= 0 && keyM6607c != null) {
                 this.mPredictionViews.get(this.mVisibleCount).setPrediction(i13, keyM6607c.getX() + (keyM6607c.getWidth() / 2), keyM6607c.getY(), z4, strMo4284a, string);
                 
@@ -645,7 +648,8 @@ public final class FlickSuggestionView extends RelativeLayout {
             z6 = z3;
         }
         
-        if (keyboard.getKeyByCode(46) != null && !arrayList.contains(46)) {
+        Key period = periodKey(keyboard);
+        if (period != null && !arrayList.contains(period.getCode())) {
             if (hasEmojiSuggestion) {
                 Logger.debug(TAG, "Emoji suggestion found at index " + emojiSuggestionIndex + ", calling showEmojiPrediction()");
             }
@@ -665,7 +669,10 @@ public final class FlickSuggestionView extends RelativeLayout {
     private void showEmojiPrediction(SuggestedWords suggestedWords, Keyboard keyboard, String typedWord) {
         Key keyM6604b;
         String strMo4284a;
-        if (this.mVisibleCount <= 0 || !isEmojiPredictionsEnabled() || (keyM6604b = keyboard.getKeyByCode(46)) == null) {
+        // The emoji is one more suggestion, drawn on the period. It does not need a word
+        // already on screen, and a nearby word must not push it off the key.
+        if (!isEmojiPredictionsEnabled() || (keyM6604b = periodKey(keyboard)) == null
+                || this.mVisibleCount >= this.mPredictionViews.size()) {
             return;
         }
         int i = 0;
@@ -683,12 +690,26 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
         if (strMo4284a != null) {
             this.mPredictionViews.get(this.mVisibleCount).setPrediction(i, keyM6604b.getX() + (keyM6604b.getWidth() / 2), keyM6604b.getY(), false, strMo4284a, typedWord);
-            if (collidesWithVisible(this.mPredictionViews.get(this.mVisibleCount))) {
-                return;
-            }
             this.mPredictionViews.get(this.mVisibleCount).setVisibility(View.VISIBLE);
             this.mVisibleCount++;
+            if (BuildConfig.DEBUG) {
+                Logger.debug(TAG, "period emoji shown: " + strMo4284a);
+            }
         }
+    }
+
+    /** The period key: code 46, or the key whose label is a dot. */
+    private static Key periodKey(Keyboard keyboard) {
+        Key byCode = keyboard.getKeyByCode(46);
+        if (byCode != null) {
+            return byCode;
+        }
+        for (Key key : keyboard.getKeys()) {
+            if (".".equals(key.getLabel())) {
+                return key;
+            }
+        }
+        return null;
     }
 
     /** @param predictionView the prediction about to be shown */

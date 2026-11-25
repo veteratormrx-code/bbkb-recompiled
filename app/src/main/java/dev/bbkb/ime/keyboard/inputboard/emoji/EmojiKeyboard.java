@@ -53,7 +53,7 @@ public final class EmojiKeyboard extends Keyboard {
 
     private final int keyWidth;
 
-    private final int keyHeight;
+    private int keyHeight;
 
     /**
      * The recents preference as this grid last read or wrote it (null off Recents). The board keeps
@@ -206,6 +206,31 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
+    /**
+     * Spread the page's rows so the last one ends at {@code targetHeight}. The template row is a
+     * quarter of the four-row board; with the number row the board is taller, and the same keys
+     * would leave an empty band above the categories.
+     */
+    public void fitHeight(int targetHeight) {
+        int rows = this.columnCount == 0 ? 0 : this.maxKeyCount / this.columnCount;
+        if (rows <= 0 || targetHeight <= 0) {
+            return;
+        }
+        int fitted = (targetHeight - this.mVerticalGap / 2) / rows;
+        if (fitted <= 0 || Math.abs(fitted - this.keyHeight) <= 1) {
+            return;
+        }
+        synchronized (this.lock) {
+            this.keyHeight = fitted;
+            int index = 0;
+            for (GridKey key : this.keyDeque) {
+                key.setPosition(getKeyX(index), getKeyY(index), getKeyRight(index), getKeyBottom(index));
+                index++;
+            }
+            this.cachedKeyList = null;
+        }
+    }
+
     /** @param gridKey the key to place in the next free slot */
     private void positionKey(GridKey gridKey) {
         gridKey.setPosition(getKeyX(this.nextKeyIndex), getKeyY(this.nextKeyIndex), getKeyRight(this.nextKeyIndex), getKeyBottom(this.nextKeyIndex));
@@ -344,6 +369,13 @@ public final class EmojiKeyboard extends Keyboard {
 
         public GridKey(Key key) {
             super(key);
+        }
+
+        /** The face fills its cell, so a taller board does not leave an empty band. */
+        @Override
+        public int getHeight() {
+            int span = getHitBox().height();
+            return span > 0 ? span : super.getHeight();
         }
 
         /** @param left left, {@code top} top, {@code right} right, {@code bottom} bottom of the hit box */

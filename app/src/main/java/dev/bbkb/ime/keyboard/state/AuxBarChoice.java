@@ -26,6 +26,8 @@ public final class AuxBarChoice {
     }
 
     private boolean menuChosen;
+    /** The period's hold hid the on-screen menu until the next hold or a new field. */
+    private boolean menuSuppressed;
 
     /** Whether the user raised the menu and has not put it away yet. */
     public boolean isMenuChosen() {
@@ -35,11 +37,26 @@ public final class AuxBarChoice {
     /** The hamburger, or the show-menu key, raised the menu. */
     public void chooseMenu() {
         menuChosen = true;
+        menuSuppressed = false;
     }
 
     /** The menu was put away (by any means, or a new field), so the bar goes back to the field's own bar. */
     public void chooseFieldBar() {
         menuChosen = false;
+    }
+
+    /** Holding the period hid the menu. It stays down until {@link #chooseMenu()} or a new field. */
+    public void suppressMenu() {
+        menuChosen = false;
+        menuSuppressed = true;
+    }
+
+    public void clearMenuSuppressed() {
+        menuSuppressed = false;
+    }
+
+    public boolean isMenuSuppressed() {
+        return menuSuppressed;
     }
 
     /** {@link #shows(boolean, FieldBar, boolean, boolean)} for this choice. */

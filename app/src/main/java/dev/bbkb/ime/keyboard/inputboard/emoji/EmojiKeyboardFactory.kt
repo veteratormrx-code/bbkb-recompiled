@@ -13,8 +13,8 @@ import java.util.Locale
 
 /**
  * Builds emoji pages from [EmojibaseDataProvider]. Category, search and recents pages share one
- * builder and differ only in: category pages are not padded; recents is one page of at most
- * [RECENTS_MAX_KEYS]; none uses category id 0, which would make it write the recents preference.
+ * builder and differ only in: category pages are not padded; recents is one page; none uses
+ * category id 0, which would make it write the recents preference.
  */
 class EmojiKeyboardFactory(
     context: Context,
@@ -25,8 +25,7 @@ class EmojiKeyboardFactory(
     companion object {
         private const val TEMPLATE_KEY_CODE = 48
         private const val TEMPLATE_LAYOUT_ID = 12
-        /** 10 x 4: recents use the full height (no search bar above them). */
-        private const val RECENTS_MAX_KEYS = 40
+        /** 10 columns. A fifth row is added while the number row makes the keyboard taller. */
         private const val SEARCH_RESULTS_CATEGORY_ID = -1
         private const val RECENTS_DISPLAY_CATEGORY_ID = -2
     }
@@ -41,8 +40,10 @@ class EmojiKeyboardFactory(
     private val locale: Locale =
         ConfigurationCompat.getLocales(context.resources.configuration).get(0) ?: Locale.getDefault()
 
-    private val maxKeysPerPage: Int =
-        context.resources.getInteger(R.integer.config_emoji_keyboard_max_page_key_count)
+    private fun pageCapacity(): Int {
+        val base = appContext.resources.getInteger(R.integer.config_emoji_keyboard_max_page_key_count)
+        return if (dev.bbkb.ime.keyboard.NumberRow.isEnabled(appContext)) base + base / 4 else base
+    }
 
     // Holds the sample emoji key the pages take their dimensions from.
     private val templateKeyboard: Keyboard = keyboardBuilder.getKeyboard(TEMPLATE_LAYOUT_ID)
@@ -52,18 +53,18 @@ class EmojiKeyboardFactory(
     /** The pages of [category], up to maxKeysPerPage emojis each, not padded. */
     fun createEmojiKeyboards(category: EmojiCategory): List<EmojiKeyboard> =
         emojiProvider.getEmojisByCategory(category).map { it.emoji }
-            .chunked(maxKeysPerPage)
-            .map { buildPage(it, maxKeysPerPage, category.id, pad = false) }
+            .chunked(pageCapacity())
+            .map { buildPage(it, pageCapacity(), category.id, pad = false) }
 
     /** Search results, maxKeysPerPage to a page, each page padded with blank keys. */
     fun createSearchResultsKeyboards(results: List<EmojiData>): List<EmojiKeyboard> =
         results.map { it.emoji }
-            .chunked(maxKeysPerPage)
-            .map { buildPage(it, maxKeysPerPage, SEARCH_RESULTS_CATEGORY_ID, pad = true) }
+            .chunked(pageCapacity())
+            .map { buildPage(it, pageCapacity(), SEARCH_RESULTS_CATEGORY_ID, pad = true) }
 
     /** One blank page for a query with no matches, so the tab behind does not show through. */
     fun createEmptyResultsPage(): List<EmojiKeyboard> =
-        listOf(buildPage(emptyList(), maxKeysPerPage, SEARCH_RESULTS_CATEGORY_ID, pad = true))
+        listOf(buildPage(emptyList(), pageCapacity(), SEARCH_RESULTS_CATEGORY_ID, pad = true))
 
     /** Recents for the overlay: never more than one padded page. */
     fun createRecentsKeyboards(emojis: List<String>): List<EmojiKeyboard> {
@@ -73,7 +74,7 @@ class EmojiKeyboardFactory(
         return if (usable.isEmpty()) {
             emptyList()
         } else {
-            listOf(buildPage(usable.take(RECENTS_MAX_KEYS), RECENTS_MAX_KEYS, RECENTS_DISPLAY_CATEGORY_ID, pad = true))
+            listOf(buildPage(usable.take(pageCapacity()), pageCapacity(), RECENTS_DISPLAY_CATEGORY_ID, pad = true))
         }
     }
 
@@ -87,7 +88,8 @@ class EmojiKeyboardFactory(
 
     fun getPageCount(category: EmojiCategory): Int {
         val emojis = emojiProvider.getEmojisByCategory(category)
-        return (emojis.size + maxKeysPerPage - 1) / maxKeysPerPage
+        val capacity = pageCapacity()
+        return (emojis.size + capacity - 1) / capacity
     }
 
     fun getLocale(): Locale {

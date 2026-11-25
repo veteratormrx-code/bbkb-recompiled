@@ -78,6 +78,7 @@ class SettingsValuesSnapshotTest {
         assertEquals(bool(R.bool.config_default_show_predictions), sv.isPredictionsEnabled)
         assertEquals(bool(R.bool.config_default_on_key_predictions), sv.isOnKeyPredictionsEnabled)
         assertEquals(bool(R.bool.config_default_emoji_predictions), sv.isEmojiPredictionsEnabled)
+        assertEquals(true, sv.isEmojiAfterSpaceEnabled)
         assertEquals(bool(R.bool.config_default_uim_enabled), sv.isUimEnabled)
         assertEquals(bool(R.bool.config_default_flick_commit_animation), sv.flickCommitAnimationEnabled)
         assertEquals(bool(R.bool.config_default_sound_enabled), sv.isSoundEnabled)
@@ -102,6 +103,7 @@ class SettingsValuesSnapshotTest {
         prefs().edit()
             .putBoolean("show_predictions", false)
             .putBoolean("emoji_predictions", false)
+            .putBoolean("emoji_after_space", false)
             .putBoolean("pref_uim_enabled", false)
             .putBoolean("sound_on", true)
             .putString("pref_keyboard_height_mode", "compact")
@@ -117,6 +119,7 @@ class SettingsValuesSnapshotTest {
 
         assertEquals(false, sv.isPredictionsEnabled)
         assertEquals(false, sv.isEmojiPredictionsEnabled)
+        assertEquals(false, sv.isEmojiAfterSpaceEnabled)
         assertEquals(false, sv.isUimEnabled)
         assertEquals(true, sv.isSoundEnabled)
         assertEquals("compact", sv.keyboardHeightMode)

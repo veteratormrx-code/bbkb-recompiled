@@ -115,7 +115,7 @@ class EmojiPalettesViewCharacterisationTest {
     @Test
     fun emptyCategoriesGetNoTabAndNoPages() {
         val v = open()
-        assertEquals(5, v.pager().adapter!!.itemCount)
+        assertEquals(4, v.pager().adapter!!.itemCount)
         assertEquals(4, v.tabs().tabCount)
     }
 
@@ -125,14 +125,14 @@ class EmojiPalettesViewCharacterisationTest {
         assertEquals(1, v.pager().currentItem)
         assertEquals(1, v.tabs().selectedTabPosition)
         assertEquals(1, lastCategory())
-        assertEquals(Triple(2, 0, 0f), v.indicator())
+        assertEquals(Triple(1, 0, 0f), v.indicator())
     }
 
     @Test
     fun aRememberedCategoryOpensAtItsFirstPage() {
         remember(3)
         val v = open()
-        assertEquals(3, v.pager().currentItem)
+        assertEquals(2, v.pager().currentItem)
         assertEquals(2, v.tabs().selectedTabPosition)
         assertEquals(3, lastCategory())
     }
@@ -142,7 +142,7 @@ class EmojiPalettesViewCharacterisationTest {
     fun rememberedLastCategoryIsRestoredWhenAnEarlierCategoryIsEmpty() {
         remember(4)
         val v = open()
-        assertEquals(4, v.pager().currentItem)
+        assertEquals(3, v.pager().currentItem)
         assertEquals(3, v.tabs().selectedTabPosition)
         assertEquals(4, lastCategory())
     }
@@ -205,7 +205,7 @@ class EmojiPalettesViewCharacterisationTest {
     fun selectingATabMovesThePagerToThatCategorysFirstPage() {
         val v = open()
         v.selectTab(3)
-        assertEquals(4, v.pager().currentItem)
+        assertEquals(3, v.pager().currentItem)
         assertEquals(4, lastCategory())
         assertEquals(Triple(1, 0, 0f), v.indicator())
     }
@@ -214,18 +214,14 @@ class EmojiPalettesViewCharacterisationTest {
     fun pagingAcrossCategoryBoundariesTracksTabPageAndIndicator() {
         val v = open()
         v.select(2)
-        assertEquals(1, v.tabs().selectedTabPosition)
-        assertEquals(1, lastCategory())
-        assertEquals(Triple(2, 1, 0f), v.indicator())
-
-        v.select(3)
         assertEquals(2, v.tabs().selectedTabPosition)
         assertEquals(3, lastCategory())
         assertEquals(Triple(1, 0, 0f), v.indicator())
 
-        v.select(4)
+        v.select(3)
         assertEquals(3, v.tabs().selectedTabPosition)
         assertEquals(4, lastCategory())
+        assertEquals(Triple(1, 0, 0f), v.indicator())
 
         v.select(0)
         assertEquals(0, v.tabs().selectedTabPosition)
@@ -234,32 +230,32 @@ class EmojiPalettesViewCharacterisationTest {
 
         v.select(1)
         assertEquals(1, v.tabs().selectedTabPosition)
-        assertEquals(Triple(2, 0, 0f), v.indicator())
+        assertEquals(Triple(1, 0, 0f), v.indicator())
     }
 
     @Test
     fun scrollOffsetsAreReportedRelativeToTheCurrentCategory() {
-        val v = open() // category 1 (Smileys, 2 pages), page 0
+        val v = open() // Smileys, one page
         v.onPageScrolled(2, 0.25f, 0)
-        assertEquals(Triple(2, 1, 0.25f), v.indicator())
+        assertEquals(Triple(1, 0, 0.25f), v.indicator())
         v.onPageScrolled(3, 0.5f, 0)
-        assertEquals(Triple(2, 0, 0.5f), v.indicator())
+        assertEquals(Triple(1, 0, 0.5f), v.indicator())
         v.onPageScrolled(0, 0.75f, 0)
-        assertEquals(Triple(2, 0, -0.25f), v.indicator())
+        assertEquals(Triple(1, 0, -0.25f), v.indicator())
     }
 
     @Test
     fun pagesShowTheirCategorysEmojiInOrder() {
         val v = open()
-        assertTrue(v.firstOutputs().containsAll(listOf("s0", "s40")))
-        v.select(3)
+        assertTrue(v.firstOutputs().contains("s0"))
+        v.select(2)
         assertTrue(v.firstOutputs().contains("a0"))
     }
 
     @Test
     fun secondOpenIsEmptyUntilAttachPagerAdapter() {
         val v = open()
-        v.select(3)
+        v.select(2)
         val adapter = v.pager().adapter
         assertNotNull(adapter)
 
@@ -282,7 +278,7 @@ class EmojiPalettesViewCharacterisationTest {
         v.attachPagerAdapter()
         idle()
         assertSame(adapter, v.pager().adapter)
-        assertEquals(3, v.pager().currentItem)
+        assertEquals(2, v.pager().currentItem)
         assertTrue(v.firstOutputs().contains("a0"))
     }
 
@@ -313,18 +309,18 @@ class EmojiPalettesViewCharacterisationTest {
         val v = open()
         assertEquals(3, v.pager().recycler().childCount)
         v.setSwitchingToEmoji(true)
-        v.select(4)
+        v.select(3)
         assertEquals(2, v.pager().recycler().childCount)
         v.select(1)
         assertEquals(3, v.pager().recycler().childCount)
-        assertTrue(v.firstOutputs().containsAll(listOf("s0", "s40")))
+        assertTrue(v.firstOutputs().contains("s0"))
     }
 
     @Test
     fun whenNotSwitchingToEmojiDestroyedPagesAreRemoved() {
         val v = open()
         v.setSwitchingToEmoji(false)
-        v.select(4)
+        v.select(3)
         assertEquals(2, v.pager().recycler().childCount)
         v.select(1)
         assertEquals(3, v.pager().recycler().childCount)
@@ -370,7 +366,7 @@ class EmojiPalettesViewCharacterisationTest {
         assertEquals(1, v.overlay().pageCount)
         val page = v.overlay().keyboards().single()
         assertEquals((0 until 30).map { "r$it" }, emojiOutputs(page))
-        assertEquals(40, page.keys.size)
+        assertEquals(50, page.keys.size)
     }
 
     @Test
@@ -402,10 +398,9 @@ class EmojiPalettesViewCharacterisationTest {
         assertFalse(v.overlay().isOverlayVisible)
         assertTrue(EmojiTestEnv.waitUntil { v.overlay().isOverlayVisible })
         val pages = v.overlay().keyboards()
-        assertEquals(2, pages.size)
-        assertEquals((0 until 40).map { "s$it" }, emojiOutputs(pages[0]))
-        assertEquals(listOf("s40"), emojiOutputs(pages[1]))
-        assertEquals(40, pages[1].keys.size)
+        assertEquals(1, pages.size)
+        assertEquals((0 until 41).map { "s$it" }, emojiOutputs(pages[0]))
+        assertEquals(50, pages[0].keys.size)
 
         v.onEmojiOpened("zzzz")
         assertTrue(EmojiTestEnv.waitUntil { !v.overlay().isOverlayVisible })

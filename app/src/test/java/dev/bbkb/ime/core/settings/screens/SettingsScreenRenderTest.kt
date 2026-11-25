@@ -1043,6 +1043,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
 
                 "settings_pred_contacts_summary_disabled", "settings_pred_contacts_title",
                 "settings_pred_emoji_summary", "settings_pred_emoji_title",
+                "settings_pred_emoji_after_space_summary", "settings_pred_emoji_after_space_title",
                 "settings_category_display", "settings_category_sources",
                 "settings_pred_force_suggestions_summary", "settings_pred_force_suggestions_title",
                 "settings_search_suggestions_summary", "settings_search_suggestions_title",

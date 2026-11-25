@@ -46,6 +46,9 @@ public final class SettingsValues {
 
     public final boolean isEmojiPredictionsEnabled;
 
+    /** Keep the word's emoji after a space commits the word. */
+    public final boolean isEmojiAfterSpaceEnabled;
+
     public final boolean isDynamicLearningEnabled;
 
     public final boolean isLanguageQuickSwitchEnabled;
@@ -385,6 +388,7 @@ public final class SettingsValues {
         this.shouldShowLxxButton = shouldShowLxxButton(context);
         this.isOnKeyPredictionsEnabled = loadOnKeyPredictionsSetting(sharedPreferences, resources);
         this.isEmojiPredictionsEnabled = loadEmojiPredictionsSetting(sharedPreferences, resources);
+        this.isEmojiAfterSpaceEnabled = loadEmojiAfterSpaceSetting(sharedPreferences);
         this.textHighlightColorForAddToDictionary = ContextCompat.getColor(context, R.color.text_decorator_add_to_dictionary_indicator_text_highlight_color);
         this.textHighlightColorForMultiTap = ContextCompat.getColor(context, R.color.multitap_highlight_color);
         this.isInternal = SettingsManager.isInternalBuild(context, sharedPreferences);
@@ -500,6 +504,7 @@ public final class SettingsValues {
         this.isPredictionsEnabled = base.isPredictionsEnabled;
         this.isOnKeyPredictionsEnabled = base.isOnKeyPredictionsEnabled;
         this.isEmojiPredictionsEnabled = base.isEmojiPredictionsEnabled;
+        this.isEmojiAfterSpaceEnabled = base.isEmojiAfterSpaceEnabled;
         this.isDynamicLearningEnabled = base.isDynamicLearningEnabled;
         this.isLanguageQuickSwitchEnabled = base.isLanguageQuickSwitchEnabled;
         this.isSpacebarLanguageSwitchingEnabled = base.isSpacebarLanguageSwitchingEnabled;
@@ -824,6 +829,11 @@ public final class SettingsValues {
         return sharedPreferences.getBoolean("emoji_predictions", resources.getBoolean(R.bool.config_default_emoji_predictions));
     }
 
+    /** On until the user turns it off. The emoji suggestions switch is the master. */
+    private static boolean loadEmojiAfterSpaceSetting(SharedPreferences sharedPreferences) {
+        return sharedPreferences.getBoolean("emoji_after_space", true);
+    }
+
     private static boolean loadBigramPredictionsSetting(SharedPreferences sharedPreferences, Resources resources) {
         return sharedPreferences.getBoolean("next_word_prediction", resources.getBoolean(R.bool.config_default_next_word_prediction));
     }
@@ -902,6 +912,8 @@ public final class SettingsValues {
         sb.append("" + this.isOnKeyPredictionsEnabled);
         sb.append("\n  mEmojiPredictions = ");
         sb.append("" + this.isEmojiPredictionsEnabled);
+        sb.append("\n  mEmojiAfterSpace = ");
+        sb.append("" + this.isEmojiAfterSpaceEnabled);
         sb.append("\n   mDisplayOrientation = ");
         sb.append("" + this.displayOrientation);
         sb.append("\n   mAdditionalFeaturesSettingValues = ");

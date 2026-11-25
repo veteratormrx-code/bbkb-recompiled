@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The second symbol page grows by the same row, so it does not shrink under the number row. -->
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:keySpec="€"/>
+    <Key latin:keySpec="£"/>
+    <Key latin:keySpec="¥"/>
+    <Key latin:keySpec="×"/>
+    <Key latin:keySpec="≈"/>
+    <Key latin:keySpec="≠"/>
+    <Key latin:keySpec="∞"/>
+    <Key latin:keySpec="№"/>
+    <Key latin:keySpec="…"/>
+    <Key latin:keySpec="°"/>
+</merge>

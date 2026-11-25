@@ -64,6 +64,36 @@ class EmojibaseStripSuggestionTest {
     }
 
     @Test
+    fun aSpaceBeforeTheWordDoesNotChangeTheEmoji() {
+        assertEquals("a0", EmojibaseStripSuggestion.topHit(context, " cat", Locale.ENGLISH))
+        assertEquals("a0", EmojibaseStripSuggestion.topHit(context, "the cat", Locale.ENGLISH))
+        assertEquals("a0", EmojibaseStripSuggestion.topHit(context, "cat ", Locale.ENGLISH))
+    }
+
+    @Test
+    fun aSpaceAfterTheWordKeepsTheSameEmoji() {
+        val whileTyping = EmojibaseStripSuggestion.topHit(context, "cat", Locale.ENGLISH)
+        assertEquals(whileTyping, EmojibaseStripSuggestion.topHit(context, "", "cat ", Locale.ENGLISH))
+        assertEquals(whileTyping, EmojibaseStripSuggestion.topHit(context, null, "hello cat ", Locale.ENGLISH))
+        assertEquals(whileTyping, EmojibaseStripSuggestion.topHit(context, " ", "cat", Locale.ENGLISH))
+        assertEquals(whileTyping, EmojibaseStripSuggestion.topHit(context, "Cat ", "other", Locale.ENGLISH))
+        // A new word, even one letter, is no longer the finished word.
+        assertNull(EmojibaseStripSuggestion.topHit(context, "s", "cat ", Locale.ENGLISH))
+        val list = words(word("hello"), word("there"))
+        EmojibaseStripSuggestion.apply(context, list, "", "cat ", Locale.ENGLISH)
+        assertEquals(listOf("hello", "there", "a0"), list.map { it.word })
+    }
+
+    @Test
+    fun theAfterSpaceSwitchDropsTheFinishedWordsEmoji() {
+        EmojiTestEnv.useSettings(EmojiTestEnv.settings(emojiPredictions = true, emojiAfterSpace = false))
+        assertEquals("a0", EmojibaseStripSuggestion.topHit(context, "cat", Locale.ENGLISH))
+        assertEquals("a0", EmojibaseStripSuggestion.topHit(context, "cat ", Locale.ENGLISH))
+        assertNull(EmojibaseStripSuggestion.topHit(context, "", "cat ", Locale.ENGLISH))
+        assertNull(EmojibaseStripSuggestion.topHit(context, null, "hello cat ", Locale.ENGLISH))
+    }
+
+    @Test
     fun anExactDescriptionBeatsAPrefix() {
         assertEquals("s4", EmojibaseStripSuggestion.topHit(context, "smile 4", Locale.ENGLISH))
         assertEquals("a0", EmojibaseStripSuggestion.topHit(context, "cat", Locale.ENGLISH))
@@ -76,6 +106,13 @@ class EmojibaseStripSuggestionTest {
         assertNull("one character is too short", EmojibaseStripSuggestion.topHit(context, "s", Locale.ENGLISH))
         assertNull(EmojibaseStripSuggestion.topHit(context, "  ", Locale.ENGLISH))
         assertNull(EmojibaseStripSuggestion.topHit(context, null, Locale.ENGLISH))
+    }
+
+    @Test
+    fun noEmojibaseMatchKeepsTheEngineEmoji() {
+        val list = words(word("the"), word("😀", 11))
+        EmojibaseStripSuggestion.apply(context, list, "the", Locale.ENGLISH)
+        assertEquals(listOf("the", "😀"), list.map { it.word })
     }
 
     @Test

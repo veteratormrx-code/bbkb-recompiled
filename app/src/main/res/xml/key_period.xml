@@ -78,9 +78,13 @@
                 latin:secondaryKeySpec=","/>
         </case>
         <default>
+            <!-- Same as the 4PDA keyboard: a tap types the period, the corner mark is the
+                 input menu, and holding the key shows or hides that menu. -->
             <Key
                 latin:keySpec="!text/keyspec_period"
-                latin:moreKeys="!text/morekeys_period"/>
+                latin:keyStyle="inputBoardToggleKeyStyle"
+                latin:secondaryFunctionDisplayStyle="topRightCorner"
+                latin:secondaryKeySpec="!icon/show_input_menu_key|!code/key_show_input_menu"/>
         </default>
     </switch>
 </merge>

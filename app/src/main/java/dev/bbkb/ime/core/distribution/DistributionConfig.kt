@@ -13,7 +13,7 @@ import java.io.File
 object DistributionConfig {
     /** HTTPS, no auth, no signature. */
     const val DEFAULT_MANIFEST_URL: String =
-        "https://raw.githubusercontent.com/lhmb2025/bbkb-recompiled/main/dist/manifest.json"
+        "https://raw.githubusercontent.com/veteratormrx-code/bbkb-recompiled/main/dist/manifest.json"
 
     /**
      * Debug-only manifest URL override (full URL, e.g. `http://10.0.2.2:8000/manifest.json` for a

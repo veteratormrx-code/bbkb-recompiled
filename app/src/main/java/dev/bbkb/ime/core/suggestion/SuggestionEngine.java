@@ -208,7 +208,9 @@ public final class SuggestionEngine {
         }
 
         // Strip emoji come from emojibase: engine emoji dropped, top emojibase hit appended.
-        EmojibaseStripSuggestion.apply(context, suggestions, composingText, perfLogger.locale);
+        // A trailing space commits the word and clears composing; the text before the cursor
+        // still ends with that word, so the emoji stays the one it had while it was typed.
+        EmojibaseStripSuggestion.apply(context, suggestions, composingText, emojiContext(composingTracker, prevWordsInfo), perfLogger.locale);
 
         // Emoji are suggestions, never auto-correction targets.
         if (willAutoCorrect) {
@@ -244,8 +246,10 @@ public final class SuggestionEngine {
             }
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
-        // Drop any engine emoji that slips through; strip emoji come from emojibase.
-        EmojibaseStripSuggestion.dropEngineEmoji(predictions);
+        // Same rule as corrections: keep the engine emoji when emojibase has nothing to put
+        // above the period. After a space, composing is empty and the emoji is still the one
+        // for the word that space finished.
+        EmojibaseStripSuggestion.apply(context, predictions, composingTracker.text, emojiContext(composingTracker, prevWordsInfo), perfLogger.locale);
         int size = predictions.size();
         boolean isStartOfSentence = composingTracker.isStartOfSentence;
         String composingText = composingTracker.text;
@@ -265,6 +269,33 @@ public final class SuggestionEngine {
             }
         }
         callback.onSuggestionsReady(new SuggestedWords(predictions, true, false, suggestionType));
+    }
+
+    /**
+     * Where the emoji looks when composing is empty. The word a space just committed is remembered
+     * on the tracker; the editor text is the fallback when that memory is empty.
+     */
+    private static String emojiContext(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo) {
+        if (composing != null && !TextUtils.isEmpty(composing.lastCommittedWord)) {
+            return composing.lastCommittedWord;
+        }
+        return textBeforeCursor(prevWordsInfo);
+    }
+
+    /** The editor text before the cursor, which still holds a word a trailing space just committed. */
+    private static String textBeforeCursor(PrevWordsInfo prevWordsInfo) {
+        if (prevWordsInfo == null) {
+            return null;
+        }
+        String context = prevWordsInfo.getContextBefore();
+        if (!TextUtils.isEmpty(context)) {
+            return context;
+        }
+        PrevWordsInfo.WordInfo first = prevWordsInfo.wordInfos[0];
+        if (first != null && first.word != null) {
+            return first.word.toString();
+        }
+        return null;
     }
 
     static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfo, Locale locale, boolean allCaps, boolean firstCaps, int trailingApostrophes) {

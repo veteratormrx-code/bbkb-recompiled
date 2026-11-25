@@ -30,8 +30,7 @@ class EmojiRussianSearchTest {
     fun aFullyQualifiedEmojiMatchesItsUnqualifiedRussianRow() {
         assertEquals(listOf("👍️"), provider.searchEmojis("лайк").map { it.emoji })
         assertEquals(listOf("👍️"), provider.searchEmojis("большой палец вверх").map { it.emoji })
-        assertEquals("👍️", provider.topHit("лайк", 30)?.emoji)
-        assertNull(provider.topHit("лайк", EmojiSearchScoring.STRIP_MIN_RELEVANCE))
+        assertEquals("👍️", provider.topHit("лайк", EmojiSearchScoring.STRIP_MIN_RELEVANCE)?.emoji)
     }
 
     @Test
