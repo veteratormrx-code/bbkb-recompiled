@@ -1,6 +1,6 @@
 # Матрица паритета
 
-Что именно изменилось относительно оригинального BBKB и APK мода: [Форк и оригинал](fork-vs-upstream.md).
+[Наш форк и оригинальный BBKB](comparison/upstream-user-report.md) · [APK-мод 4PDA и наш форк](comparison/apk-mod-user-report.md) · [Технический обзор](fork-vs-upstream.md)
 
 ## Текущий сравнительный прогон
 
