@@ -215,9 +215,10 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // The board matches the alphabet, including the number row. The pager takes whatever is
         // left above the categories, and the emoji rows stretch to fill that pager.
+        // The page dots overlap that pager (their top margin equals their height), so they are
+        // not a row. Counting them left a transparent band under the categories.
         int board = BoardHeightPolicy.contentHeight(this.keyboardSwitcher, this.layoutParams.keyboardHeight);
-        int chrome = shownHeight(this.tabRow) + shownHeight(this.searchFieldRow)
-                + shownHeight(this.pageIndicatorView);
+        int chrome = shownHeight(this.tabRow) + shownHeight(this.searchFieldRow);
         int pager = board - chrome;
         if (this.pagerContainer != null && pager > 0
                 && this.pagerContainer.getLayoutParams().height != pager) {
@@ -931,6 +932,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         int panelColor = modernBoards
                 ? KeyboardColorManager.INSTANCE.getBackgroundColor()
                 : KeyboardColorManager.INSTANCE.getKeyColor();
+        // The board itself, not only its rows: a shortfall must not show the light window through.
+        setBackgroundColor(panelColor);
         this.viewPager.setBackgroundColor(panelColor);
         this.deleteButton.setBackgroundColor(panelColor);
         KeyboardColorManager.INSTANCE.tint(this.deleteButton);
