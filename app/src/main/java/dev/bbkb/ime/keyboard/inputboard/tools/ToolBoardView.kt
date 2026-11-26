@@ -15,17 +15,25 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputConnection
+import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.BlackBerryIME
+import dev.bbkb.ime.core.layout.LetterLayoutRegistry
+import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils
 import dev.bbkb.ime.keyboard.KeyboardColorManager
+import dev.bbkb.ime.keyboard.inputboard.BoardQueryInput
 import dev.bbkb.ime.keyboard.inputboard.clipboard.TextEditingBar
+import dev.bbkb.ime.keyboard.slideboard.PhraseTemplates
 import dev.bbkb.ime.mlkit.HandwritingView
 import dev.bbkb.ime.mlkit.MlKitModels
+import java.util.Locale
 
 /** In-keyboard panel for text editing, translation, and handwriting. Colors follow the keyboard theme. */
 class ToolBoardView @JvmOverloads constructor(
@@ -46,8 +54,15 @@ class ToolBoardView @JvmOverloads constructor(
     private val inkHint = TextView(context)
     private var inkOptions = emptyList<String>()
     private val recognizeLater = Runnable { recognizeNow() }
-    private var source = MlKitModels.english()
-    private var target = MlKitModels.russian()
+    private val translatePrefs = PrefsManager.getPrefs(context)
+    private val restoredPair = translatePrefs.all["pref_translate_language_pair"] as? String
+    private val storedLanguages = restoredPair?.split(':')?.takeIf { codes ->
+        codes.size == 2 && codes[0] != codes[1] && codes.all { it in MlKitModels.translationLanguages() }
+    }
+    private var source = storedLanguages?.get(0) ?: MlKitModels.english()
+    private var target = storedLanguages?.get(1) ?: MlKitModels.russian()
+    private var manualPair = storedLanguages != null
+    private val recentLanguages = LinkedHashSet<String>()
     /** The phrase whose direction the user flipped. Other phrases are detected from their letters. */
     private var pinnedText: String? = null
     private var inkLanguage = "ru"
@@ -57,12 +72,19 @@ class ToolBoardView @JvmOverloads constructor(
     private var keepPair = false
     private var replacingSelection = false
     private var replaceBefore = 0
+    private var editorSelection: String? = null
+    private var editorSuffix: String? = null
+    private var editorRegion: Pair<Int, Int>? = null
     private var translateAction: Button? = null
     private var translationConnection: InputConnection? = null
     private var translateGeneration = 0
     private var inkGeneration = 0
     private var host: InputMethodService? = null
     private var editCaption: TextView? = null
+    private var editTransforms: LinearLayout? = null
+    private var editTransformActions: HorizontalScrollView? = null
+    private var editUndoButton: Button? = null
+    private var editUndo: EditUndo? = null
     private var editPreview: TextView? = null
     private var editSelect: Button? = null
     private var editDelete: Button? = null
@@ -125,8 +147,12 @@ class ToolBoardView @JvmOverloads constructor(
         stopEditRepeat()
         setInkChrome(false)
         host = null
+        editUndo = null
         pinnedText = null
         keepPair = false
+        editorSelection = null
+        editorSuffix = null
+        editorRegion = null
         dropTranslation()
         cancelRecognize()
         sourceLine.text = ""
@@ -140,7 +166,28 @@ class ToolBoardView @JvmOverloads constructor(
     private fun showEdit() {
         editSelecting = false
         editCaption = caption(R.string.text_edit_cursor)
-        addView(editCaption)
+        val titleRow = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
+        titleRow.addView(editCaption, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
+        (host as? BlackBerryIME)?.let { ime ->
+            val templates = inkButton(context.getString(R.string.phrase_templates_short), false) {
+                PhraseTemplates.show(ime)
+            }
+            titleRow.addView(templates, LayoutParams(LayoutParams.WRAP_CONTENT, dp(32)))
+            fun label() = context.getString(if (ime.isManualPrivateMode) {
+                R.string.manual_privacy_on
+            } else {
+                R.string.manual_privacy_off
+            })
+            val button = inkButton(label(), ime.isManualPrivateMode) {}
+            button.setOnClickListener {
+                ime.toggleManualPrivateMode()
+                button.text = label()
+                button.isSelected = ime.isManualPrivateMode
+                refreshEdit()
+            }
+            titleRow.addView(button, LayoutParams(LayoutParams.WRAP_CONTENT, dp(32)))
+        }
+        addView(titleRow)
         editPreview = TextView(context).apply {
             setTextColor(KeyboardColorManager.textColor)
             textSize = 14f
@@ -153,6 +200,7 @@ class ToolBoardView @JvmOverloads constructor(
         addView(editPreview, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
             topMargin = dp(4)
         })
+        addView(editTransformRow(), LayoutParams(LayoutParams.MATCH_PARENT, dp(36)))
         addView(editPad(), LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f).apply {
             topMargin = dp(2)
         })
@@ -266,11 +314,15 @@ class ToolBoardView @JvmOverloads constructor(
             preview.alpha = 0.7f
             preview.textSize = 16f
             paintEditActions(hasSelection = false, clip = null, live = false)
+            editTransforms?.visibility = GONE
             return
         }
         val before = connection.getTextBeforeCursor(200, 0)?.toString().orEmpty()
         val after = connection.getTextAfterCursor(200, 0)?.toString().orEmpty()
         val selected = connection.getSelectedText(0)?.toString().orEmpty()
+        editTransforms?.visibility = if (selected.isNotEmpty() || editUndo != null) VISIBLE else GONE
+        editTransformActions?.visibility = if (selected.isNotEmpty()) VISIBLE else GONE
+        editUndoButton?.visibility = if (editUndo != null) VISIBLE else GONE
         val clip = clipboardSnippet()
         when {
             before.isEmpty() && after.isEmpty() && selected.isEmpty() -> {
@@ -293,6 +345,69 @@ class ToolBoardView @JvmOverloads constructor(
             }
         }
         paintEditActions(selected.isNotEmpty(), clip, live = true)
+    }
+
+    private data class EditUndo(
+        val connection: InputConnection,
+        val original: String,
+        val replacement: String,
+        val positionAfterEdit: Int,
+    )
+
+    private fun editTransformRow(): View {
+        val locale = context.resources.configuration.locales[0]
+        val row = LinearLayout(context)
+        fun action(label: Int, apply: () -> Unit) {
+            row.addView(inkButton(context.getString(label), false, apply))
+        }
+        action(R.string.text_edit_uppercase) { transformSelection { it.uppercase(locale) } }
+        action(R.string.text_edit_lowercase) { transformSelection { it.lowercase(locale) } }
+        action(R.string.text_edit_quote) { transformSelection { "«$it»" } }
+        action(R.string.text_edit_parentheses) { transformSelection { "($it)" } }
+        action(R.string.text_edit_spacing) { transformSelection { it.replace(Regex("[ \\t]+"), " ") } }
+        action(R.string.text_edit_fix_layout) {
+            transformSelection { text -> WrongLayoutText.convert(LetterLayoutRegistry(context), text) ?: text }
+        }
+        val scroll = HorizontalScrollView(context).apply {
+            isHorizontalScrollBarEnabled = false
+            addView(row)
+        }
+        val undo = inkButton(context.getString(R.string.text_edit_undo), false) { undoTextChange() }
+        editTransformActions = scroll
+        editUndoButton = undo
+        return LinearLayout(context).apply {
+            addView(scroll, LayoutParams(0, LayoutParams.MATCH_PARENT, 1f))
+            addView(undo, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT))
+            editTransforms = this
+        }
+    }
+
+    private fun transformSelection(transform: (String) -> String) {
+        val connection = toolConnection() ?: return
+        val selected = connection.getSelectedText(0)?.toString()?.takeIf { it.isNotEmpty() } ?: return
+        val replacement = transform(selected)
+        if (replacement == selected) return
+        val region = selectionRegion(connection)
+        if (!connection.commitText(replacement, 1)) return
+        editUndo = region?.let { EditUndo(connection, selected, replacement, minOf(it.first, it.second) + replacement.length) }
+        refreshEdit()
+    }
+
+    private fun undoTextChange() {
+        val undo = editUndo ?: return
+        editUndo = null
+        val connection = toolConnection()
+        if (connection == null || connection !== undo.connection) {
+            refreshEdit()
+            return
+        }
+        val end = undo.positionAfterEdit
+        if (selectionRegion(connection) == (end to end) &&
+            connection.getTextBeforeCursor(undo.replacement.length, 0)?.toString() == undo.replacement &&
+            connection.setSelection(end - undo.replacement.length, end)) {
+            if (!connection.commitText(undo.original, 1)) connection.setSelection(end, end)
+        }
+        refreshEdit()
     }
 
     private fun cursorPreview(before: String, after: String): CharSequence {
@@ -331,6 +446,7 @@ class ToolBoardView @JvmOverloads constructor(
 
     /** The clipboard text a paste would insert, or null when nothing readable is there. */
     private fun clipboardSnippet(): String? {
+        if ((host as? BlackBerryIME)?.isManualPrivateMode == true) return null
         return try {
             val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return null
             val clip = manager.primaryClip ?: return null
@@ -496,13 +612,97 @@ class ToolBoardView @JvmOverloads constructor(
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        line.addView(languageSide(R.string.translate_from, languageName(source)), LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
+        line.addView(languageSide(R.string.translate_from, languageName(source)) {
+            showTranslationLanguages(pickingSource = true)
+        }, LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
         line.addView(inkButton(context.getString(R.string.translate_swap), false) { swapLanguages() }, LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, dp(48)).apply {
             marginStart = dp(6)
             marginEnd = dp(6)
         })
-        line.addView(languageSide(R.string.translate_to, languageName(target)), LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
+        line.addView(languageSide(R.string.translate_to, languageName(target)) {
+            showTranslationLanguages(pickingSource = false)
+        }, LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
         return line
+    }
+
+    private fun showTranslationLanguages(pickingSource: Boolean) {
+        dropTranslation()
+        removeAllViews()
+        val title = if (pickingSource) R.string.translate_from else R.string.translate_to
+        addView(inkButton(context.getString(title) + "  ‹", false) { show(Mode.TRANSLATE) })
+        val buttons = mutableMapOf<String, Button>()
+        addView(BoardQueryInput(context, context.getString(R.string.translate_search_languages)) { query ->
+            val value = query.trim()
+            for ((language, button) in buttons) {
+                button.visibility = if (language.contains(value, ignoreCase = true) ||
+                    languageName(language).contains(value, ignoreCase = true) ||
+                    Locale.forLanguageTag(language).getDisplayLanguage(Locale.ENGLISH).contains(value, ignoreCase = true)) {
+                    VISIBLE
+                } else {
+                    GONE
+                }
+            }
+        })
+        val choices = LinearLayout(context).apply { orientation = VERTICAL }
+        val scroll = ScrollView(context).apply { addView(choices) }
+        addView(scroll, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
+        if (pickingSource) {
+            choices.addView(inkButton(context.getString(R.string.translate_automatic), false) {
+                manualPair = false
+                translatePrefs.edit().remove("pref_translate_language_pair").apply()
+                pinnedText = null
+                show(Mode.TRANSLATE)
+            })
+        }
+        val unavailable = if (pickingSource) target else source
+        val current = if (pickingSource) source else target
+        val languages = (recentLanguages.toList().asReversed() +
+            MlKitModels.translationLanguages().sortedBy(::languageName)).distinct()
+        for (language in languages) {
+            val button = inkButton(languageName(language), language == current) {
+                if (pickingSource) source = language else target = language
+                recentLanguages.remove(language)
+                recentLanguages.add(language)
+                manualPair = true
+                rememberManualPair()
+                pinnedText = null
+                show(Mode.TRANSLATE)
+            }
+            button.isEnabled = language != unavailable
+            button.gravity = Gravity.CENTER_VERTICAL or Gravity.START
+            choices.addView(button, LayoutParams(LayoutParams.MATCH_PARENT, dp(42)))
+            buttons[language] = button
+        }
+        MlKitModels.downloadedTranslationLanguages { downloaded ->
+            if (!isUp() || scroll.parent !== this) return@downloadedTranslationLanguages
+            for (language in downloaded) {
+                val button = buttons[language] ?: continue
+                button.text = context.getString(R.string.translate_downloaded_language, languageName(language))
+            }
+            if (current in downloaded) {
+                choices.addView(inkButton(context.getString(R.string.translate_remove_download), false) {
+                    val ime = host as? BlackBerryIME ?: return@inkButton
+                    val dialog = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(context)
+                        .setTitle(R.string.translate_remove_download)
+                        .setMessage(languageName(current))
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            MlKitModels.deleteTranslate(current) { ok, _ ->
+                                if (isUp() && scroll.parent === this) {
+                                    if (ok) showTranslationLanguages(pickingSource)
+                                    else android.widget.Toast.makeText(context, R.string.translate_failed, android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                        .create()
+                    ime.showAlertDialog(dialog)
+                }, 0)
+            }
+        }
+    }
+
+    private fun rememberManualPair() {
+        if (manualPair) translatePrefs.edit().putString("pref_translate_language_pair", "$source:$target").apply()
     }
 
     /** Label and value share one card, so a short keyboard still fits the result and the button. */
@@ -527,12 +727,16 @@ class ToolBoardView @JvmOverloads constructor(
         }
     }
 
-    private fun languageSide(captionRes: Int, name: String): View {
+    private fun languageSide(captionRes: Int, name: String, choose: () -> Unit): View {
         return LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             background = cardBackground()
             setPadding(dp(8), dp(3), dp(8), dp(3))
+            minimumHeight = dp(40)
+            isFocusable = true
+            contentDescription = "${context.getString(captionRes)}: $name"
+            setOnClickListener { choose() }
             addView(TextView(context).apply {
                 text = context.getString(captionRes)
                 setTextColor(KeyboardColorManager.textColor)
@@ -563,7 +767,8 @@ class ToolBoardView @JvmOverloads constructor(
     private fun languageName(lang: String): String = when (lang) {
         MlKitModels.russian() -> context.getString(R.string.translate_lang_ru)
         MlKitModels.english() -> context.getString(R.string.translate_lang_en)
-        else -> lang
+        else -> Locale.forLanguageTag(lang).getDisplayLanguage(context.resources.configuration.locales[0])
+            .ifBlank { lang }
     }
 
     /** Key color when it differs from the keyboard; otherwise a light lift so the card is visible. */
@@ -707,6 +912,7 @@ class ToolBoardView @JvmOverloads constructor(
             val exchanged = translations.exchange(source, target, sourceText, translationResult)
             source = exchanged.from
             target = exchanged.to
+            rememberManualPair()
             sourceText = exchanged.source
             translationResult = exchanged.translation
             pinnedText = sourceText
@@ -717,6 +923,7 @@ class ToolBoardView @JvmOverloads constructor(
         val previous = source
         source = target
         target = previous
+        rememberManualPair()
         pinnedText = sourceText.ifEmpty { null }
         dropTranslation()
         keepPair = sourceText.isNotEmpty()
@@ -777,6 +984,7 @@ class ToolBoardView @JvmOverloads constructor(
      * Digits and emoji leave the current pair alone.
      */
     private fun detectDirection(text: String) {
+        if (manualPair) return
         val lang = scriptLanguage(text) ?: return
         source = lang
         target = if (lang == MlKitModels.russian()) MlKitModels.english() else MlKitModels.russian()
@@ -802,13 +1010,18 @@ class ToolBoardView @JvmOverloads constructor(
 
     /** The selection, or the sentence before the cursor. [remember] records what insert replaces. */
     private fun currentSourceText(connection: InputConnection, remember: Boolean): String {
-        val selected = connection.getSelectedText(0)?.toString()?.trim().orEmpty()
-        if (selected.isNotEmpty()) {
+        val selected = connection.getSelectedText(0)?.toString()?.takeIf { it.isNotEmpty() }
+        if (remember) {
+            editorSelection = selected
+            editorSuffix = null
+            editorRegion = selectionRegion(connection)
+        }
+        if (selected != null) {
             if (remember) {
                 replacingSelection = true
                 replaceBefore = 0
             }
-            return selected.take(500)
+            return selected.takeIf { it.length <= 500 }?.trim().orEmpty()
         }
         if (remember) replacingSelection = false
         val raw = connection.getTextBeforeCursor(400, 0)?.toString().orEmpty()
@@ -819,12 +1032,20 @@ class ToolBoardView @JvmOverloads constructor(
         }
         val cut = trimmed.lastIndexOfAny(charArrayOf('.', '!', '?', '\n'))
         val tail = if (cut in 0 until trimmed.length - 1) trimmed.substring(cut + 1).trim() else trimmed
-        val sentence = tail.ifEmpty { trimmed }.take(240)
+        val sentence = tail.ifEmpty { trimmed }
         if (remember) {
             val index = raw.lastIndexOf(sentence)
             replaceBefore = if (index >= 0) raw.length - index else sentence.length
+            editorSuffix = raw.takeLast(replaceBefore)
         }
         return sentence
+    }
+
+    private fun selectionRegion(connection: InputConnection): Pair<Int, Int>? {
+        val extracted = connection.getExtractedText(ExtractedTextRequest(), 0) ?: return null
+        if (extracted.selectionStart < 0 || extracted.selectionEnd < 0) return null
+        return extracted.startOffset + extracted.selectionStart to
+            extracted.startOffset + extracted.selectionEnd
     }
 
     private fun runTranslation(connection: InputConnection) {
@@ -896,10 +1117,29 @@ class ToolBoardView @JvmOverloads constructor(
             setTranslateAction(context.getString(R.string.translate_no_field), true) { readFieldAndTranslate() }
             return
         }
-        if (!replacingSelection && replaceBefore > 0) {
-            connection.deleteSurroundingText(replaceBefore, 0)
+        val selected = connection.getSelectedText(0)?.toString()?.takeIf { it.isNotEmpty() }
+        val suffix = editorSuffix
+        if (selected != editorSelection ||
+            (editorRegion != null && editorRegion != selectionRegion(connection)) ||
+            (suffix != null && connection.getTextBeforeCursor(suffix.length, 0)?.toString() != suffix)) {
+            dropTranslation()
+            readFieldAndTranslate()
+            return
         }
-        connection.commitText(text, 1)
+        connection.beginBatchEdit()
+        try {
+            val position = editorRegion?.first
+            if (!replacingSelection && replaceBefore > 0) {
+                if (position == null || position < replaceBefore ||
+                    !connection.setSelection(position - replaceBefore, position)) return
+            }
+            if (!connection.commitText(text, 1)) {
+                if (!replacingSelection && position != null) connection.setSelection(position, position)
+                return
+            }
+        } finally {
+            connection.endBatchEdit()
+        }
         val manager = dev.bbkb.ime.keyboard.KeyboardSwitcher.getInstance().unifiedInputBoardManager
         if (manager != null) manager.closeBoard(ToolBoardController.KEY_TRANSLATE) else hideBoard()
     }

@@ -59,6 +59,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private SuggestedWords currentSuggestions;
     /** The words as given to {@link #setSuggestions}, emoji entry included. */
     private SuggestedWords currentWords;
+    private SuggestedWords drawnWords;
     
     private Listener listener;
     private FlickSuggestionAnimationView suggestionAnimationView;
@@ -420,6 +421,31 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         return currentWords;
     }
 
+    @Override
+    protected void dispatchDraw(android.graphics.Canvas canvas) {
+        super.dispatchDraw(canvas);
+        drawnWords = null;
+        if (currentWords != null && currentWords.mWillAutoCorrect && showsCorrectionSlot()) {
+            drawnWords = currentWords;
+        }
+    }
+
+    private boolean showsCorrectionSlot() {
+        return currentMode == SuggestionMode.LATIN && recyclerView.isShown()
+                && !recyclerView.hasPendingAdapterUpdates()
+                && recyclerView.findViewHolderForAdapterPosition(1) != null;
+    }
+
+    public boolean hasDrawnAutoCorrection(SuggestedWords words) {
+        return words == currentWords && words == drawnWords && showsCorrectionSlot();
+    }
+
+    public void clearObsoleteSuggestions(SuggestedWords words) {
+        if (currentMode == SuggestionMode.LATIN && currentWords == words) {
+            setSuggestions(SuggestedWords.EMPTY);
+        }
+    }
+
     public void flashCommittedSlot(int slot) {
         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(slot);
         if (!(holder instanceof UnifiedSuggestionAdapter.WordViewHolder)) return;
@@ -470,6 +496,9 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         }
         emojiSuggestion = emoji;
         if (unchanged) {
+            if (drawnWords != null && rendersSame(drawnWords, words)) {
+                drawnWords = words;
+            }
             adapter.replaceSuggestionsWithoutRebind(currentSuggestions);
             return;
         }

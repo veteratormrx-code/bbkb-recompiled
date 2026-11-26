@@ -28,9 +28,16 @@ class EmojiRussianSearchTest {
 
     @Test
     fun aFullyQualifiedEmojiMatchesItsUnqualifiedRussianRow() {
-        assertEquals(listOf("👍️"), provider.searchEmojis("лайк").map { it.emoji })
-        assertEquals(listOf("👍️"), provider.searchEmojis("большой палец вверх").map { it.emoji })
+        assertEquals("👍️", provider.searchEmojis("лайк").first().emoji)
+        assertEquals("👍️", provider.searchEmojis("большой палец вверх").first().emoji)
+        assertTrue(provider.searchEmojis("большой палец вверх").any { it.emoji == "👍🏽" })
         assertEquals("👍️", provider.topHit("лайк", EmojiSearchScoring.STRIP_MIN_RELEVANCE)?.emoji)
+    }
+
+    @Test
+    fun directionAndGenderVariantsAreReachableFromTheBaseAndSearch() {
+        assertTrue(provider.getPopupVariants("🏃").contains("🏃‍♀️‍➡️"))
+        assertTrue(provider.searchEmojis("woman running facing right").any { it.emoji == "🏃‍♀️‍➡️" })
     }
 
     @Test

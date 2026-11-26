@@ -41,6 +41,7 @@ import dev.bbkb.ime.core.textinput.controller.CursorController;
 import dev.bbkb.ime.core.textinput.controller.PunctuationController;
 import dev.bbkb.ime.core.textinput.controller.SmartPunctuationAnalyzer;
 import dev.bbkb.ime.core.engine.NuanceSDKManager;
+import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge;
 import dev.bbkb.ime.core.suggestion.PrevWordsInfo;
 import dev.bbkb.ime.core.textinput.connection.RichInputConnection;
 import dev.bbkb.ime.core.locale.SubtypeManager;
@@ -61,6 +62,7 @@ import dev.bbkb.ime.core.shared.Logger;
 import dev.bbkb.ime.core.subtypeswitcher.InputTypeUtils;
 import dev.bbkb.ime.core.shared.EmojiTextAnalyzer;
 import dev.bbkb.ime.core.shared.ScriptUtils;
+import dev.bbkb.ime.personaldictionary.DictionaryManager;
 import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.ProximityGrid;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
@@ -1225,31 +1227,17 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             return false;
         }
         final SettingsValues c0804d = inputEventContext.settingsValues;
-        flushPendingSuggestions(c0804d, uiUpdateHandler);
         String separatorPayload = suppressSpace ? "" : new String(Character.toChars(codePoint));
         if (isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese()) {
             handleCjkAutoCorrect(c0804d, inputEventContext, uiUpdateHandler, separatorPayload);
             return true;
         }
-        int iM4368u = this.mComposingTracker.getAutoCorrectionScore();
-        String acWord = this.mComposingTracker.getAutoCorrection();
-        if (BuildConfig.DEBUG) {
-        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: acWord='" + acWord + "' acScore=" + iM4368u
-            + " willTryAC=" + CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)
-            + " src=" + inputEventContext.getInputSource());
-        }
-        // Kind 7 (substitution/macro) commits regardless of the auto-correct setting, but not in
-        // a field that wants no suggestions.
-        if (CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)) {
-            autoCorrectAndCommit(c0804d, separatorPayload, uiUpdateHandler, inputEventContext.getInputSource());
+        String correction = resolveAutoCorrection(c0804d, uiUpdateHandler);
+        if (correction != null) {
+            mCommitController.commitResolvedCorrection(c0804d, correction, separatorPayload,
+                    uiUpdateHandler, inputEventContext.getInputSource(), false);
             inputEventContext.setAutoCorrectApplied();
         } else {
-            if (BuildConfig.DEBUG) {
-            android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: AC REJECTED reason=" +
-                (acWord == null ? "acWord_null"
-                    : iM4368u == CommitController.KIND_SUBSTITUTION ? "macro_in_no_suggestions_field"
-                    : iM4368u == 0 ? "kind_zero" : "ac_disabled"));
-            }
             commitTypedWord(c0804d, separatorPayload, inputEventContext.getInputSource());
         }
         return true;
@@ -1705,12 +1693,14 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         SettingsValues settingsValues = SettingsManager.getInstance().getSettingsValues();
         boolean z = settingsValues.isDynamicLearningEnabled;
         EditorInfo editorInfoM4500g = getCurrentEditorInfo();
-        if (this.mLastDynamicLearningEnabled == z && (editorInfoM4500g == null
+        boolean manualPrivacy = this.mIme.isManualPrivateMode();
+        if (this.mLastManualPrivacy == manualPrivacy && this.mLastDynamicLearningEnabled == z && (editorInfoM4500g == null
                 || (editorInfoM4500g.inputType == this.mLastInputType && editorInfoM4500g.imeOptions == this.mLastImeOptions))) {
             return;
         }
         DynamicLearningManager learning = this.mIme.getDynamicLearningManager();
-        boolean noPersonalizedLearning = EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfoM4500g);
+        boolean noPersonalizedLearning = manualPrivacy
+                || EditorCapabilities.hasNoPersonalizedLearningFlag(editorInfoM4500g);
         learning.setLearningPreferenceEnabled(z);
         learning.setNoPersonalizedLearning(noPersonalizedLearning);
         ClipboardController clipboard = this.mIme.getClipboardController();
@@ -1720,14 +1710,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (!z) {
             learning.setDynamicLearningEnabled(false);
         } else {
-            boolean zM4428f = editorInfoM4500g != null ? isLearningAllowed(editorInfoM4500g) : false;
+            boolean zM4428f = !manualPrivacy && editorInfoM4500g != null && isLearningAllowed(editorInfoM4500g);
             learning.setDynamicLearningEnabled(zM4428f);
         }
         this.mLastDynamicLearningEnabled = z;
+        this.mLastManualPrivacy = manualPrivacy;
         if (editorInfoM4500g != null) {
             this.mLastInputType = editorInfoM4500g.inputType;
             this.mLastImeOptions = editorInfoM4500g.imeOptions;
         }
+    }
+
+    private boolean mLastManualPrivacy;
+
+    public void onManualPrivacyChanged() {
+        this.mSessionGeneration++;
+        this.mIme.getUiUpdateHandler().cancelPendingSuggestionDelivery();
+        updateDynamicLearningState();
     }
 
     /**
@@ -1933,6 +1932,47 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      */
     void flushPendingSuggestions(SettingsValues settingsValues, UIUpdateHandler uiUpdateHandler) {
         mSuggestionCoordinator.flushPendingSuggestions(settingsValues, uiUpdateHandler);
+    }
+
+    /** Only a displayed spelling correction may change a non-CJK composing word. */
+    String resolveAutoCorrection(SettingsValues settings, UIUpdateHandler handler) {
+        if (!settings.editorCapabilities.shouldShowSuggestions) return null;
+        final boolean cjk = isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese();
+        if (cjk) flushPendingSuggestions(settings, handler);
+        if (!mComposingTracker.isComposing()) return null;
+        final String candidate = mComposingTracker.getAutoCorrection();
+        final int kind = mComposingTracker.getAutoCorrectionScore();
+        if (!cjk && kind != CommitController.KIND_SUBSTITUTION
+                && mDictionaryLoader.isDictionaryReady()
+                && mDictionaryLoader.getMainDictionary() instanceof NuanceSDKDictionaryBridge) {
+            String expansion = resolveMacro();
+            if (expansion != null) return expansion;
+        }
+        if (!CommitController.shouldCommitAutoCorrectCandidate(candidate, kind,
+                settings.isAutoCorrectionEnabledPerUserSettings, true)
+                || !mComposingTracker.hasAutoCorrectionForComposingText()) return null;
+        if (kind == CommitController.KIND_SUBSTITUTION || cjk) return candidate;
+        final SuggestedWords displayedWords = mCurrentSuggestions;
+        return displayedWords.mRequestEditCount == mComposingTracker.getEditCount()
+                && mIme.hasDrawnAutoCorrection(displayedWords, candidate) ? candidate : null;
+    }
+
+    /** A saved macro uses the same in-memory substitution table as the suggestion worker. */
+    private String resolveMacro() {
+        String typed = mComposingTracker.getComposingText();
+        if (TextUtils.isEmpty(typed)) return null;
+        DictionaryManager.CapsMode caps = DictionaryManager.CapsMode.NO_CAPS;
+        if (mComposingTracker.isAllCaps()) {
+            caps = DictionaryManager.CapsMode.ALL_CAPS;
+        } else if (mComposingTracker.shouldCapitalizeFirstLetter()) {
+            caps = DictionaryManager.CapsMode.FIRST_LETTER_CAPS;
+        }
+        try {
+            String expansion = NuanceSDKDictionaryBridge.resolveWordSubstitution(typed, caps, currentLocale());
+            return TextUtils.equals(typed, expansion) ? null : expansion;
+        } catch (SecurityException ignored) {
+            return null;
+        }
     }
 
     /**

@@ -44,7 +44,7 @@ class EmojiCategoryTabsTest {
     fun setUp() {
         EmojiTestEnv.install()
         EmojiTestEnv.seedStandard()
-        EmojiTestEnv.prefs().edit().clear().commit()
+        EmojiTestEnv.prefs().edit().clear().putBoolean(dev.bbkb.ime.keyboard.NumberRow.PREF, false).commit()
         activity = Robolectric.buildActivity(Activity::class.java).setup().get()
     }
 

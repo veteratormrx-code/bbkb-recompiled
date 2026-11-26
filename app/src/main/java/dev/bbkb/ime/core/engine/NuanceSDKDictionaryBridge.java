@@ -562,7 +562,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         boolean pduLoaded = DictionaryManager.getInstance().isLoaded();
         if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: typed='" + strM4360m + "' caps=" + bVar + " pduLoaded=" + pduLoaded + " suggestionsSize=" + arrayList.size());
         try {
-            String strM4863a = getWordSubstitution(strM4360m, bVar, suggestionResult.locale);
+            String strM4863a = resolveWordSubstitution(strM4360m, bVar, suggestionResult.locale);
             if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: substitution='" + strM4863a + "' changed=" + (!strM4863a.equals(strM4360m)));
             if (!strM4863a.equals(strM4360m)) {
                 Logger.debug("NuanceDictionary", "Adding substitution: " + strM4863a);
@@ -591,7 +591,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
      * @param input the typed word
      * @param capsMode its caps mode
      */
-    private String getWordSubstitution(String input, DictionaryManager.CapsMode capsMode, Locale locale) {
+    public static String resolveWordSubstitution(String input, DictionaryManager.CapsMode capsMode, Locale locale) {
         DictionaryManager c0624aM3831b = DictionaryManager.getInstance();
         String strM3845a = c0624aM3831b.getWordSubstitutionForInput(input, capsMode, locale);
         if (input.length() <= 0 || !isPosixPunct(input.charAt(input.length() - 1))) {

@@ -48,7 +48,7 @@ class EmojibaseTopHitIndexTest {
     private fun bruteSearch(query: String): List<EmojiData> {
         val q = query.trim().lowercase()
         if (q.isEmpty()) return emptyList()
-        return provider.getAllEmojis()
+        return provider.searchableBoardEmojis()
             .map { it to provider.indexedScore(it, q) }
             .filter { it.second > 0 }
             .sortedByDescending { it.second }

@@ -26,6 +26,7 @@ import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.stringPref
 import dev.bbkb.ime.R
+import dev.bbkb.ime.core.ime.InputView
 
 private const val THEME_STYLE = "pref_keyboard_theme_style"
 
@@ -67,6 +68,20 @@ fun AppearanceLayoutScreen(
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_use_system_colors"),
             enabled = { it.hasColorScheme() },
             visible = { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S },
+        ),
+        Choice(
+            store = stringPref(InputView.ONE_HAND_PREF, "off"),
+            title = R.string.one_hand_mode,
+            options = { env ->
+                listOf(
+                    ChoiceOption("off", env.getString(R.string.one_hand_full)),
+                    ChoiceOption("left", env.getString(R.string.one_hand_left)),
+                    ChoiceOption("right", env.getString(R.string.one_hand_right)),
+                )
+            },
+            fallbackIndex = 0,
+            icon = drawableIcon(R.drawable.ic_settings_custom_symbols),
+            modifier = Modifier.settingsSearchAnchor("pref_one_hand"),
         ),
         Category(R.string.settings_category_symbols),
         // The one grid picker in settings, so a hand-written block.

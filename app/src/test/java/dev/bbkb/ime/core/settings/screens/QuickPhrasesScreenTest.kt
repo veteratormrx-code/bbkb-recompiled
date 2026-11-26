@@ -96,7 +96,7 @@ class QuickPhrasesScreenTest {
                 "phrase four", "Quick phrase 4",
                 "phrase five", "Quick phrase 5",
             ),
-            renderedTopToBottom()
+            renderedTopToBottom().take(11)
         )
     }
 
@@ -114,7 +114,7 @@ class QuickPhrasesScreenTest {
                 "Thank you", "Quick phrase 4",
                 "I'm at work", "Quick phrase 5",
             ),
-            renderedTopToBottom()
+            renderedTopToBottom().take(11)
         )
     }
 
@@ -133,8 +133,15 @@ class QuickPhrasesScreenTest {
                 "Thank you", "Quick phrase 4",
                 "I'm at work", "Quick phrase 5",
             ),
-            renderedTopToBottom()
+            renderedTopToBottom().take(11)
         )
+    }
+
+    @Test
+    fun templateControlsFollowTheExistingPhrases() {
+        render()
+        assertEquals(listOf("Text templates", "Group", "Template text, for example Hi, {name}"),
+            renderedTopToBottom().drop(11).take(3))
     }
 
     @Test

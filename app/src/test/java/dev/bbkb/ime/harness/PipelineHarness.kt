@@ -35,6 +35,16 @@ class PipelineHarness {
 
     val ime: BlackBerryIME = mock(BlackBerryIME::class.java, ContextDelegatingAnswer())
     val inputLogic: InputLogic
+
+    /** Simulates a frame that the mock IME drew before the separator was entered. */
+    fun showCorrection(word: String, kind: Int = 2) {
+        val tracker = inputLogic.mComposingTracker
+        tracker.setAutoCorrection(word, kind)
+        val words = SuggestedWords(arrayListOf(), false, true, 0)
+        words.mRequestEditCount = tracker.editCount
+        inputLogic.mCurrentSuggestions = words
+        `when`(ime.hasDrawnAutoCorrection(words, word)).thenReturn(true)
+    }
     val settings: SettingsValues
 
     /**

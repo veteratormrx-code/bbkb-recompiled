@@ -46,12 +46,18 @@ public final class SuggestionUpdater {
         if (LocaleUtils.isCurrentSubtypeJapanese()) {
             mIme.uiUpdateHandler.postUpdateJapaneseSuggestions(reason.legacyCode);
         } else {
+            if (reason == Reason.AFTER_KEYSTROKE || reason == Reason.AFTER_CURSOR_MOVE) {
+                mIme.invalidateObsoleteCorrections();
+            }
             mIme.uiUpdateHandler.postUpdateSuggestions(reason.legacyCode);
         }
     }
 
     /** Delayed update on the standard message regardless of locale (pick, recorrection, voice, etc.). */
     public void requestDelayed(Reason reason) {
+        if (reason == Reason.AFTER_KEYSTROKE || reason == Reason.AFTER_CURSOR_MOVE) {
+            mIme.invalidateObsoleteCorrections();
+        }
         mIme.uiUpdateHandler.postUpdateSuggestions(reason.legacyCode);
     }
 

@@ -103,7 +103,7 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
     }
 
     public void showClipboard() {
-        if (!hasView() || this.mClipboardView.isVisible()) {
+        if (!hasView() || this.mClipboardView.isVisible() || (ime != null && ime.isManualPrivateMode())) {
             return;
         }
         Logger.debug(TAG, "Showing Clipboard");
@@ -157,6 +157,7 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
     @Override
     public boolean isEnabled() {
         InputMethodHelper inputMethodHelper = InputMethodHelper.getInstance();
-        return inputMethodHelper != null && inputMethodHelper.isDeviceUnlocked();
+        return inputMethodHelper != null && inputMethodHelper.isDeviceUnlocked()
+                && (ime == null || !ime.isManualPrivateMode());
     }
 }

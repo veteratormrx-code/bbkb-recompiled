@@ -49,8 +49,7 @@ class SuggestionEngineTypedWordGuardTest {
         `when`(loader.getMainDictionary()).thenReturn(bridge)
         `when`(bridge.shouldAutoCorrect(any(), any(), any())).thenReturn(false)
         engine = SuggestionEngine(loader)
-        // "Modest" correction with the settings' completion threshold: completions of words of four
-        // or more letters may commit on space.
+        // Use the completion threshold that previously allowed long prefixes to commit.
         engine.setAutoCorrectMode(0)
         engine.setAutoCorrectThreshold(3)
         TypedWordGuard.setFrequencyForTest { mapOf("well" to 58, "we'll" to 54, "wed" to 31, "we'd" to 55)[it] ?: 0 }
@@ -123,6 +122,15 @@ class SuggestionEngineTypedWordGuardTest {
     }
 
     @Test
+    fun aSingleObviousCorrectionMovesAboveUnrelatedVariants() {
+        engineReturns("teh" to KIND_TYPED, "Tehran" to KIND_COMPLETION, "the" to KIND_CORRECTION)
+
+        val words = run("teh")
+        assertTrue(words.mWillAutoCorrect)
+        org.junit.Assert.assertEquals("the", words.getWord(1))
+    }
+
+    @Test
     fun aDictionaryWord_stillTakesItsDiacritics() {
         dictionaryKnows("cafe")
         engineReturns("cafe" to KIND_TYPED, "café" to KIND_CORRECTION)
@@ -155,11 +163,28 @@ class SuggestionEngineTypedWordGuardTest {
     }
 
     @Test
-    fun aPrefixThatIsNotAWord_isStillCompleted() {
-        // The control for the test above: the completion gate itself is untouched.
+    fun aPrefixThatIsNotAWord_staysTypedOnSpace() {
         engineReturns("tomorr" to KIND_TYPED, "tomorrow" to KIND_COMPLETION)
 
-        assertTrue(run("tomorr").mWillAutoCorrect)
+        val words = run("tomorr")
+        assertFalse(words.mWillAutoCorrect)
+        assertTrue((0 until words.size()).any { words.getWord(it) == "tomorrow" })
+    }
+
+    @Test
+    fun unrelatedEngineCorrectionRemainsSelectable() {
+        engineReturns("Gradle" to KIND_TYPED, "Grade" to KIND_CORRECTION)
+
+        val words = run("Gradle")
+        assertFalse(words.mWillAutoCorrect)
+        assertTrue((0 until words.size()).any { words.getWord(it) == "Grade" })
+    }
+
+    @Test
+    fun aSingleLetterIsNotChangedToAnotherLetter() {
+        engineReturns("b" to KIND_TYPED, "a" to KIND_CORRECTION)
+
+        assertFalse(run("b").mWillAutoCorrect)
     }
 
     @Test

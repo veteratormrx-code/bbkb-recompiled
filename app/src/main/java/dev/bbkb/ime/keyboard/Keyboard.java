@@ -54,6 +54,7 @@ public class Keyboard {
     public final int mMostCommonKeyWidth;
 
     public final int mMoreKeysTemplate;
+    public final int mPredictionLadHeight;
 
     public final int mMaxMoreKeysKeyboardColumn;
 
@@ -84,6 +85,7 @@ public class Keyboard {
         this.mMostCommonKeyHeight = keyboardParams.mMostCommonKeyHeight;
         this.mMostCommonKeyWidth = keyboardParams.mMostCommonKeyWidth;
         this.mMoreKeysTemplate = keyboardParams.mMoreKeysTemplate;
+        this.mPredictionLadHeight = keyboardParams.mPredictionLadHeight;
         this.mMaxMoreKeysKeyboardColumn = keyboardParams.mMaxMoreKeysKeyboardColumn;
         this.mMoreKeySpec = keyboardParams.mMoreKeySpec;
         this.mTopPadding = keyboardParams.mTopPadding;
@@ -114,6 +116,7 @@ public class Keyboard {
         this.mMostCommonKeyHeight = keyboard.mMostCommonKeyHeight;
         this.mMostCommonKeyWidth = keyboard.mMostCommonKeyWidth;
         this.mMoreKeysTemplate = keyboard.mMoreKeysTemplate;
+        this.mPredictionLadHeight = keyboard.mPredictionLadHeight;
         this.mMaxMoreKeysKeyboardColumn = keyboard.mMaxMoreKeysKeyboardColumn;
         this.mMoreKeySpec = keyboard.mMoreKeySpec;
         this.mTopPadding = keyboard.mTopPadding;

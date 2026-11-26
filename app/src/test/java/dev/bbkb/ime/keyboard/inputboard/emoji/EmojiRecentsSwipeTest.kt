@@ -48,7 +48,7 @@ class EmojiRecentsSwipeTest {
                 EmojiCategory.ANIMALS_NATURE to (0 until 3).map { EmojiTestEnv.emoji("a$it", 3, "cat $it") },
             )
         )
-        EmojiTestEnv.prefs().edit().clear().commit()
+        EmojiTestEnv.prefs().edit().clear().putBoolean(dev.bbkb.ime.keyboard.NumberRow.PREF, false).commit()
         EmojiToneMemory.clear(EmojiTestEnv.prefs())
         EmojiTestEnv.prefs().edit().putString(RECENTS_KEY, EmojiTestEnv.padded("a0", "s3")).commit()
         activity = Robolectric.buildActivity(Activity::class.java).setup().get()

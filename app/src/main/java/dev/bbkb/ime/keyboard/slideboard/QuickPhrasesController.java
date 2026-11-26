@@ -57,9 +57,16 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         this.ime.getInputLogic().pasteText(charSequence);
     }
 
+    @Override
+    public void onTemplateLibrarySelected() {
+        PhraseTemplates.show(ime);
+    }
+
     /** @param settingsValues the settings holding the five phrases */
     private List<QuickPhrasesAdapter.QuickPhrase> buildPhrasesList(SettingsValues settingsValues) {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<QuickPhrasesAdapter.QuickPhrase> arrayList = new ArrayList<>();
+        arrayList.add(new QuickPhrasesAdapter.QuickPhrase(
+                ime.getString(dev.bbkb.ime.R.string.phrase_templates_title), true));
         addPhrase(arrayList, settingsValues.quickPhrase1);
         addPhrase(arrayList, settingsValues.quickPhrase2);
         addPhrase(arrayList, settingsValues.quickPhrase3);

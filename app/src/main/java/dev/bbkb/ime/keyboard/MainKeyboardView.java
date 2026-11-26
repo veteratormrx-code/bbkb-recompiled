@@ -345,6 +345,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     @Override // dev.bbkb.ime.keyboard.KeyboardView
     public void setKeyboard(Keyboard keyboard) {
+        mDrawnAutoCorrectionText = "";
         this.mKeyTimerHandler.cancelAllLongPressTimers();
         super.setKeyboard(keyboard);
         this.mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), (-getPaddingTop()) + getVerticalCorrection());
@@ -890,8 +891,16 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
             return;
         }
         this.mAutoCorrectionText = stripped;
+        this.mDrawnAutoCorrectionText = "";
         // Per-tap content: only the spacebar's layer is re-recorded (KeyboardView.invalidateKeyState).
         invalidateKeyState(this.mSpaceKey);
+    }
+
+    private String mDrawnAutoCorrectionText = "";
+
+    public boolean hasDrawnAutoCorrection(String word) {
+        return isShown() && !mNeedsToDimEntireKeyboard && !mDrawnAutoCorrectionText.isEmpty()
+                && mDrawnAutoCorrectionText.equals(PERCENT_B_MARKER.matcher(word).replaceAll(""));
     }
 
     /** @param dim true to dim */
@@ -956,6 +965,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
             if (this.mAutoCorrectionText.length() > 0 && !isDrawingRestingKeys()) {
                 spacebarAutoCorrectionDrawn = true;
                 drawAutoCorrectionOnSpacebar(key, canvas, paint);
+                this.mDrawnAutoCorrectionText = this.mAutoCorrectionText;
             }
             autoCorrectionDrawn = spacebarAutoCorrectionDrawn;
         } else {

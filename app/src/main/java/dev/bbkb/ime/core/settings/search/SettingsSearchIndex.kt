@@ -213,6 +213,7 @@ object SettingsSearchIndex {
 
         // Personalization: theme & height (on the hub)
         SearchableSetting(R.string.settings_keyboard_theme_title, "theme classic modern material bb10 blackberry style", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_style"),
+        SearchableSetting(R.string.one_hand_mode, "one hand compact left right width", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_one_hand"),
         SearchableSetting(R.string.settings_color_scheme_title, "color scheme dark light auto night", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_theme_mode"),
         SearchableSetting(R.string.settings_use_system_colors_title, "dynamic color system colors dynamic material you wallpaper", SettingsRoute.AppearanceLayout.route, APPEARANCE, "pref_keyboard_use_system_colors", DeviceRequirement.DYNAMIC_COLOR),
         SearchableSetting(R.string.settings_keyboard_height_title, "keyboard size height tall", SettingsRoute.SizeLayout.route, APPEARANCE, "pref_keyboard_height_mode"),
@@ -247,6 +248,8 @@ object SettingsSearchIndex {
 
         // Suggestion & correction: Suggestions
         SearchableSetting(R.string.settings_pred_show_predictions_title, "prediction suggestion strip", SettingsRoute.Suggestion.route, SUGGESTION, "show_predictions"),
+        SearchableSetting(R.string.bilingual_ru_en, "russian english bilingual mixed language", SettingsRoute.Suggestion.route, SUGGESTION, "pref_bilingual_ru_en"),
+        SearchableSetting(R.string.space_prediction_lad, "spacebar suggestions flick tap", SettingsRoute.Suggestion.route, SUGGESTION, "pref_space_prediction_lad"),
         SearchableSetting(R.string.settings_pred_on_key_title, "on key prediction", SettingsRoute.Suggestion.route, SUGGESTION, "on_key_predictions"),
         SearchableSetting(R.string.settings_pred_emoji_title, "emoji prediction suggestion", SettingsRoute.Suggestion.route, SUGGESTION, "emoji_predictions"),
         SearchableSetting(R.string.settings_pred_emoji_after_space_title, "emoji after space keep suggestion finished word", SettingsRoute.Suggestion.route, SUGGESTION, "emoji_after_space"),

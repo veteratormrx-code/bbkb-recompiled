@@ -137,7 +137,14 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         if (!this.ime.hasFlickSuggestionView() || !this.ime.getFlickSuggestionView().isShown()) {
             return false;
         }
-        this.ime.getFlickSuggestionView().onSingleTap(motionEvent.getX(), motionEvent.getY());
+        return this.ime.getFlickSuggestionView().onSingleTap(motionEvent.getX(), motionEvent.getY());
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        if (this.ime.hasFlickSuggestionView()) {
+            this.ime.getFlickSuggestionView().beginPredictionGesture();
+        }
         return false;
     }
 

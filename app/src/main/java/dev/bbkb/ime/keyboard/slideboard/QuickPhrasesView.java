@@ -33,10 +33,18 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
     
     public interface OnQuickPhraseSelectedListener {
         void onQuickPhraseSelected(CharSequence charSequence, Context context);
+        default void onTemplateLibrarySelected() {}
     }
 
     @Override
     public void onPhraseClicked(QuickPhrasesAdapter.QuickPhrase phrase) {
+        if (quickPhraseListener == null || slideListener == null) return;
+        if (phrase.templateLibrary) {
+            OnQuickPhraseSelectedListener listener = quickPhraseListener;
+            slideListener.onSlideComplete();
+            listener.onTemplateLibrarySelected();
+            return;
+        }
         this.quickPhraseListener.onQuickPhraseSelected(phrase.text, getContext());
         this.slideListener.onSlideComplete();
     }

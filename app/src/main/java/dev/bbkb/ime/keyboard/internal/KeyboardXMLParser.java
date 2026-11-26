@@ -164,10 +164,13 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                 String name = xmlPullParser.getName();
                 if ("Row".equals(name)) {
                     KeyboardRow c1027ajM7142c = parseRowAttributes(xmlPullParser);
-                    if (!skip) {
+                    boolean lad = isPredictionLad(xmlPullParser);
+                    boolean rowSkipped = skip || (lad && !showPredictionLad());
+                    if (!rowSkipped) {
+                        if (lad) this.mParams.mPredictionLadHeight = c1027ajM7142c.getRowHeight();
                         startRow(c1027ajM7142c);
                     }
-                    parseRowContent(xmlPullParser, c1027ajM7142c, skip);
+                    parseRowContent(xmlPullParser, c1027ajM7142c, rowSkipped);
                 } else if ("include".equals(name)) {
                     parseIncludeKeyboardContent(xmlPullParser, skip);
                 } else if ("switch".equals(name)) {
@@ -190,6 +193,20 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                 }
             }
         }
+    }
+
+    private boolean isPredictionLad(XmlPullParser parser) {
+        TypedArray attributes = this.mResources.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard);
+        try {
+            return attributes.getBoolean(R.styleable.Keyboard_predictionLad, false);
+        } finally {
+            attributes.recycle();
+        }
+    }
+
+    private boolean showPredictionLad() {
+        return !this.mParams.mId.passwordInput() && dev.bbkb.ime.core.settings.PrefsManager.INSTANCE
+                .getPrefs(this.mContext).getBoolean("pref_space_prediction_lad", false);
     }
 
     private KeyboardRow parseRowAttributes(XmlPullParser xmlPullParser) throws XmlParseUtils.IllegalAttribute {

@@ -153,8 +153,16 @@ class MacroCommitAutoCorrectOffTest {
     }
 
     @Test
-    fun separator_ordinaryCorrection_stillCorrects_whenOn() {
+    fun separator_ordinaryCorrection_preservesTyping_beforeTheFrame() {
         armComposing("teh", "the", KIND_CORRECTION)
+        separator(settings(autoCorrect = true))
+        assertEquals("teh ", committed())
+    }
+
+    @Test
+    fun separator_ordinaryCorrection_commitsTheDrawnCandidate() {
+        armComposing("teh", "the", KIND_CORRECTION)
+        h.showCorrection("the")
         separator(settings(autoCorrect = true))
         assertEquals("the ", committed())
     }
@@ -192,6 +200,7 @@ class MacroCommitAutoCorrectOffTest {
     @Test
     fun commitController_ordinaryCorrection_stillCorrects_whenOn() {
         armComposing("teh", "the", KIND_CORRECTION)
+        h.showCorrection("the")
         commitController().autoCorrectAndCommitExtended(
             settings(autoCorrect = true), " ", h.uiHandler, InputSource.HARDWARE, false,
         )

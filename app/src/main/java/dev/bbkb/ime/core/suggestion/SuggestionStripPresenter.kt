@@ -16,6 +16,12 @@ import dev.bbkb.ime.BuildConfig
  */
 class SuggestionStripPresenter(private val ime: BlackBerryIME) {
 
+    fun hasDrawnAutoCorrection(words: SuggestedWords, word: String): Boolean {
+        if (!ime.onEvaluateInputViewShown() || ime.isUnifiedInputBoardShowing()) return false
+        return ime.flickSuggestionView?.hasDrawnAutoCorrection(words, word) == true ||
+            ime.auxBarManager?.auxBarView?.suggestionView?.hasDrawnAutoCorrection(words) == true
+    }
+
     /** Async/typed delivery path: an empty result shows the neutral strip. */
     fun showOrNeutral(words: SuggestedWords) {
         val normalized = if (words.isEmpty()) SuggestedWords.EMPTY else words
@@ -51,6 +57,15 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
     fun updateFlickMetrics() {
         if (ime.isUnifiedInputBoardShowing()) return
         ime.flickSuggestionView?.updateKeyMetrics(ime.getUiUpdateHandler().hasPendingSuggestionUpdate())
+    }
+
+    fun invalidateObsoleteCorrections() {
+        val inputLogic = ime.getInputLogic()
+        val displayed = inputLogic.mCurrentSuggestions
+        if (displayed.mRequestEditCount < 0 ||
+            displayed.mRequestEditCount == inputLogic.mComposingTracker.editCount) return
+        ime.flickSuggestionView?.clear()
+        ime.auxBarManager?.auxBarView?.suggestionView?.clearObsoleteSuggestions(displayed)
     }
 
     private fun render(words: SuggestedWords, isGesture: Boolean) {

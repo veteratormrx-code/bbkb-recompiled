@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicReference
  * Counts from later shards are kept: the loader sums them instead of keeping the first row.
  */
 object PhrasePredictions {
+    const val PREF_BILINGUAL = "pref_bilingual_ru_en"
     data class Choice(val word: String, val count: Int)
 
-    private val tables = AtomicReference<Map<String, List<Choice>>?>()
-    private val starters = AtomicReference<Map<String, List<String>>?>()
+    private val tables = AtomicReference<Loaded?>()
     private val wordPattern = Regex("[\\p{L}\\p{M}]+(?:['’‐-][\\p{L}\\p{M}]+)*")
     private val sentenceSeparators = charArrayOf('.', '!', '?', '…', '\n', '\r')
 
@@ -21,13 +21,41 @@ object PhrasePredictions {
         ensureLoaded(context)
         val tokens = tokenize(contextBefore, locale)
         if (tokens.isEmpty()) return starterWords(locale, contextBefore)
-        return rank(tokens, checkNotNull(tables.get()))
+        return rank(tokens, checkNotNull(tables.get()).phrases)
+    }
+
+    @JvmStatic
+    fun crossScriptCompletions(context: Context, typed: String, locale: Locale?): List<String> {
+        if (typed.length < 2 || typed.length > 32) return emptyList()
+        val prefix = typed.lowercase(Locale.ROOT)
+        val language = when {
+            locale?.language == "ru" && prefix.all { it in 'a'..'z' } -> "en"
+            locale?.language == "en" && prefix.all { it in 'а'..'я' || it == 'ё' } -> "ru"
+            else -> return emptyList()
+        }
+        ensureLoaded(context)
+        return tables.get()?.commonWords?.get(language).orEmpty().asSequence()
+            .filter { it.length > prefix.length && it.startsWith(prefix, ignoreCase = true) }
+            .take(4)
+            .toList()
+    }
+
+    @JvmStatic
+    fun otherLanguageStarters(context: Context, contextBefore: String?, locale: Locale?): List<String> {
+        val other = when (locale?.language) {
+            "ru" -> Locale.ENGLISH
+            "en" -> Locale.forLanguageTag("ru")
+            else -> return emptyList()
+        }
+        if (!startsSentence(contextBefore)) return emptyList()
+        ensureLoaded(context)
+        return starterWords(other, contextBefore).take(3)
     }
 
     /** Most common continuations, used when the field has no previous word yet. */
     private fun starterWords(locale: Locale?, contextBefore: String?): List<String> {
         val lang = if (locale?.language == "ru") "ru" else "en"
-        val words = starters.get()?.get(lang).orEmpty()
+        val words = tables.get()?.commonWords?.get(lang).orEmpty().take(8)
         if (!startsSentence(contextBefore)) return words
         val cmp = locale ?: Locale.ROOT
         return words.map { word -> word.replaceFirstChar { it.titlecase(cmp) } }
@@ -41,9 +69,7 @@ object PhrasePredictions {
 
     private fun ensureLoaded(context: Context) {
         if (tables.get() != null) return
-        val loaded = load(context)
-        tables.compareAndSet(null, loaded.phrases)
-        starters.compareAndSet(null, loaded.starters)
+        tables.compareAndSet(null, load(context))
     }
 
     internal fun rank(tokens: List<String>, map: Map<String, List<Choice>>): List<String> {
@@ -70,7 +96,7 @@ object PhrasePredictions {
         return counts.entries.sortedByDescending { it.value }.take(limit).map { it.key }
     }
 
-    private data class Loaded(val phrases: Map<String, List<Choice>>, val starters: Map<String, List<String>>)
+    private data class Loaded(val phrases: Map<String, List<Choice>>, val commonWords: Map<String, List<String>>)
 
     private fun load(context: Context): Loaded {
         val out = HashMap<String, List<Choice>>()
@@ -98,7 +124,7 @@ object PhrasePredictions {
             } catch (ignored: Exception) {
                 // Optional asset.
             }
-            starters[lang] = topWords(counts)
+            starters[lang] = topWords(counts, 8192)
         }
         return Loaded(out, starters)
     }

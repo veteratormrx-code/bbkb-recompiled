@@ -263,7 +263,7 @@ class CommitEntryPointsCharacterisationTest {
     @Test
     fun ep6_autoCorrectAndCommit_appliesTheCandidateAndReportsSeparatorConsumed() {
         armComposing("teh")
-        h.inputLogic.mComposingTracker.setAutoCorrection("the", 2)
+        h.showCorrection("the")
         h.editor.callLog.clear()
 
         val separatorConsumed =

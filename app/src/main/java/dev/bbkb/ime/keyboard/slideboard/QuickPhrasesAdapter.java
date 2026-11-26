@@ -31,9 +31,15 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public static class QuickPhrase {
 
         final String text;
+        final boolean templateLibrary;
 
         QuickPhrase(String text) {
+            this(text, false);
+        }
+
+        QuickPhrase(String text, boolean templateLibrary) {
             this.text = text;
+            this.templateLibrary = templateLibrary;
         }
 
         public String toString() {

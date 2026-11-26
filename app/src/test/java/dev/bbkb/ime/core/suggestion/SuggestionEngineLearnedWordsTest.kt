@@ -132,7 +132,9 @@ class SuggestionEngineLearnedWordsTest {
         engine.setSuggestLearnedWords(false)
         engineReturns("Quintel" to KIND_COMPLETION, "quite" to KIND_COMPLETION, "beezone" to KIND_COMPLETION)
 
-        assertEquals(listOf("quite"), run("", predicting = true))
+        val words = run("", predicting = true)
+        assertEquals("quite", words.first())
+        org.junit.Assert.assertFalse(words.any { it == "Quintel" || it == "beezone" })
     }
 
     @Test
@@ -161,10 +163,10 @@ class SuggestionEngineLearnedWordsTest {
     fun off_theAutoCorrectionIsChosenFromWhatIsLeft() {
         engine.setSuggestLearnedWords(false)
         // Without the filter "beezone" at index 1 would be the correction candidate.
-        engineReturns("beez" to KIND_TYPED, "beezone" to KIND_CORRECTION, "bees" to KIND_CORRECTION)
+        engineReturns("beees" to KIND_TYPED, "beezone" to KIND_CORRECTION, "bees" to KIND_CORRECTION)
         var out: SuggestedWords? = null
         engine.getSuggestedWords(
-            org.robolectric.RuntimeEnvironment.getApplication(), tracker("beez"),
+            org.robolectric.RuntimeEnvironment.getApplication(), tracker("beees"),
             PrevWordsInfo.EMPTY_PREV_WORDS_INFO, null, null, true, 0,
         ) { out = it }
 

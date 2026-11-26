@@ -41,6 +41,15 @@ object MlKitModels {
         translator.downloadModelIfNeeded(DownloadConditions.Builder().build())
             .addOnSuccessListener { onDone(true, "Model ready: $source → $target") }
             .addOnFailureListener { onDone(false, it.message ?: "Download failed") }
+            .addOnCompleteListener { translator.close() }
+    }
+
+    fun translationLanguages(): List<String> = TranslateLanguage.getAllLanguages()
+
+    fun downloadedTranslationLanguages(onDone: (Set<String>) -> Unit) {
+        RemoteModelManager.getInstance().getDownloadedModels(TranslateRemoteModel::class.java)
+            .addOnSuccessListener { models -> onDone(models.mapTo(mutableSetOf()) { it.language }) }
+            .addOnFailureListener { onDone(emptySet()) }
     }
 
     @JvmStatic
@@ -59,6 +68,7 @@ object MlKitModels {
         translator.translate(text)
             .addOnSuccessListener { onDone(true, it) }
             .addOnFailureListener { onDone(false, it.message ?: "Translate failed") }
+            .addOnCompleteListener { translator.close() }
     }
 
     @JvmStatic
@@ -106,6 +116,7 @@ object MlKitModels {
                 }
             }
             .addOnFailureListener { onDone(InkGuess(false, emptyList(), it.message ?: "Recognition failed")) }
+            .addOnCompleteListener { recognizer.close() }
     }
 
     /** "en" is not a handwriting model. Russian is "ru". */

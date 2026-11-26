@@ -49,7 +49,7 @@ class CommitController {
         if (kind == KIND_SUBSTITUTION) {
             return suggestionsAllowedInEditor;
         }
-        return autoCorrectEnabled && kind != 0;
+        return suggestionsAllowedInEditor && autoCorrectEnabled && kind != 0;
     }
 
     private final InputLogic mInputLogic;
@@ -389,18 +389,15 @@ class CommitController {
      * @return {@code true} if {@code separator} was already written, so the caller must not write it
      */
     boolean autoCorrectAndCommitExtended(SettingsValues settingsValues, String separator, UIUpdateHandler uiUpdateHandler, InputSource inputSource, boolean forceSeparator) {
-        mInputLogic.flushPendingSuggestions(settingsValues, uiUpdateHandler);
-        String candidate = mInputLogic.mComposingTracker.getAutoCorrection();
+        String candidate = mInputLogic.resolveAutoCorrection(settingsValues, uiUpdateHandler);
+        return commitResolvedCorrection(settingsValues, candidate, separator, uiUpdateHandler,
+                inputSource, forceSeparator);
+    }
+
+    boolean commitResolvedCorrection(SettingsValues settingsValues, String candidate, String separator,
+            UIUpdateHandler uiUpdateHandler, InputSource inputSource, boolean forceSeparator) {
         String typedWord = mInputLogic.mComposingTracker.getComposingText();
-        // The text-input and voice paths reach this without handleSeparatorInput's gate.
-        String chosen = shouldCommitAutoCorrectCandidate(
-                candidate,
-                mInputLogic.mComposingTracker.getAutoCorrectionScore(),
-                settingsValues.isAutoCorrectionEnabledPerUserSettings,
-                settingsValues.editorCapabilities.shouldShowSuggestions) ? candidate : typedWord;
-        if (chosen == null) {
-            return false;
-        }
+        String chosen = candidate != null ? candidate : typedWord;
         if (TextUtils.isEmpty(typedWord)) {
             // Return, never throw: the caller still owns the separator payload.
             return false;

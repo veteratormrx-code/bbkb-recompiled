@@ -24,6 +24,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.bbkb.ime.core.settings.PrefsManager
 import dev.bbkb.ime.core.suggestion.SavedEmails
+import dev.bbkb.ime.modernlexicon.PhrasePredictions
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
@@ -47,6 +48,12 @@ fun PredictionsSuggestionsScreen(
     }
     var onKeyPredictions by remember {
         mutableStateOf(prefs.getBoolean("on_key_predictions", true))
+    }
+    var spaceLad by remember {
+        mutableStateOf(prefs.getBoolean("pref_space_prediction_lad", false))
+    }
+    var bilingual by remember {
+        mutableStateOf(prefs.getBoolean(PhrasePredictions.PREF_BILINGUAL, false))
     }
     var emojiPredictions by remember {
         // Same resource default SettingsValues.loadEmojiPredictionsSetting reads.
@@ -105,6 +112,26 @@ fun PredictionsSuggestionsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             PreferenceGroup {
+                SwitchPreference(
+                    title = context.getString(R.string.bilingual_ru_en),
+                    summary = context.getString(R.string.bilingual_ru_en_summary),
+                    checked = bilingual,
+                    modifier = Modifier.settingsSearchAnchor("pref_bilingual_ru_en"),
+                    onCheckedChange = {
+                        bilingual = it
+                        prefs.edit().putBoolean(PhrasePredictions.PREF_BILINGUAL, it).apply()
+                    },
+                )
+                SwitchPreference(
+                    title = context.getString(R.string.space_prediction_lad),
+                    checked = spaceLad,
+                    modifier = Modifier.settingsSearchAnchor("pref_space_prediction_lad"),
+                    onCheckedChange = {
+                        spaceLad = it
+                        prefs.edit().putBoolean("pref_space_prediction_lad", it).apply()
+                        dev.bbkb.ime.keyboard.KeyboardBuilder.clearKeyboardCache()
+                    },
+                )
                 // Master toggle
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_show_predictions_title),

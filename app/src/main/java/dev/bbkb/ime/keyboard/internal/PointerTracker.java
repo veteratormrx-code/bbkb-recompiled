@@ -53,7 +53,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
 
     private int[] mDownCoordinates;
 
-    private long mLastUpTime;
+    private long mLastUntrackedUpTime;
 
     private long mKeyDownTime;
 
@@ -605,12 +605,14 @@ public final class PointerTracker extends AbstractDrawingHandler {
     }
 
     private void onDownEvent(int x, int y, long eventTime, KeyDetector keyDetector) {
-        int iM7594a;
         setKeyDetectorInner(keyDetector);
         if (BuildConfig.DEBUG && Logger.isLoggable(TAG, Log.DEBUG)) printTouchEvent("onDownEvent:", x, y, eventTime);
-        long j2 = eventTime - this.mLastUpTime;
-        if (j2 < sParams.mTouchNoiseThresholdTime && (iM7594a = getDistance(x, y, this.mLastX, this.mLastY)) < sParams.mTouchNoiseThresholdDistance) {
-            if (BuildConfig.DEBUG && Logger.isLoggable(TAG, Log.DEBUG)) logD("onDownEvent: ignore potential noise: time=%d distance=%d", j2, iM7594a);
+        final long timeSinceUntrackedUp = eventTime - this.mLastUntrackedUpTime;
+        if (this.mLastUntrackedUpTime != 0L && timeSinceUntrackedUp < sParams.mTouchNoiseThresholdTime
+                && getDistance(x, y, this.mLastX, this.mLastY) < sParams.mTouchNoiseThresholdDistance) {
+            if (BuildConfig.DEBUG && Logger.isLoggable(TAG, Log.DEBUG)) {
+                logD("onDownEvent: ignore potential noise after %d ms", timeSinceUntrackedUp);
+            }
             cancelTrackingForAction();
             return;
         }
@@ -821,7 +823,9 @@ public final class PointerTracker extends AbstractDrawingHandler {
 
     private void onUpEvent(int x, int y, long eventTime) {
         if (BuildConfig.DEBUG && Logger.isLoggable(TAG, Log.DEBUG)) printTouchEvent("onUpEvent  :", x, y, eventTime);
-        this.mLastUpTime = eventTime;
+        // A completed contact on a key can be followed immediately by another intentional tap.
+        // Only apply the noise guard after an untracked release.
+        this.mLastUntrackedUpTime = this.mCurrentKey == null || this.mIsTrackingCanceled ? eventTime : 0;
         sTimerCallback.cancelUpdateBatchInputTimer(this);
         if (this.mSlideboardActive) {
             sSlidingPanel.onSlidingFinished();

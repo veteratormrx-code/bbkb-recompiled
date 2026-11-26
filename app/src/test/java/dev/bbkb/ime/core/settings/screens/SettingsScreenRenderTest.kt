@@ -506,6 +506,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.AppearanceLayout.route,
             title = "Appearance",
             resources = setOf(
+                "one_hand_mode", "one_hand_full",
                 "settings_category_symbols",
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_theme_title",
@@ -864,6 +865,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             // again; the other answers are listed so no race is pinned.
             lateResources = setOf(
                 "language_packs_download",
+                "translate_lang_en", "translate_lang_ru",
                 "language_packs_error_app_too_old", "language_packs_error_network",
                 "language_packs_error_offline", "language_packs_error_verification",
                 "language_packs_retry", "language_packs_variant_summary",
@@ -1040,6 +1042,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Suggestion.route,
             title = "Suggestions",
             resources = setOf(
+                "bilingual_ru_en", "bilingual_ru_en_summary", "space_prediction_lad",
 
                 "settings_pred_contacts_summary_disabled", "settings_pred_contacts_title",
                 "settings_pred_emoji_summary", "settings_pred_emoji_title",
@@ -1063,6 +1066,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Quick phrases",
             // The unset phrases are the keyboard's own fallback resources.
             resources = setOf(
+                "phrase_templates_title", "phrase_template_group", "phrase_template_text", "phrase_template_add",
                 "pref_quick_phrase_1_default", "pref_quick_phrase_2_default", "pref_quick_phrase_3_default",
                 "pref_quick_phrase_4_default", "pref_quick_phrase_5_default",
                 "settings_quick_phrase_1", "settings_quick_phrase_2",

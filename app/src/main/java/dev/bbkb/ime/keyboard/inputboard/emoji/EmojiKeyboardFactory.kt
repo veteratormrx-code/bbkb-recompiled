@@ -124,7 +124,7 @@ class EmojiKeyboardFactory(
         return Key(
             templateKey,
             MoreKeySpec(shown, 0, -4, shown),
-            (listOf(emoji) + emojiProvider.getSkinToneVariants(emoji))
+            (listOf(emoji) + emojiProvider.getPopupVariants(emoji))
                 .map { MoreKeySpec(it, false, locale) }
                 .toTypedArray()
         )

@@ -97,11 +97,16 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                     if (BuildConfig.DEBUG) Log.d("SUGG", "MSG_SHOW_SUGGESTIONS: arg1=${message.arg1} size=${words.size()} isEmpty=${words.isEmpty()}")
                     // Drop replies from an earlier session here, not by gating writes on isComposing():
                     // mCurrentSuggestions is also the gesture-commit channel, and a gesture is not composing.
-                    val currentGeneration = blackBerryIMEV.getInputLogic().getSessionGeneration()
+                    val inputLogic = blackBerryIMEV.getInputLogic()
+                    val currentGeneration = inputLogic.getSessionGeneration()
                     if (message.arg2 != currentGeneration) {
                         if (BuildConfig.DEBUG) Log.d("SUGG",
                             "MSG_SHOW_SUGGESTIONS: DROPPING — dispatched in session ${message.arg2}," +
                                 " now $currentGeneration (DW-3)")
+                        return
+                    }
+                    if (words.mRequestEditCount >= 0 &&
+                        words.mRequestEditCount != inputLogic.mComposingTracker.editCount) {
                         return
                     }
                     deliveringSuggestions {

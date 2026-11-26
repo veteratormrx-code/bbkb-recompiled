@@ -608,6 +608,7 @@
     </attr>
     <attr name="digitRow" format="boolean">
     </attr>
+    <attr name="predictionLad" format="boolean"/>
     <attr name="physicalKeypadType" format="string">
     </attr>
     <attr name="physicalKeypadVariant" format="string">
@@ -802,6 +803,7 @@
         <attr name="iconVoiceInputSmallKey" />
         <attr name="rowHeight" />
         <attr name="digitRow" />
+        <attr name="predictionLad" />
         <attr name="touchPositionCorrectionData" />
         <attr name="verticalGap" />
     </declare-styleable>

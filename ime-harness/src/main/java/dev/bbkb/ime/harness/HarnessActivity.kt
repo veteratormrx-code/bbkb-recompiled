@@ -153,7 +153,22 @@ class HarnessActivity : AppCompatActivity() {
             val uri = handled.clip.getItemAt(0).uri
             receivedImage.setImageURI(uri)
             result.text = if (receivedImage.drawable != null) {
-                "Image received (source ${handled.source})"
+                val fixture = File(cacheDir, "clipboard-fixtures/sample.png")
+                val verified = fixture.isFile && runCatching {
+                    contentResolver.openInputStream(uri)?.buffered()?.use { actual ->
+                        fixture.inputStream().buffered().use { expected ->
+                            var same = true
+                            while (same) {
+                                val byte = expected.read()
+                                same = byte == actual.read()
+                                if (byte < 0) break
+                            }
+                            same
+                        }
+                    }
+                }.getOrNull() == true
+                if (verified) "Image received (source ${handled.source}, PNG bytes match)"
+                else "Image received (source ${handled.source})"
             } else {
                 "Image decoding failed"
             }

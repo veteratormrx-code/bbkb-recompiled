@@ -82,6 +82,18 @@ class StaleSuggestionDeliveryTest {
     }
 
     @Test
+    fun olderEditForTheSameSession_neverReachesTheStrip() {
+        h.startSession("", 0)
+        val words = SuggestedWords(arrayListOf(), false, false, 0)
+        words.mRequestEditCount = h.inputLogic.mComposingTracker.editCount
+        h.seedComposing("bb")
+        assertNotEquals(words.mRequestEditCount, h.inputLogic.mComposingTracker.editCount)
+        h.uiHandler.postShowSuggestions(words, generation())
+        drainLooper()
+        verify(h.ime, never()).displaySuggestions(words, false)
+    }
+
+    @Test
     fun priorSessionReply_neverReachesTheStrip() {
         val dispatchedUnder = generation()
         h.inputLogic.cancelInput()

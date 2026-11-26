@@ -87,7 +87,7 @@ class SuggestionCoordinator {
                             c0883c.set(stampEditCount(suggestedWords, requestEditCount));
                             return;
                         }
-                        c0883c.set(stampEditCount(createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions), requestEditCount));
+                        c0883c.set(stampEditCount(createSuggestionsWithTypedWord(strM4360m, SuggestedWords.EMPTY), requestEditCount));
                     }
                 }
             });
@@ -149,8 +149,9 @@ class SuggestionCoordinator {
                     if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: onSuggestionsReady size=" + suggestedWords.size() + " thread=" + Thread.currentThread().getName());
                     String strM4360m = requestText;
                     SuggestedWords reply = suggestedWords.size() > 1 || strM4360m.length() <= 1
+                            || PrimaryEngineFacts.get().isCurrLocaleChinese()
                             ? suggestedWords
-                            : createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions);
+                            : createSuggestionsWithTypedWord(strM4360m, SuggestedWords.EMPTY);
                     stampEditCount(reply, requestEditCount);
                     inFlight.set(reply);
                     mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(reply, requestGeneration);
@@ -212,6 +213,10 @@ class SuggestionCoordinator {
 
     /** Saved addresses only. The dictionary is not asked, and a short prefix clears the strip. */
     private void showSavedEmails() {
+        if (mInputLogic.mIme.isManualPrivateMode()) {
+            mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
+            return;
+        }
         mInputLogic.mSuggestionStripListener.showSuggestionStrip(
                 SavedEmails.suggestions(mInputLogic.mIme, mInputLogic.mComposingTracker.getComposingText()));
     }

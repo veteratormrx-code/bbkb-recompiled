@@ -34,6 +34,7 @@ class LetterLayoutChoiceTest {
 
     @Before
     fun setUp() {
+        LetterLayoutChoice.resetMigrationForTest()
         ResourceLocaleUtils.reinit(context)
     }
 

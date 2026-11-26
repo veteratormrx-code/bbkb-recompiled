@@ -13,6 +13,8 @@ import dev.bbkb.ime.core.engine.NuanceSDKDictionaryBridge;
 import dev.bbkb.ime.core.settings.util.SuggestionStripSettings;
 import dev.bbkb.ime.keyboard.ProximityGrid;
 import dev.bbkb.ime.personaldictionary.PersonalDictionaryUtil;
+import dev.bbkb.ime.core.settings.PrefsManager;
+import dev.bbkb.ime.modernlexicon.PhrasePredictions;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -144,6 +146,7 @@ public final class SuggestionEngine {
         // Typed-word guard: ask before the list is built, so the bridge's clear-and-replay undoes
         // any engine side effect of the lookup; only when auto-correct is on and length > 1.
         final String composingText = composingTracker.text;
+        final boolean bilingual = bilingualSuggestionsEnabled(context);
         final boolean typedWordIsValid = autoCorrectEnabled && composingTracker.isComposing
                 && composingText != null && composingText.length() > 1
                 && this.mDictionaryLoader.isWordValid(composingText, true);
@@ -153,8 +156,17 @@ public final class SuggestionEngine {
             dev.bbkb.ime.modernlexicon.ModernLexicon.merge(context, composingText, perfLogger.getSuggestions(), perfLogger.locale);
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
+        java.util.List<String> crossScript = bilingual
+                ? PhrasePredictions.crossScriptCompletions(context, composingText, perfLogger.locale)
+                : java.util.Collections.emptyList();
         boolean isPrediction = !composingTracker.isComposing;
-        boolean hasGoodCorrection = shouldAutoCorrect(context, composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
+        if (!isPrediction && !typedWordIsValid && crossScript.isEmpty()
+                && !this.mBlockAutoCorrect && perfLogger.locale != null
+                && "en".equals(perfLogger.locale.getLanguage())) {
+            promoteSingleObviousSlip(suggestions, composingText, perfLogger.locale);
+        }
+        boolean hasGoodCorrection = crossScript.isEmpty()
+                && shouldAutoCorrect(context, composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
 
         boolean cond_acEnabled = autoCorrectEnabled;
         boolean cond_hasGood = hasGoodCorrection;
@@ -210,6 +222,16 @@ public final class SuggestionEngine {
         // Strip emoji come from emojibase: engine emoji dropped, top emojibase hit appended.
         // A trailing space commits the word and clears composing; the text before the cursor
         // still ends with that word, so the emoji stays the one it had while it was typed.
+        if (!crossScript.isEmpty() && !willAutoCorrect && !suggestions.isEmpty()) {
+            int slot = 1;
+            for (String word : crossScript) {
+                if (suggestions.stream().anyMatch(item -> item.word.equalsIgnoreCase(word))) continue;
+                SuggestedWords.SuggestedWordInfo alternative = new SuggestedWords.SuggestedWordInfo(
+                        word, 0, 1, Dictionary.DICTIONARY_HARDCODED, -1, -1, null);
+                suggestions.add(slot++, transformCase(alternative, perfLogger.locale,
+                        composingTracker.isAllCaps, composingTracker.shouldCapitalizeFirstLetter, 0));
+            }
+        }
         EmojibaseStripSuggestion.apply(context, suggestions, composingText, emojiContext(composingTracker, prevWordsInfo), perfLogger.locale);
 
         // Emoji are suggestions, never auto-correction targets.
@@ -228,6 +250,22 @@ public final class SuggestionEngine {
         callback.onSuggestionsReady(new SuggestedWords(suggestions, !isPrediction && !hasGoodCorrection, willAutoCorrect, finalSuggestionType));
     }
 
+    private static void promoteSingleObviousSlip(ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+            String typed, Locale locale) {
+        if (typed == null || typed.length() < 3 || typed.length() > 32 || suggestions.size() < 3
+                || AutoCorrectConfidence.isMostlyCaps(typed)) return;
+        int winner = -1;
+        for (int index = 1; index < Math.min(8, suggestions.size()); index++) {
+            SuggestedWords.SuggestedWordInfo item = suggestions.get(index);
+            if (!item.isKind(2) || AutoCorrectConfidence.preservingCase(typed, item.word, locale) == null) {
+                continue;
+            }
+            if (winner >= 0 && !item.word.equalsIgnoreCase(suggestions.get(winner).word)) return;
+            if (winner < 0) winner = index;
+        }
+        if (winner > 1) suggestions.add(1, suggestions.remove(winner));
+    }
+
     private void getPredictions(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int suggestionType, SuggestionCallback callback) {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), null, perfLogger.locale);
@@ -237,12 +275,23 @@ public final class SuggestionEngine {
                     && prevWordsInfo.wordInfos[0].word != null) {
                 phraseContext = prevWordsInfo.wordInfos[0].word.toString();
             }
-            java.util.List<String> next = dev.bbkb.ime.modernlexicon.PhrasePredictions.nextWords(
+            java.util.List<String> next = PhrasePredictions.nextWords(
                     context, phraseContext, perfLogger.locale);
+            if (bilingualSuggestionsEnabled(context)) {
+                java.util.List<String> other = PhrasePredictions.otherLanguageStarters(
+                        context, phraseContext, perfLogger.locale);
+                if (!other.isEmpty()) {
+                    next = new ArrayList<>(next);
+                    next.addAll(Math.min(2, next.size()), other);
+                }
+            }
+            ArrayList<SuggestedWords.SuggestedWordInfo> candidates = perfLogger.getSuggestions();
+            int insertion = Math.min(1, candidates.size());
             for (String word : next) {
-                perfLogger.getSuggestions().add(new SuggestedWords.SuggestedWordInfo(
+                if (candidates.stream().anyMatch(item -> item.word.equalsIgnoreCase(word))) continue;
+                candidates.add(Math.min(insertion++, candidates.size()), new SuggestedWords.SuggestedWordInfo(
                         word, 10_000, 7, dev.bbkb.ime.core.engine.Dictionary.DICTIONARY_HARDCODED,
-                        -1, perfLogger.getSuggestions().size(), null));
+                        -1, candidates.size(), null));
             }
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
@@ -269,6 +318,11 @@ public final class SuggestionEngine {
             }
         }
         callback.onSuggestionsReady(new SuggestedWords(predictions, true, false, suggestionType));
+    }
+
+    private boolean bilingualSuggestionsEnabled(Context context) {
+        return !this.mBlockAutoCorrect && context != null && PrefsManager.INSTANCE.getPrefs(context)
+                .getBoolean(PhrasePredictions.PREF_BILINGUAL, false);
     }
 
     /**
@@ -333,15 +387,23 @@ public final class SuggestionEngine {
             return false;
         }
         String typedWord = composingTracker.text;
+        boolean conservativeLocale = locale != null
+                && ("ru".equals(locale.getLanguage()) || "en".equals(locale.getLanguage()));
         int trailingApostrophes = countTrailingApostrophes((CharSequence) typedWord);
         int length = (trailingApostrophes > 0 ? typedWord.substring(0, typedWord.length() - trailingApostrophes) : typedWord).length();
         if (length <= 1) {
             if (length == 1) {
                 SuggestedWords.SuggestedWordInfo suggestion = suggestions.get(1);
                 // Single-char corrections are kind 2 (CORRECTION).
-                boolean result = suggestion.isKind(2) && suggestion.word.length() == 1 && typedWord.length() == 1 &&
-                       !suggestion.word.toLowerCase(java.util.Locale.getDefault()).equals(typedWord.toLowerCase(java.util.Locale.getDefault()));
-                return result;
+                if (!suggestion.isKind(2) || suggestion.word.length() != 1 || typedWord.length() != 1) {
+                    return false;
+                }
+                if (conservativeLocale) {
+                    return "en".equals(locale.getLanguage()) && "i".equals(typedWord)
+                            && "I".equals(suggestion.word);
+                }
+                return !suggestion.word.toLowerCase(java.util.Locale.getDefault())
+                        .equals(typedWord.toLowerCase(java.util.Locale.getDefault()));
             }
             return false;
         }
@@ -356,8 +418,8 @@ public final class SuggestionEngine {
             + " isKind2=" + suggestedWordInfoVar.isKind(2)
             + " acMode=" + this.mAutoCorrectMode + " acThresh=" + this.mAutoCorrectThreshold);
         }
-        // Space commits the suggestion: a long-enough completion, a correction, or an engine
-        // shortcut. A saved macro is kind 7 and still commits through the substitution path.
+        // A completion must still meet the configured threshold. Saved macros have their
+        // own substitution path and do not pass through this spelling heuristic.
         if (!suggestedWordInfoVar.isKind(1)) {
             meetsThreshold = false;
         } else if (this.mAutoCorrectMode == 0) {
@@ -383,12 +445,17 @@ public final class SuggestionEngine {
             return false;
         }
         String replacement = obviousSlip ? preservedCase : suggestedWordInfoVar.word;
-        if (canAutoCorrect && typedWordIsValid
-                && !TypedWordGuard.allowsCorrection(typedWord, replacement, locale)) {
+        boolean sameWordCorrection = (typedWordIsValid || conservativeLocale && !obviousSlip)
+                && TypedWordGuard.allowsCorrection(typedWord, replacement, locale);
+        if (canAutoCorrect && typedWordIsValid && !sameWordCorrection) {
             if (BuildConfig.DEBUG) {
                 android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "shouldAutoCorrect: typed='" + typedWord
                     + "' is a dictionary word; '" + replacement + "' would change it -> keep typed");
             }
+            return false;
+        }
+        if (conservativeLocale && (suggestedWordInfoVar.isKind(3)
+                || !obviousSlip && !sameWordCorrection)) {
             return false;
         }
         if (canAutoCorrect && locale != null && "ru".equals(locale.getLanguage())

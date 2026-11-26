@@ -16,7 +16,7 @@ import dev.bbkb.ime.keyboard.KeyboardColorManager
 
 /** Editing actions on the clipboard board. Uses the focused editor, themed from the keyboard palette. */
 object TextEditingBar {
-    private const val BAR_ID = 0x441001
+    const val BAR_ID = 0x441001
 
     @JvmStatic
     fun attach(parent: RelativeLayout, editorContext: Context) {

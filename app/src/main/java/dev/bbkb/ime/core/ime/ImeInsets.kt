@@ -67,6 +67,7 @@ class ImeInsets {
         if (anyVisible && !region.isEmpty) {
             region.getBounds(tmpRegionBounds)
             region.union(Rect(tmpRegionBounds.left, tmpRegionBounds.top, root.width, root.height))
+            unionVisibleInRoot(region, (root as? InputView)?.fullWidthButton)
         }
 
         if (!anyVisible) {

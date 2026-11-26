@@ -1,4 +1,4 @@
-"""Convert the fully-qualified Emoji 17/18 additions to the keyboard's EBC1 format."""
+"""Convert newer Emoji and older people variants to the keyboard's EBC1 format."""
 
 import argparse
 import hashlib
@@ -33,11 +33,13 @@ def generate(source):
 
     affected = set()
     skins = defaultdict(list)
-    for emoji, (_, version, name, _, toned) in rows.items():
-        if version not in VERSIONS:
+    for emoji, (_, version, name, row_group, toned) in rows.items():
+        if version not in VERSIONS and row_group != GROUPS.index("People & Body"):
             continue
         if toned:
-            base = base_for_name[name.partition(":")[0]]
+            base = base_for_name.get(name.partition(":")[0])
+            if base is None:
+                continue
             skins[base].append(emoji)
             affected.add(base)
         else:

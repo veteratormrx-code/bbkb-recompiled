@@ -9,6 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -17,6 +24,7 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.Custom
 import dev.bbkb.ime.core.settings.ui.EditTextPreference
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
+import dev.bbkb.ime.keyboard.slideboard.PhraseTemplates
 
 /**
  * One slideboard quick phrase. [prefKey] is formed only here; the keys are persisted user state
@@ -62,8 +70,56 @@ fun QuickPhrasesScreen(
         onNavigateBack,
         QUICK_PHRASES.map { phrase ->
             Custom(inGroup = true) { env -> QuickPhraseRow(env.prefs, phrase) }
-        },
+        } + Custom { env -> TemplateRows(env.prefs) },
     )
+}
+
+@Composable
+private fun TemplateRows(prefs: SharedPreferences) {
+    var templates by remember { mutableStateOf(PhraseTemplates.read(prefs)) }
+    var group by remember { mutableStateOf("") }
+    var body by remember { mutableStateOf("") }
+    var editingIndex by remember { mutableStateOf<Int?>(null) }
+    Column {
+        Text(stringResource(R.string.phrase_templates_title))
+        OutlinedTextField(group, { group = it.take(48) }, modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.phrase_template_group)) }, singleLine = true)
+        OutlinedTextField(body, { body = it.take(1000) }, modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.phrase_template_text)) })
+        TextButton(enabled = body.isNotBlank() && (templates.size < 100 || editingIndex != null), onClick = {
+            val template = PhraseTemplates.Template(group.trim(), body)
+            val index = editingIndex
+            templates = if (index == null) templates + template
+            else templates.mapIndexed { position, existing -> if (position == index) template else existing }
+            PhraseTemplates.save(prefs, templates)
+            body = ""
+            editingIndex = null
+        }) {
+            Text(stringResource(if (editingIndex == null) R.string.phrase_template_add else R.string.phrase_template_save))
+        }
+        templates.forEachIndexed { index, template ->
+            Row {
+                Text(listOf(template.group, template.text).filter { it.isNotBlank() }.joinToString(" · "),
+                    modifier = Modifier.weight(1f))
+                TextButton(onClick = {
+                    editingIndex = index
+                    group = template.group
+                    body = template.text
+                }) { Text(stringResource(R.string.phrase_template_edit)) }
+                TextButton(onClick = {
+                    templates = templates.filterIndexed { current, _ -> current != index }
+                    PhraseTemplates.save(prefs, templates)
+                    val editing = editingIndex
+                    if (editing == index) {
+                        editingIndex = null
+                        body = ""
+                    } else if (editing != null && editing > index) {
+                        editingIndex = editing - 1
+                    }
+                }) { Text(stringResource(R.string.phrase_template_remove)) }
+            }
+        }
+    }
 }
 
 @Composable

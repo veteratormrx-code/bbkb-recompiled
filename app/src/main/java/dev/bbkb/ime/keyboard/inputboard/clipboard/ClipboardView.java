@@ -7,6 +7,10 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,9 +22,13 @@ import dev.bbkb.ime.keyboard.KeyboardColorManager;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
+import dev.bbkb.ime.keyboard.inputboard.BoardQueryInput;
+import kotlin.Unit;
 
 
 public class ClipboardView extends RelativeLayout implements ClipboardHistoryManager.OnHistoryChangedListener, ClipboardActionCallback {
@@ -42,6 +50,21 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     private View emptyStateView;
 
     private ClipboardAdapter adapter;
+    private BoardQueryInput searchInput;
+    private TextView noMatchesView;
+    private String query = "";
+    private Filter filter = Filter.ALL;
+
+    enum Filter {
+        ALL(R.string.clipboard_filter_all), TEXT(R.string.clipboard_filter_text),
+        LINK(R.string.clipboard_filter_links), IMAGE(R.string.clipboard_filter_images);
+
+        final int label;
+
+        Filter(int label) {
+            this.label = label;
+        }
+    }
 
 
     public interface OnPasteListener {
@@ -195,6 +218,9 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
 
     public void hide() {
         setVisibility(View.GONE);
+        if (searchInput != null) {
+            searchInput.reset();
+        }
     }
 
     public void setListener(OnPasteListener listener) {
@@ -218,18 +244,54 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         if (this.adapter == null || this.clipboardHistoryManager == null) {
             return;
         }
-        List<ClipboardItem> items = ClipboardItem.build(
-                this.clipboardHistoryManager.getPinned(), this.clipboardHistoryManager.getRecent());
-        this.adapter.submitList(items);
-        // Drop previews of rows that are gone.
+        List<ClipEntry> pinned = this.clipboardHistoryManager.getPinned();
+        List<ClipEntry> recent = this.clipboardHistoryManager.getRecent();
         Set<Long> ids = new HashSet<>();
-        for (ClipboardItem item : items) {
-            if (item.entry != null) {
-                ids.add(item.entry.getId());
+        for (ClipEntry entry : pinned) ids.add(entry.getId());
+        for (ClipEntry entry : recent) ids.add(entry.getId());
+        this.adapter.getImageProvider().retainOnly(ids);
+        updateFilteredRows();
+    }
+
+    private void updateFilteredRows() {
+        if (adapter == null || clipboardHistoryManager == null) return;
+        List<ClipboardItem> items = ClipboardItem.build(
+                filtered(clipboardHistoryManager.getPinned()), filtered(clipboardHistoryManager.getRecent()));
+        adapter.submitList(items);
+        if (noMatchesView != null) {
+            boolean noMatches = items.isEmpty() && !clipboardHistoryManager.getHistory().isEmpty();
+            noMatchesView.setVisibility(noMatches ? View.VISIBLE : View.GONE);
+        }
+        updateEmptyState();
+    }
+
+    private List<ClipEntry> filtered(List<ClipEntry> entries) {
+        if (filter == Filter.ALL && query.isEmpty()) return entries;
+        List<ClipEntry> matching = new ArrayList<>();
+        for (ClipEntry entry : entries) {
+            if (matches(entry, query, filter, clipboardHistoryManager.isPasswordKeeperEntry(entry))) {
+                matching.add(entry);
             }
         }
-        this.adapter.getImageProvider().retainOnly(ids);
-        updateEmptyState();
+        return matching;
+    }
+
+    static boolean matches(ClipEntry entry, String query, Filter filter, boolean sensitive) {
+        if (sensitive) return false;
+        boolean image = entry.isImage();
+        if (filter == Filter.IMAGE && !image) return false;
+        if (filter == Filter.TEXT || filter == Filter.LINK) {
+            if (image) return false;
+            boolean link = android.util.Patterns.WEB_URL.matcher(entry.getText()).find();
+            if (link != (filter == Filter.LINK)) return false;
+        }
+        String content = image ? entry.getLabel() : entry.getText();
+        if (query.isEmpty()) return true;
+        if (content == null) return false;
+        for (int i = 0, end = content.length() - query.length(); i <= end; i++) {
+            if (content.regionMatches(true, i, query, 0, query.length())) return true;
+        }
+        return false;
     }
 
     public void initialize(ClipboardHistoryManager historyManager, Context context) {
@@ -239,7 +301,59 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this.recyclerView.setAdapter(this.adapter);
         this.clipboardHistoryManager.addHistoryChangedListener(this);
         TextEditingBar.attach(this, context);
+        attachSearchControls();
         onHistoryChanged();
+    }
+
+    private void attachSearchControls() {
+        RelativeLayout parent = (RelativeLayout) recyclerView.getParent();
+        LinearLayout controls = new LinearLayout(context);
+        controls.setId(View.generateViewId());
+        controls.setOrientation(LinearLayout.VERTICAL);
+        searchInput = new BoardQueryInput(context, context.getString(R.string.clipboard_search), value -> {
+            query = value.trim().toLowerCase(Locale.ROOT);
+            updateFilteredRows();
+            return Unit.INSTANCE;
+        });
+        controls.addView(searchInput);
+        HorizontalScrollView scroller = new HorizontalScrollView(context);
+        scroller.setHorizontalScrollBarEnabled(false);
+        LinearLayout filters = new LinearLayout(context);
+        for (Filter option : Filter.values()) {
+            Button button = new Button(context);
+            button.setText(option.label);
+            button.setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
+            button.setBackgroundColor(KeyboardColorManager.INSTANCE.getKeyColor());
+            button.setSelected(option == filter);
+            button.setAlpha(option == filter ? 1f : 0.65f);
+            button.setOnClickListener(view -> {
+                filter = option;
+                for (int i = 0; i < filters.getChildCount(); i++) {
+                    View child = filters.getChildAt(i);
+                    child.setSelected(child == view);
+                    child.setAlpha(child == view ? 1f : 0.65f);
+                }
+                updateFilteredRows();
+            });
+            filters.addView(button);
+        }
+        scroller.addView(filters);
+        controls.addView(scroller);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, TextEditingBar.BAR_ID);
+        parent.addView(controls, params);
+        ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams()).addRule(RelativeLayout.BELOW, controls.getId());
+        ((RelativeLayout.LayoutParams) emptyStateView.getLayoutParams()).addRule(RelativeLayout.BELOW, controls.getId());
+        noMatchesView = new TextView(context);
+        noMatchesView.setText(R.string.clipboard_search_empty);
+        noMatchesView.setGravity(android.view.Gravity.CENTER);
+        noMatchesView.setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
+        noMatchesView.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams emptyParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        emptyParams.addRule(RelativeLayout.BELOW, controls.getId());
+        parent.addView(noMatchesView, emptyParams);
     }
 
     public void unregisteredListener() {

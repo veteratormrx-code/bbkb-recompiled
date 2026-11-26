@@ -14,10 +14,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The trailing-punctuation retry in `NuanceSDKDictionaryBridge.getWordSubstitution`: with one
+ * The trailing-punctuation retry in `NuanceSDKDictionaryBridge.resolveWordSubstitution`: with one
  * trailing ASCII punctuation char stripped, the lookup retries and re-appends it, so `bb.` expands.
- * Also pins the bail-out that compares the stripped input with the full input's result. Driven on a
- * Mockito mock of the bridge (private methods are not intercepted, so the real body runs).
+ * Also pins the bail-out that compares the stripped input with the full input's result.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -26,7 +25,7 @@ class MacroTrailingPunctuationTest {
     private val en = Locale.US
 
     /**
-     * Run the real `getWordSubstitution` against a personal dictionary that expands exactly the
+     * Run the substitution lookup against a personal dictionary that expands exactly the
      * entries in [macros] and returns everything else verbatim.
      */
     private fun substitute(typed: String, macros: Map<String, String>): String {
@@ -37,14 +36,7 @@ class MacroTrailingPunctuationTest {
         }
         mockStatic(DictionaryManager::class.java).use { dictStatic ->
             dictStatic.`when`<DictionaryManager> { DictionaryManager.getInstance() }.thenReturn(store)
-            val bridge = mock(NuanceSDKDictionaryBridge::class.java)
-            val m = NuanceSDKDictionaryBridge::class.java.getDeclaredMethod(
-                "getWordSubstitution",
-                String::class.java,
-                DictionaryManager.CapsMode::class.java,
-                Locale::class.java,
-            ).apply { isAccessible = true }
-            return m.invoke(bridge, typed, DictionaryManager.CapsMode.NO_CAPS, en) as String
+            return NuanceSDKDictionaryBridge.resolveWordSubstitution(typed, DictionaryManager.CapsMode.NO_CAPS, en)
         }
     }
 
@@ -96,14 +88,7 @@ class MacroTrailingPunctuationTest {
         }
         mockStatic(DictionaryManager::class.java).use { dictStatic ->
             dictStatic.`when`<DictionaryManager> { DictionaryManager.getInstance() }.thenReturn(store)
-            val bridge = mock(NuanceSDKDictionaryBridge::class.java)
-            val m = NuanceSDKDictionaryBridge::class.java.getDeclaredMethod(
-                "getWordSubstitution",
-                String::class.java,
-                DictionaryManager.CapsMode::class.java,
-                Locale::class.java,
-            ).apply { isAccessible = true }
-            m.invoke(bridge, "bb.", DictionaryManager.CapsMode.ALL_CAPS, Locale.FRANCE)
+            NuanceSDKDictionaryBridge.resolveWordSubstitution("bb.", DictionaryManager.CapsMode.ALL_CAPS, Locale.FRANCE)
             // Both the full form and the stripped retry carry the caps mode and locale through.
             org.mockito.Mockito.verify(store)
                 .getWordSubstitutionForInput(eq("bb."), eq(DictionaryManager.CapsMode.ALL_CAPS), eq(Locale.FRANCE))

@@ -80,6 +80,7 @@ public class KeyboardParams {
     public KeyVisualAttributes mMoreKeySpec;
 
     public int mDefaultRowHeight;
+    public int mPredictionLadHeight;
 
     public int mDefaultKeyWidth;
 

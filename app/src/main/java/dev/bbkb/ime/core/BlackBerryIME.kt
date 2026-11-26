@@ -1134,6 +1134,7 @@ class BlackBerryIME : InputMethodService(),
 
     /** @param restarting true if the same editor is restarting */
     override fun onStartInput(editorInfo: EditorInfo?, restarting: Boolean) {
+        if (!restarting) isManualPrivateMode = false
         DeviceProfile.setLanguageForceVkbMode(dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this))
         Logger.info(LOG_TAG, "onStartInput(): restarting=$restarting, editorInfo=${if (editorInfo == null) "NULL" else "valid"}")
         // Debug probe (`setprop debug.et9.probe 1`) dumping the engine's ranking config. Here, not
@@ -1222,6 +1223,7 @@ class BlackBerryIME : InputMethodService(),
         }
         Logger.info(LOG_TAG, "onFinishInput()")
         uiUpdateHandler.handleFinishInput()
+        isManualPrivateMode = false
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.FINISH_INPUT)
         isInputActive = false
         // About once a day, here because the engine is up to read learned words; no-op otherwise.
@@ -1484,7 +1486,7 @@ class BlackBerryIME : InputMethodService(),
         }
         contactsLearningManager?.setContactsDictEnabled(settingsValues.useContactsDicts)
         // "Suggest learned words": off leaves learned words out of the strip.
-        inputLogic.mSuggestionEngine.setSuggestLearnedWords(settingsValues.usePersonalizedDicts)
+        inputLogic.mSuggestionEngine.setSuggestLearnedWords(settingsValues.usePersonalizedDicts && !isManualPrivateMode)
         // Re-applies "Enable special key support" without a restart; idempotent, clears when off.
         hardwareKeys.registerInterceptorCallbacks()
         fccController?.hideIfDisabled()
@@ -2617,6 +2619,24 @@ class BlackBerryIME : InputMethodService(),
     /** Display side of the suggestion pipeline (the request side is [suggestionUpdater]). */
     private val suggestionStrip = SuggestionStripPresenter(this)
 
+    var isManualPrivateMode: Boolean = false
+        private set
+
+    fun toggleManualPrivateMode() {
+        isManualPrivateMode = !isManualPrivateMode
+        inputLogic.onManualPrivacyChanged()
+        inputLogic.mSuggestionEngine.setSuggestLearnedWords(
+            getSettingsValues().usePersonalizedDicts && !isManualPrivateMode,
+        )
+        clearSuggestions()
+        suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_CURSOR_MOVE)
+    }
+
+    fun hasDrawnAutoCorrection(words: SuggestedWords, word: String) =
+        suggestionStrip.hasDrawnAutoCorrection(words, word)
+
+    fun invalidateObsoleteCorrections() = suggestionStrip.invalidateObsoleteCorrections()
+
     /** @param suggestedWords the words to show */
     override fun showSuggestionStrip(suggestedWords: SuggestedWords) = suggestionStrip.showOrNeutral(suggestedWords)
 
@@ -2665,6 +2685,10 @@ class BlackBerryIME : InputMethodService(),
         }
         applyPostEventUpdates(inputLogic.handleManualPick(settingsManager.getSettingsValues(), suggestedWordInfo, getSymbolPageProvider(), keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler, inputSource), true)
     }
+
+    override fun isPredictionResultCurrent(words: SuggestedWords): Boolean =
+        inputLogic.mCurrentSuggestions === words &&
+            (words.mRequestEditCount < 0 || words.mRequestEditCount == inputLogic.mComposingTracker.editCount)
 
     override fun onCjkSuggestionSelected(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
         onSuggestionPicked(suggestedWordInfo, InputSource.UNKNOWN)
@@ -2800,7 +2824,7 @@ class BlackBerryIME : InputMethodService(),
         showAlertDialog(alertDialogCreate)
     }
 
-    private fun showAlertDialog(alertDialog: AlertDialog) {
+    internal fun showAlertDialog(alertDialog: AlertDialog) {
         val windowToken = keyboardSwitcher.getMainKeyboardView()?.windowToken ?: return
         val window = alertDialog.window
         val attributes = window!!.attributes

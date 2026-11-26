@@ -7,6 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -30,6 +32,8 @@ class KeyboardTapTest {
         val tapY = requireNotNull(y)
         val count = args.getString("bbkbTapCount")?.toIntOrNull() ?: 2
         require(count in 1..10_000)
+        val intervalMs = args.getString("bbkbTapIntervalMs")?.toLongOrNull() ?: 30L
+        require(intervalMs in 0L..1000L)
         val context = instrumentation.targetContext
         fun selectedIme() = Settings.Secure.getString(context.contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD)
         assertEquals(ime, selectedIme())
@@ -43,7 +47,18 @@ class KeyboardTapTest {
                 activity.getSystemService(InputMethodManager::class.java)
                     .showSoftInput(editor, InputMethodManager.SHOW_IMPLICIT)
             }
-            SystemClock.sleep(1500)
+            val imeDeadline = SystemClock.uptimeMillis() + 10_000
+            var imeVisible = false
+            while (!imeVisible && SystemClock.uptimeMillis() < imeDeadline) {
+                scenario.onActivity {
+                    imeVisible = ViewCompat.getRootWindowInsets(editor)
+                        ?.isVisible(WindowInsetsCompat.Type.ime()) == true
+                }
+                if (!imeVisible) SystemClock.sleep(50)
+            }
+            assertTrue("IME window never became visible", imeVisible)
+            // Give the IME's initial window animation time to finish before injecting touches.
+            SystemClock.sleep(600)
             for (batch in 0 until (count + 49) / 50) {
                 val batchSize = minOf(50, count - batch * 50)
                 repeat(batchSize) {
@@ -57,11 +72,17 @@ class KeyboardTapTest {
                             event.recycle()
                         }
                     }
-                    SystemClock.sleep(30)
+                    SystemClock.sleep(intervalMs)
                 }
                 // The IME commits over Binder from a different process.
-                SystemClock.sleep(200)
-                instrumentation.waitForIdleSync()
+                val commitDeadline = SystemClock.uptimeMillis() + 2_000
+                var actual = ""
+                do {
+                    scenario.onActivity { actual = editor.text.toString() }
+                    if (actual.length >= batchSize) break
+                    SystemClock.sleep(25)
+                } while (SystemClock.uptimeMillis() < commitDeadline)
+                SystemClock.sleep(100)
                 scenario.onActivity {
                     assertEquals("Batch ${batch + 1}", "b".repeat(batchSize), editor.text.toString())
                     if (batch + 1 < (count + 49) / 50) {

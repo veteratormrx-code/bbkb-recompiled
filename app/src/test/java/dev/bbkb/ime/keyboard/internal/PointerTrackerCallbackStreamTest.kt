@@ -723,11 +723,21 @@ class PointerTrackerCallbackStreamTest {
             L.onCodeInput(97,50,50,1010,false)
             L.onReleaseKey(97,false)
             --- ACTION_DOWN id=0 t=1015
+            draw.dismissTrail
+            L.onPressKey(97,0,true)
+            timer.startTypingState(97)
+            timer.cancelLongPressShift
+            timer.startLockFocus(0,250)
+            draw.showPreview(97)
+            draw.invalidate(97)
             --- ACTION_UP id=0 t=1030
             batch.cancel(0)
             timer.cancelKeyTimers(0)
             draw.dismissTrail
-            draw.dismissPreview(null)
+            draw.dismissPreview(97)
+            draw.invalidate(97)
+            L.onCodeInput(97,51,50,1030,false)
+            L.onReleaseKey(97,false)
             """
         )
     }
@@ -1595,9 +1605,10 @@ class PointerTrackerCallbackStreamTest {
             3/PointerTracker: [0] onUpEvent  :  150   50  1040 b
             3/PointerTracker: [0] onRelease  : b
             3/PointerTracker: [0] onDownEvent:  150   50  1045 b
-            3/PointerTracker: [0] onDownEvent: ignore potential noise: time=5 distance=0
-            3/PointerTracker: [0]-onUpEvent  :  150   50  1050 b
-            3/PointerTracker: [0]-onDownEvent:   30   50  2000 a
+            3/PointerTracker: [0] onPress    : b
+            3/PointerTracker: [0] onUpEvent  :  150   50  1050 b
+            3/PointerTracker: [0] onRelease  : b
+            3/PointerTracker: [0] onDownEvent:   30   50  2000 a
             3/PointerTracker: [0] onPress    : a
             3/PointerTracker: [0] onMoveEvent:   55   50  2010 a
             3/PointerTracker: [0] onMoveEvent:   80   50  2020 a

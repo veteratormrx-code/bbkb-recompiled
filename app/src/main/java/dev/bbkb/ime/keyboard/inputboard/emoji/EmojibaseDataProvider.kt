@@ -126,6 +126,9 @@ class EmojibaseDataProvider(private val context: Context) {
     /** Lower-cased search fields and their bigram index, built lazily; see [searchData]. */
     @Volatile
     private var searchData: SearchData? = null
+    private var boardSearchData: SearchData? = null
+    private var boardVariants = emptyList<EmojiData>()
+    private var peopleFamilies = emptyMap<String, List<String>>()
     private var emojiByCategory: MutableMap<EmojiCategory, MutableList<EmojiData>>? = null
 
     /** Skin-tone variants by base emoji, under both the fully-qualified and VS16-stripped forms. */
@@ -185,7 +188,10 @@ class EmojibaseDataProvider(private val context: Context) {
         for (e in allEmojis) {
             e.skins?.forEach { if (seenVariants.add(it.emoji)) variantList.add(it.emoji) }
         }
-        val flags = drawable(baseEmojis.map { it.emoji } + variantList)
+        val people = allEmojis.filter { it.group == 1 }
+        val baseKeys = baseEmojis.mapTo(HashSet()) { it.emoji }
+        val additionalPeople = people.filterNot { it.emoji in baseKeys }
+        val flags = drawable(baseEmojis.map { it.emoji } + variantList + additionalPeople.map { it.emoji })
 
         val supportedEmojis = baseEmojis.filterIndexed { i, _ -> flags[i] }
         val drawableVariants = HashSet<String>(variantList.size * 2)
@@ -198,6 +204,7 @@ class EmojibaseDataProvider(private val context: Context) {
         emojiByCategory = categoryMap
         emojiList = null
         searchData = null
+        boardSearchData = null
 
         val skins = HashMap<String, List<String>>(allEmojis.size * 2)
         for (e in allEmojis) {
@@ -211,7 +218,32 @@ class EmojibaseDataProvider(private val context: Context) {
             skins[e.emoji] = variants
         }
         skinsByEmoji = skins
+        val supportedPeople = supportedEmojis.filter { it.group == 1 } +
+            additionalPeople.filterIndexed { index, _ -> flags[baseEmojis.size + variantList.size + index] }
+        peopleFamilies = supportedPeople.groupBy { peopleFamilyKey(it.emoji) }
+            .mapValues { (_, variants) -> variants.map { it.emoji }.distinct() }
+        boardVariants = (supportedPeople.filterNot { it.emoji in baseKeys } +
+            supportedPeople.flatMap { base ->
+                base.skins.orEmpty().filter { it.emoji in drawableVariants }
+                    .map { skin -> base.copy(emoji = skin.emoji, skins = null) }
+            }).distinctBy { it.emoji }
     }
+
+    private fun peopleFamilyKey(emoji: String): String {
+        val stripped = emoji.replace("\uFE0F", "")
+            .removeSuffix("\u200D\u27A1")
+            .removeSuffix("\u200D\u2640")
+            .removeSuffix("\u200D\u2642")
+        val separator = stripped.indexOf('\u200D')
+        if (separator < 0 || stripped.indexOf('\u200D', separator + 1) >= 0) return stripped
+        val person = stripped.substring(0, separator)
+        return if (person == "👩" || person == "👨") "🧑" + stripped.substring(separator) else stripped
+    }
+
+    fun getPopupVariants(emoji: String): List<String> =
+        (getSkinToneVariants(emoji) + peopleFamilies[peopleFamilyKey(emoji)].orEmpty())
+            .filterNot { it == emoji }
+            .distinct()
 
     /** [isEmojiSupported] for each emoji, through the on-disk glyph cache. */
     private fun glyphFlags(emojis: List<String>, identity: String): BooleanArray {
@@ -306,7 +338,10 @@ class EmojibaseDataProvider(private val context: Context) {
         val lowerQuery = query.trim().lowercase()
         if (lowerQuery.isEmpty()) return emptyList()
 
-        val data = searchData()
+        val data = if (boardVariants.isEmpty()) searchData() else boardSearchData
+            ?: SearchData(searchableBoardEmojis().map {
+                SearchEntry.of(it, annotationsFor(it.emoji))
+            }).also { boardSearchData = it }
         val scored = ArrayList<Pair<SearchEntry, Int>>()
         data.forEachCandidate(lowerQuery) { entry ->
             val score = EmojiSearchScoring.score(entry.description, entry.tags, entry.aliases, lowerQuery)
@@ -317,6 +352,8 @@ class EmojibaseDataProvider(private val context: Context) {
             .take(MAX_SEARCH_RESULTS)
             .map { it.first.data }
     }
+
+    internal fun searchableBoardEmojis(): List<EmojiData> = getAllEmojis() + boardVariants
 
     /**
      * Best match for [query] scoring at least [minRelevance], or null; the suggestion strip's hit. Runs per
